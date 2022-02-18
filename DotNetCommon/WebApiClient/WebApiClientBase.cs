@@ -56,7 +56,13 @@ namespace DotNetCommon.WebApiClient
 
         public async Task<IEnumerable<T>> GetAllAsync<T>(string uri)
         {
-            var result = await InternalGetAllAsync<T>(uri);
+            var result = await InternalGetAllAsync<T>(uri, null);
+            return result;
+        }
+
+        public async Task<IEnumerable<T>> GetAllAsync<T>(string uri, string nestedPropertyToStartFrom)
+        {
+            var result = await InternalGetAllAsync<T>(uri, nestedPropertyToStartFrom);
             return result;
         }
 
@@ -210,11 +216,15 @@ namespace DotNetCommon.WebApiClient
             }
         }
 
-        private async Task<IEnumerable<T>> InternalGetAllAsync<T>(string uri)
+        private async Task<IEnumerable<T>> InternalGetAllAsync<T>(string uri, string nestedPropertyToStartFrom)
         {
+            if (String.IsNullOrWhiteSpace(nestedPropertyToStartFrom)) nestedPropertyToStartFrom = NestedPropertyToStartFrom;
+
             using HttpResponseMessage response = await Client.GetAsync(PrepareUri(uri));
+#if DEBUG
             var sample = await response.AsStringAsync();
-            var result = await response.AsAsync<IEnumerable<T>>(SerializerOptions, NestedPropertyToStartFrom);
+#endif
+            var result = await response.AsAsync<IEnumerable<T>>(SerializerOptions, nestedPropertyToStartFrom);
             return result;
         }
 
