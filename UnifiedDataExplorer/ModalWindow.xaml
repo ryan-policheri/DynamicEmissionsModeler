@@ -14,6 +14,6 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <ContentControl Content="{Binding ViewModel}"/>
+        <ContentControl Content="{Binding}" Margin="10"/>
     </Grid>
 </Window>

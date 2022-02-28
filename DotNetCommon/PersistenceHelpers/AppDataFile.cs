@@ -85,6 +85,7 @@ namespace DotNetCommon.PersistenceHelpers
 
         public T Read<T>()
         {
+            if(!FileExists) return default(T);
             string contents = SystemFunctions.ReadAllText(this.FullFilePath);
             if (contents == null) return default(T);
             T obj = JsonSerializer.Deserialize<T>(contents);
@@ -94,6 +95,7 @@ namespace DotNetCommon.PersistenceHelpers
 
         public async Task<T> ReadAsync<T>()
         {
+            if (!FileExists) return default(T);
             string contents = await SystemFunctions.ReadAllTextAsync(this.FullFilePath);
             if (contents == null) return default(T);
             T obj = JsonSerializer.Deserialize<T>(contents);

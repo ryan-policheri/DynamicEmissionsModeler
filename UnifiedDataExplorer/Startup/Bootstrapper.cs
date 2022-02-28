@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Net.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,10 +10,10 @@ using DotNetCommon.SystemHelpers;
 using DotNetCommon.PersistenceHelpers;
 using EIA.Services.Clients;
 using PiServices;
-using UIowaBuildingsModel;
 using UnifiedDataExplorer.ViewModel;
 using UnifiedDataExplorer.ViewModel.Base;
 using UnifiedDataExplorer.ViewModel.MainMenu;
+using UnifiedDataExplorer.Services;
 
 namespace UnifiedDataExplorer.Startup
 {
@@ -45,6 +44,8 @@ namespace UnifiedDataExplorer.Startup
             }
 
             CredentialProvider credProvider = new CredentialProvider(encryptionKeyFile.FullFilePath);
+            dataFileProvider = new DataFileProvider(config.AppDataDirectory, credProvider);
+
             AppDataFile credentialsFile = dataFileProvider.BuildCredentialsFile();
             CredentialConfig credConfig = new CredentialConfig();
             if (credentialsFile.FileExists)
@@ -74,10 +75,12 @@ namespace UnifiedDataExplorer.Startup
                 credProvider.DecryptValue(credConfig.EncryptedPiPassword)));
 
             services.AddSingleton<IMessageHub, MessageHub>();
+            services.AddSingleton<IDialogService, DialogService>();
 
             services.AddTransient<RobustViewModelDependencies>(x => new RobustViewModelDependencies(x.GetRequiredService<IServiceProvider>(), 
                 x.GetRequiredService<IMessageHub>(), 
                 x.GetRequiredService<ILogger<RobustViewModelDependencies>>(),
+                x.GetRequiredService<IDialogService>(),
                 x.GetRequiredService<DataFileProvider>()));
             services.AddTransient<RobustViewModelBase>();
 

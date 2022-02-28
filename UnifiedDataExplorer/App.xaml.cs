@@ -35,7 +35,7 @@ namespace UnifiedDataExplorer
         private void RegisterApplicationDataTemplates()
         {
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            DataTemplateRegistrar templateRegistrar = new DataTemplateRegistrar(executingAssembly, "EIADataViewer.ViewModel", "EIADataViewer.View");
+            DataTemplateRegistrar templateRegistrar = new DataTemplateRegistrar(executingAssembly, "UnifiedDataExplorer.ViewModel", "UnifiedDataExplorer.View");
             templateRegistrar.RegisterAllTemplatesByConvention();
         }
 

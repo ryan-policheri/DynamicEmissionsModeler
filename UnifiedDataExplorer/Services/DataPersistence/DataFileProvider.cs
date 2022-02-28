@@ -1,11 +1,14 @@
 ﻿using DotNetCommon.PersistenceHelpers;
+using DotNetCommon.Security;
 using DotNetCommon.SystemHelpers;
+using UnifiedDataExplorer.Services.DataFiles;
 
-namespace UIowaBuildingsModel
+namespace UnifiedDataExplorer.Services
 {
     public class DataFileProvider
     {
-        private string _appDataDirectory;
+        private readonly string _appDataDirectory;
+        private readonly CredentialProvider _credentialProvider;
 
         public DataFileProvider(string appDataDirectory)
         {
@@ -13,14 +16,21 @@ namespace UIowaBuildingsModel
             SystemFunctions.CreateDirectory(_appDataDirectory);
         }
 
+        public DataFileProvider(string appDataDirectory, CredentialProvider credentialProvider) : this(appDataDirectory)
+        {
+            _credentialProvider = credentialProvider;
+        }
+
         public AppDataFile BuildDataViewFile()
         {
             return BuildAppDataFile("DataViews");
         }
 
-        public AppDataFile BuildCredentialsFile()
+        public CredentialsDataFile BuildCredentialsFile()
         {
-            return BuildAppDataFile(null, "Credentials");
+            AppDataFile appDataFile = BuildAppDataFile(null, "Credentials");
+            CredentialsDataFile credentialsDataFile = new CredentialsDataFile(appDataFile.FullFilePath, _credentialProvider);
+            return credentialsDataFile;
         }
 
         public AppDataFile BuildKeyFile()

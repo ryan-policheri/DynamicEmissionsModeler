@@ -1,4 +1,4 @@
-﻿namespace UIowaBuildingsModel
+﻿namespace UnifiedDataExplorer
 {
     public class CredentialConfig
     {

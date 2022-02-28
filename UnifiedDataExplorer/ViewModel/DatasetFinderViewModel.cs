@@ -2,24 +2,27 @@
 using System.Threading.Tasks;
 using DotNetCommon.EventAggregation;
 using DotNetCommon.MVVM;
+using DotNetCommon.PersistenceHelpers;
 using EIA.Domain.Constants;
 using EIA.Domain.Model;
 using EIA.Services.Clients;
+using UIowaBuildingsModel;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ModelWrappers;
+using UnifiedDataExplorer.Services;
+using UnifiedDataExplorer.Services.DataFiles;
+using UnifiedDataExplorer.ViewModel.Base;
 
 namespace UnifiedDataExplorer.ViewModel
 {
-    public class DatasetFinderViewModel : ViewModelBase
+    public class DatasetFinderViewModel : RobustViewModelBase
     {
         private readonly EiaClient _client;
-        private readonly IMessageHub _messageHub;
 
-        public DatasetFinderViewModel(EiaClient client, IMessageHub messageHub)
+        public DatasetFinderViewModel(EiaClient client, RobustViewModelDependencies facade) : base(facade)
         {
             _client = client;
             _categories = new ObservableCollection<LazyTreeItemViewModel>();
-            _messageHub = messageHub;
         }
 
         public string Header => "Dataset Finder";
@@ -39,6 +42,14 @@ namespace UnifiedDataExplorer.ViewModel
 
         public async Task LoadAsync()
         {
+            while (!_client.HasAuthorization)
+            {
+                EiaSettingsViewModel viewModel = new EiaSettingsViewModel { EiaBaseUrl = _client.BaseAddress };
+                this.DialogService.ShowModalWindow(viewModel);
+                _client.SubscriptionKey = viewModel.EiaApiKey;
+                _client.AddAuthorizationHeader();
+                DataFileProvider.BuildCredentialsFile().UpdateEiaApiKey(viewModel.EiaApiKey);
+            }
             Category root = await _client.GetCategoryByIdAsync(EiaCategories.ABSOLUTE_ROOT);
             CategorySeriesWrapper wrapper = new CategorySeriesWrapper(root);
             Categories.Add(new LazyTreeItemViewModel(wrapper));
@@ -66,7 +77,7 @@ namespace UnifiedDataExplorer.ViewModel
             CategorySeriesWrapper model = modelInterface as CategorySeriesWrapper;
             if (model != null && model.IsSeries())
             {
-                _messageHub.Publish<OpenViewModelEvent>(new OpenViewModelEvent { Sender = this, SenderTypeName = nameof(DatasetFinderViewModel), Id = model.GetId() });
+                this.MessageHub.Publish<OpenViewModelEvent>(new OpenViewModelEvent { Sender = this, SenderTypeName = nameof(DatasetFinderViewModel), Id = model.GetId() });
                 return;
             }
         }
