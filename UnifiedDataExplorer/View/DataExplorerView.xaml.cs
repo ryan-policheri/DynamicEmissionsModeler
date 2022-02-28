@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace EIADataViewer.View
+namespace UnifiedDataExplorer.View
 {
     /// <summary>
     /// Interaction logic for DataExplorerView.xaml

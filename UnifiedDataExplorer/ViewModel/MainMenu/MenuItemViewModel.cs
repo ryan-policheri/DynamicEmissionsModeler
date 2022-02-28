@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using DotNetCommon.MVVM;
 
-namespace EIADataViewer.ViewModel.MainMenu
+namespace UnifiedDataExplorer.ViewModel.MainMenu
 {
     public class MenuItemViewModel : ViewModelBase
     {

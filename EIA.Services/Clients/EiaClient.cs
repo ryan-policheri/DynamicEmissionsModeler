@@ -1,21 +1,24 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using EIA.Domain.Model;
 using DotNetCommon.Extensions;
 using DotNetCommon.WebApiClient;
+using EIA.Domain.Model;
 
 namespace EIA.Services.Clients
 {
     public class EiaClient : WebApiClientBase
     {
-        private readonly string _subscriptionKey;
+        private string SubscriptionKey { get; set; }
 
-        public EiaClient(HttpClient client) : base(client)
+        public EiaClient(string baseAddress, string subscriptionKey) : base()
         {
-            _subscriptionKey = Client.DefaultRequestHeaders.Where(x => x.Key == "Subscription-Key").First().Value.First();
+            this.Client = new HttpClient();
+            this.Client.BaseAddress = new Uri(baseAddress);
+            SubscriptionKey = subscriptionKey;
+            this.Client.DefaultRequestHeaders.Add("Subscription-Key", SubscriptionKey);
         }
 
         public async Task<Category> GetCategoryTreeAsync(int rootCategoryId)
@@ -47,13 +50,13 @@ namespace EIA.Services.Clients
 
         public async Task<Category> GetCategoryByIdAsync(int categoryId)
         {
-            string path = "category/".WithQueryString("api_key", _subscriptionKey).WithQueryString("category_id", categoryId.ToString());
+            string path = "category/".WithQueryString("api_key", SubscriptionKey).WithQueryString("category_id", categoryId.ToString());
             return await this.GetAsync<Category>(path, "category");
         }
 
         public async Task<Series> GetSeriesByIdAsync(string seriesId)
         {
-            string path = "series/".WithQueryString("api_key", _subscriptionKey).WithQueryString("series_id", seriesId);
+            string path = "series/".WithQueryString("api_key", SubscriptionKey).WithQueryString("series_id", seriesId);
             return await this.GetFirstAsync<Series>(path, "series");
         }
     }

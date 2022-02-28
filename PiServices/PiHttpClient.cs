@@ -1,21 +1,38 @@
 ﻿using DotNetCommon.Extensions;
 using DotNetCommon.WebApiClient;
 using PiModel;
-using System.Net;
 
 namespace PiServices
 {
     public class PiHttpClient : WebApiClientBase
     {
-        public PiHttpClient(string baseAddress, string basicAuthString) : base()
+
+        public PiHttpClient(string baseAddress, string userName, string password) : base()
         {
             HttpClientHandler handler = new HttpClientHandler();
             handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-
             this.Client = new HttpClient(handler);
-            this.Client.DefaultRequestHeaders.Add("Authorization", basicAuthString);
+
             this.Client.BaseAddress = new Uri(baseAddress);
+            this.UserName = userName;
+            this.Password = password;
+            this.AddAuthorizationHeader();
             this.NestedPropertyToStartFrom = "Items";
+        }
+
+        public string UserName { get; set; }
+
+        public string Password { get; set; }
+
+        public bool HasAuthorization => this.Client.DefaultRequestHeaders.Contains("Authorization");
+
+        private void AddAuthorizationHeader()
+        {
+            if (!String.IsNullOrWhiteSpace(this.UserName) && !String.IsNullOrWhiteSpace(this.Password) && !HasAuthorization)
+            {
+                string asBase64 = "Basic " + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(UserName + ":" + Password));
+                this.Client.DefaultRequestHeaders.Add("Authorization", asBase64);
+            }
         }
 
         public async Task DoSomething()

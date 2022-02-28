@@ -4,15 +4,16 @@ using System.Windows;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using EIADataViewer.Common;
-using EIADataViewer.ViewModel;
-using EIADataViewer.Startup;
+using UnifiedDataExplorer.Common;
+using UnifiedDataExplorer.ViewModel;
+using UnifiedDataExplorer.Startup;
+using UIowaBuildingsModel;
 
-namespace EIADataViewer
+namespace UnifiedDataExplorer
 {
     public partial class App : Application
     {
-        private IConfiguration _config;
+        private Config _config;
         private IServiceProvider _provider;
         private ILogger _logger;
 

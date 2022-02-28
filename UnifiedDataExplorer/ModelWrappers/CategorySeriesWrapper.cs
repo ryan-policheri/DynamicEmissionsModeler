@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using DotNetCommon.MVVM;
 using EIA.Domain.Model;
 
-namespace EIADataViewer.ModelWrappers
+namespace UnifiedDataExplorer.ModelWrappers
 {
     public class CategorySeriesWrapper : Category, ILazyTreeItemBackingModel
     {

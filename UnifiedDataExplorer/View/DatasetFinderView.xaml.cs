@@ -1,9 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using DotNetCommon.MVVM;
-using EIADataViewer.ViewModel;
+using UnifiedDataExplorer.ViewModel;
 
-namespace EIADataViewer.View
+namespace UnifiedDataExplorer.View
 {
     public partial class DatasetFinderView : UserControl
     {

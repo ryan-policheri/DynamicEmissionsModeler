@@ -1,4 +1,4 @@
-﻿using EIADataViewer.ViewModel;
+﻿using UnifiedDataExplorer.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace EIADataViewer.View
+namespace UnifiedDataExplorer.View
 {
     public partial class SeriesView : UserControl
     {

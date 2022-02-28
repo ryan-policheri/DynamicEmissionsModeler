@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace EIADataViewer.View.MainMenu
+namespace UnifiedDataExplorer.View.MainMenu
 {
     public partial class MainMenuView : UserControl
     {

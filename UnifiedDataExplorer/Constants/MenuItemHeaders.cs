@@ -1,4 +1,4 @@
-﻿namespace EIADataViewer.Constants
+﻿namespace UnifiedDataExplorer.Constants
 {
     public class MenuItemHeaders
     {

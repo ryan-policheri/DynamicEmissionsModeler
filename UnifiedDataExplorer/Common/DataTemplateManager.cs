@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Markup;
 using DotNetCommon.Extensions;
 
-namespace EIADataViewer.Common
+namespace UnifiedDataExplorer.Common
 {
     public class DataTemplateRegistrar
     {

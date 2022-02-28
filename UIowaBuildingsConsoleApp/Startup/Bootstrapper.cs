@@ -1,4 +1,4 @@
-﻿using DotNetCommon.SystemFunctions;
+﻿using DotNetCommon.SystemHelpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PiServices;
@@ -28,15 +28,7 @@ namespace UIowaBuildingsConsoleApp.Startup
         public static IServiceProvider BuildServiceProvider(Config config)
         {
             ServiceCollection services = new ServiceCollection();
-
-            services.AddHttpClient("PiClient", c =>
-            {
-                string baseAddress = config.PiWebApiBase.TrimEnd('/');
-                c.BaseAddress = new Uri(baseAddress);
-                c.DefaultRequestHeaders.Add("Authorization", config.Base64AuthString);
-            });
-
-            services.AddTransient<PiHttpClient>(x => new PiHttpClient(config.PiWebApiBase, config.Base64AuthString));
+            services.AddTransient<PiHttpClient>(x => new PiHttpClient(config.PiWebApiBaseAddress, config.PiUserName, config.PiPassword));
 
             return services.BuildServiceProvider();
         }

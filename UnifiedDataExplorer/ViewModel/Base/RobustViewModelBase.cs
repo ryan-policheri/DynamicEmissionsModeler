@@ -2,7 +2,7 @@
 using DotNetCommon.MVVM;
 using Microsoft.Extensions.Logging;
 
-namespace EIADataViewer.ViewModel.Base
+namespace UnifiedDataExplorer.ViewModel.Base
 {
     public class RobustViewModelBase : ViewModelBase
     {

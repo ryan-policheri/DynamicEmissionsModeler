@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EIA.Services", "EIA.Service
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnifiedDataExplorer", "UnifiedDataExplorer\UnifiedDataExplorer.csproj", "{5C56042B-DF1E-4E40-83FD-F5B401E10187}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.DotNetCommon", "Tests.DotNetCommon\Tests.DotNetCommon.csproj", "{D309B640-C9CD-4ED0-A97A-6CC5FAFEB8EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{5C56042B-DF1E-4E40-83FD-F5B401E10187}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C56042B-DF1E-4E40-83FD-F5B401E10187}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C56042B-DF1E-4E40-83FD-F5B401E10187}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D309B640-C9CD-4ED0-A97A-6CC5FAFEB8EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D309B640-C9CD-4ED0-A97A-6CC5FAFEB8EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D309B640-C9CD-4ED0-A97A-6CC5FAFEB8EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D309B640-C9CD-4ED0-A97A-6CC5FAFEB8EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

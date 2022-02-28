@@ -5,10 +5,10 @@ using DotNetCommon.EventAggregation;
 using DotNetCommon.MVVM;
 using EIA.Domain.Model;
 using EIA.Services.Clients;
-using EIADataViewer.Events;
+using UnifiedDataExplorer.Events;
 using System.Data;
 
-namespace EIADataViewer.ViewModel
+namespace UnifiedDataExplorer.ViewModel
 {
     public class SeriesViewModel : ViewModelBase
     {

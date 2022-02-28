@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using DotNetCommon.SystemHelpers;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace DotNetCommon.Security
@@ -7,10 +8,39 @@ namespace DotNetCommon.Security
     {
         private readonly string _ivEnvironmentVariable;
         private readonly string _keyEnvironmentVariable;
+        private readonly string _encryptionFilePath;
 
-        private byte[] Iv => Convert.FromBase64String(Environment.GetEnvironmentVariable(_ivEnvironmentVariable));
+        private byte[] Iv 
+        { 
+            get
+            { 
+                if (!String.IsNullOrWhiteSpace(_ivEnvironmentVariable))
+                {
+                    return Convert.FromBase64String(Environment.GetEnvironmentVariable(_ivEnvironmentVariable));
+                }
+                else
+                {
+                    EncryptionKey key = SystemFunctions.ReadJsonObject<EncryptionKey>(_encryptionFilePath);
+                    return Convert.FromBase64String(key.Iv);
+                }
+            }
+        }
 
-        private byte[] Key => Convert.FromBase64String(Environment.GetEnvironmentVariable(_keyEnvironmentVariable));
+        private byte[] Key 
+        { 
+            get
+            {
+                if (!String.IsNullOrWhiteSpace(_keyEnvironmentVariable))
+                {
+                    return Convert.FromBase64String(Environment.GetEnvironmentVariable(_keyEnvironmentVariable));
+                }
+                else
+                {
+                    EncryptionKey key = SystemFunctions.ReadJsonObject<EncryptionKey>(_encryptionFilePath);
+                    return Convert.FromBase64String(key.Key);
+                }
+            }
+        }
 
         public CredentialProvider(string ivEnvironmentVariable, string keyEnvironmentVariable)
         {
@@ -18,17 +48,27 @@ namespace DotNetCommon.Security
             _keyEnvironmentVariable = keyEnvironmentVariable;
         }
 
-        public static void GenerateIvAndKey()
+        public CredentialProvider(string encryptionFilePath)
+        {
+            _encryptionFilePath = encryptionFilePath;
+        }
+
+        public static EncryptionKey GenerateIvAndKey()
         {
             Aes aes = Aes.Create();
             string ivAsString = Convert.ToBase64String(aes.IV);
             string keyAsString = Convert.ToBase64String(aes.Key);
-            Console.WriteLine($"IV: {ivAsString}");
-            Console.WriteLine($"Key: {keyAsString}");
+            EncryptionKey key = new EncryptionKey
+            {
+                Iv = ivAsString,
+                Key = keyAsString
+            };
+            return key;
         }
 
         public string DecryptValue(string value)
         {
+            if (value == null) return null;
             using (Aes aes = Aes.Create())
             {
                 aes.IV = Iv;
@@ -51,6 +91,7 @@ namespace DotNetCommon.Security
 
         public string EncryptValue(string value)
         {
+            if (value == null) return null;
             using (Aes aes = Aes.Create())
             {
                 byte[] buffer = Encoding.UTF8.GetBytes(value);

@@ -5,10 +5,10 @@ using DotNetCommon.MVVM;
 using EIA.Domain.Constants;
 using EIA.Domain.Model;
 using EIA.Services.Clients;
-using EIADataViewer.Events;
-using EIADataViewer.ModelWrappers;
+using UnifiedDataExplorer.Events;
+using UnifiedDataExplorer.ModelWrappers;
 
-namespace EIADataViewer.ViewModel
+namespace UnifiedDataExplorer.ViewModel
 {
     public class DatasetFinderViewModel : ViewModelBase
     {

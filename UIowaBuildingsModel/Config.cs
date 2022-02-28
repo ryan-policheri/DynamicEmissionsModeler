@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.Reflection;
 using DotNetCommon.Extensions;
-using System.Text.Json;
+using DotNetCommon.SystemHelpers;
 
 namespace UIowaBuildingsModel
 {
@@ -23,22 +23,15 @@ namespace UIowaBuildingsModel
             {
                 string rawValue = _rawConfig[prop.Name];
                 prop.SetValueWithTypeRespect(this, rawValue);
-            }
-
-            string json = File.ReadAllText(this.CredentialsFile);
-            Config temp = JsonSerializer.Deserialize<Config>(json);
-            this.UserName = temp.UserName;
-            this.Password = temp.Password;            
+            }       
         }
 
+        public string AppDataDirectory { get; set; }
+
+        public string PiWebApiBaseAddress { get; set; }
+
+        public string EiaWebApiBaseAddress { get; set; }
+
         public string CredentialsFile { get; set; }
-
-        public string UserName { get; set; }
-
-        public string Password { get; set; }
-
-        public string Base64AuthString => "Basic " + "SU9XQVxyanBvbGljaGVyaTpUdXJCdTEmblRoOURyMCE=";
-
-        public string PiWebApiBase { get; set; }
     }
 }

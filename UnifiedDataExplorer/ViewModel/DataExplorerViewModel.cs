@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using DotNetCommon.MVVM;
 using DotNetCommon.PersistenceHelpers;
-using EIADataViewer.Constants;
-using EIADataViewer.Events;
-using EIADataViewer.ViewModel.Base;
+using UnifiedDataExplorer.Constants;
+using UnifiedDataExplorer.Events;
+using UnifiedDataExplorer.ViewModel.Base;
 using System;
 
-namespace EIADataViewer.ViewModel
+namespace UnifiedDataExplorer.ViewModel
 {
     public class DataExplorerViewModel : RobustViewModelBase
     {
@@ -82,15 +82,17 @@ namespace EIADataViewer.ViewModel
                     }
                 }
 
-                AppDataFile file = new AppDataFile(ids);
-                try
-                {
-                    await DataFiler.SaveObjectAsFile(file);
-                }
-                catch(Exception ex)
-                {
-                    throw;
-                }
+                throw new NotImplementedException();
+
+                //AppDataFile file = new AppDataFile(ids);
+                //try
+                //{
+                //    await DataFiler.SaveObjectAsFile(file);
+                //}
+                //catch(Exception ex)
+                //{
+                //    throw;
+                //}
             }
         }
     }

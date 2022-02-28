@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using DotNetCommon.MVVM;
-using EIADataViewer.ViewModel.Base;
-using EIADataViewer.ViewModel.MainMenu;
+using UnifiedDataExplorer.ViewModel.Base;
+using UnifiedDataExplorer.ViewModel.MainMenu;
 
-namespace EIADataViewer.ViewModel
+namespace UnifiedDataExplorer.ViewModel
 {
     public class MainViewModel : RobustViewModelBase
     {

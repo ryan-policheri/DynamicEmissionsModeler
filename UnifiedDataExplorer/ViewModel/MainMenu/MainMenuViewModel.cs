@@ -1,10 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using DotNetCommon.DelegateCommand;
-using EIADataViewer.Constants;
-using EIADataViewer.Events;
-using EIADataViewer.ViewModel.Base;
+using UnifiedDataExplorer.Constants;
+using UnifiedDataExplorer.Events;
+using UnifiedDataExplorer.ViewModel.Base;
 
-namespace EIADataViewer.ViewModel.MainMenu
+namespace UnifiedDataExplorer.ViewModel.MainMenu
 {
     public class MainMenuViewModel : RobustViewModelBase
     {

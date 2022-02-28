@@ -1,4 +1,4 @@
-﻿namespace DotNetCommon.SystemFunctions
+﻿namespace DotNetCommon.SystemHelpers
 {
     public class ProcessStats
     {

@@ -1,8 +1,9 @@
 ﻿using DotNetCommon.Extensions;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 
-namespace DotNetCommon.SystemFunctions
+namespace DotNetCommon.SystemHelpers
 {
     public class SystemFunctions
     {
@@ -175,6 +176,33 @@ namespace DotNetCommon.SystemFunctions
         public static string ReadAllText(string file)
         {
             return File.ReadAllText(file);
+        }
+
+        public static async Task<string> ReadAllTextAsync(string file)
+        {
+            return await File.ReadAllTextAsync(file);
+        }
+
+        public static T ReadJsonObject<T>(string file)
+        {
+            string text = ReadAllText(file);
+            return JsonSerializer.Deserialize<T>(text);
+        }
+
+        public static void WriteAllText(string file, string contents)
+        {
+            File.WriteAllText(file, contents);
+        }
+
+        public static async Task WriteAllTextAsync(string file, string contents)
+        {
+            await File.WriteAllTextAsync(file, contents);
+        }
+
+        public static void WriteJsonObject(string file, object obj)
+        {
+            string text = JsonSerializer.Serialize(obj);
+            WriteAllText(file, text);
         }
 
         public static void CopyDirectory(string sourceDirectory, string targetDirectory)

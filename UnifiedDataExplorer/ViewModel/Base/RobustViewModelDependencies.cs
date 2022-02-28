@@ -1,16 +1,18 @@
 ﻿using System;
-using DotNetCommon.EventAggregation;
 using Microsoft.Extensions.Logging;
+using DotNetCommon.EventAggregation;
+using UIowaBuildingsModel;
 
-namespace EIADataViewer.ViewModel.Base
+namespace UnifiedDataExplorer.ViewModel.Base
 {
     public class RobustViewModelDependencies
     {
-        public RobustViewModelDependencies(IServiceProvider serviceProvider, IMessageHub messageHub, ILogger logger)
+        public RobustViewModelDependencies(IServiceProvider serviceProvider, IMessageHub messageHub, ILogger logger, DataFileProvider provider)
         {
             ServiceProvider = serviceProvider;
             MessageHub = messageHub;
             Logger = logger;
+            DataFileProvider = provider;
         }
 
         public IServiceProvider ServiceProvider { get; }
@@ -18,5 +20,7 @@ namespace EIADataViewer.ViewModel.Base
         public IMessageHub MessageHub { get; }
 
         public ILogger Logger { get; }
+
+        public DataFileProvider DataFileProvider { get; }
     }
 }

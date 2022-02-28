@@ -1,4 +1,4 @@
-﻿namespace EIADataViewer.Events
+﻿namespace UnifiedDataExplorer.Events
 {
     public class OpenViewModelEvent
     {
