@@ -3,15 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIowaBuildingsConsoleApp", "UIowaBuildingsConsoleApp\UIowaBuildingsConsoleApp.csproj", "{AA906DBE-4A94-45DF-A9C4-13EA9005294F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIowaBuildingsConsoleApp", "UIowaBuildingsConsoleApp\UIowaBuildingsConsoleApp.csproj", "{AA906DBE-4A94-45DF-A9C4-13EA9005294F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetCommon", "DotNetCommon\DotNetCommon.csproj", "{C6AC24DE-BA12-4E19-8A9F-6B7D98B8490B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetCommon", "DotNetCommon\DotNetCommon.csproj", "{C6AC24DE-BA12-4E19-8A9F-6B7D98B8490B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiModel", "PiModel\PiModel.csproj", "{F70B421B-4CC3-4270-B18F-82AC608F9CB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiModel", "PiModel\PiModel.csproj", "{F70B421B-4CC3-4270-B18F-82AC608F9CB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiServices", "PiServices\PiServices.csproj", "{DFA01381-8900-4AB2-BE58-C45C62E84BCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiServices", "PiServices\PiServices.csproj", "{DFA01381-8900-4AB2-BE58-C45C62E84BCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIowaBuildingsModel", "UIowaBuildingsModel\UIowaBuildingsModel.csproj", "{2804193E-BD57-486D-8140-65CB1249AA17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIowaBuildingsModel", "UIowaBuildingsModel\UIowaBuildingsModel.csproj", "{2804193E-BD57-486D-8140-65CB1249AA17}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EIA.Domain", "EIA.Domain\EIA.Domain.csproj", "{6BA05503-99BD-4E4C-BCAA-6CCC2BE5DFCD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EIA.Services", "EIA.Services\EIA.Services.csproj", "{34287B53-E888-4E2F-A115-4094A357C1DD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnifiedDataExplorer", "UnifiedDataExplorer\UnifiedDataExplorer.csproj", "{5C56042B-DF1E-4E40-83FD-F5B401E10187}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +45,18 @@ Global
 		{2804193E-BD57-486D-8140-65CB1249AA17}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2804193E-BD57-486D-8140-65CB1249AA17}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2804193E-BD57-486D-8140-65CB1249AA17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BA05503-99BD-4E4C-BCAA-6CCC2BE5DFCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BA05503-99BD-4E4C-BCAA-6CCC2BE5DFCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BA05503-99BD-4E4C-BCAA-6CCC2BE5DFCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BA05503-99BD-4E4C-BCAA-6CCC2BE5DFCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34287B53-E888-4E2F-A115-4094A357C1DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34287B53-E888-4E2F-A115-4094A357C1DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34287B53-E888-4E2F-A115-4094A357C1DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34287B53-E888-4E2F-A115-4094A357C1DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C56042B-DF1E-4E40-83FD-F5B401E10187}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C56042B-DF1E-4E40-83FD-F5B401E10187}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C56042B-DF1E-4E40-83FD-F5B401E10187}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C56042B-DF1E-4E40-83FD-F5B401E10187}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

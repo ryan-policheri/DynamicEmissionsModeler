@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EIA.Domain\EIA.Domain.csproj" />
+    <ProjectReference Include="..\DotNetCommon\DotNetCommon.csproj" />
+  </ItemGroup>
+
+</Project>
