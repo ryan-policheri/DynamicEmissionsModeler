@@ -53,6 +53,7 @@ namespace UnifiedDataExplorer.ModelWrappers
 
         public bool IsKnownLeaf()
         {
+            if (this.IsAsset()) return !_asset.HasChildren;
             return false;
         }
 
