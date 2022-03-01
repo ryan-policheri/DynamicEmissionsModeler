@@ -1,16 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using DotNetCommon.EventAggregation;
 using DotNetCommon.MVVM;
-using DotNetCommon.PersistenceHelpers;
 using EIA.Domain.Constants;
 using EIA.Domain.Model;
 using EIA.Services.Clients;
-using UIowaBuildingsModel;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ModelWrappers;
-using UnifiedDataExplorer.Services;
-using UnifiedDataExplorer.Services.DataFiles;
 using UnifiedDataExplorer.ViewModel.Base;
 
 namespace UnifiedDataExplorer.ViewModel
@@ -48,7 +43,7 @@ namespace UnifiedDataExplorer.ViewModel
                 this.DialogService.ShowModalWindow(viewModel);
                 _client.SubscriptionKey = viewModel.EiaApiKey;
                 _client.AddAuthorizationHeader();
-                DataFileProvider.BuildCredentialsFile().UpdateEiaApiKey(viewModel.EiaApiKey);
+                DataFileProvider.BuildCredentialsFile().Update<CredentialConfig>(x => x.EncryptedEiaWebApiKey = viewModel.EiaApiKey);
             }
             Category root = await _client.GetCategoryByIdAsync(EiaCategories.ABSOLUTE_ROOT);
             CategorySeriesWrapper wrapper = new CategorySeriesWrapper(root);

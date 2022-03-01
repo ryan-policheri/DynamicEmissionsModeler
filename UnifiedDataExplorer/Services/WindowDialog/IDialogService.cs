@@ -1,6 +1,6 @@
 ﻿using DotNetCommon.MVVM;
 
-namespace UnifiedDataExplorer.Services
+namespace UnifiedDataExplorer.Services.Window
 {
     public interface IDialogService
     {

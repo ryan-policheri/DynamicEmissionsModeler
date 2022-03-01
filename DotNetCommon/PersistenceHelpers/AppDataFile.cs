@@ -47,45 +47,45 @@ namespace DotNetCommon.PersistenceHelpers
 
         public object SaveObject { get; internal set; }
 
-        public void Save(object saveObject)
+        public void Save<T>(T saveObject) where T : new()
         {
-            InternalSave(saveObject, FullFilePath);
+            InternalSave<T>(saveObject, FullFilePath);
         }
 
-        public void Save(object saveObject, string customFileName)
+        public void Save<T>(T saveObject, string customFileName) where T : new()
         {
             string filePath = SystemFunctions.CombineDirectoryComponents(RootSaveDirectory, customFileName);
-            InternalSave(saveObject, filePath);
+            InternalSave<T>(saveObject, filePath);
         }
 
-        private void InternalSave(object saveObject, string filePath)
+        private void InternalSave<T>(T saveObject, string filePath) where T : new()
         {
             this.SaveObject = saveObject;
             string json = JsonSerializer.Serialize(this.SaveObject);
             SystemFunctions.WriteAllText(filePath, json);
         }
 
-        public async Task SaveAsync(object saveObject)
+        public async Task SaveAsync<T>(T saveObject) where T : new()
         {
-            await InternalSaveAsync(saveObject, FullFilePath);
+            await InternalSaveAsync<T>(saveObject, FullFilePath);
         }
 
-        public async Task SaveAsync(object saveObject, string customFileName)
+        public async Task SaveAsync<T>(T saveObject, string customFileName) where T : new()
         {
             string filePath = SystemFunctions.CombineDirectoryComponents(RootSaveDirectory, customFileName);
             await InternalSaveAsync(saveObject, filePath);
         }
 
-        private async Task InternalSaveAsync(object saveObject, string filePath)
+        private async Task InternalSaveAsync<T>(T saveObject, string filePath) where T : new()
         {
             this.SaveObject = saveObject;
             string json = JsonSerializer.Serialize(this.SaveObject);
             await SystemFunctions.WriteAllTextAsync(filePath, json);
         }
 
-        public T Read<T>()
+        public T Read<T>() where T : new()
         {
-            if(!FileExists) return default(T);
+            if (!FileExists) return new T();
             string contents = SystemFunctions.ReadAllText(this.FullFilePath);
             if (contents == null) return default(T);
             T obj = JsonSerializer.Deserialize<T>(contents);
@@ -93,13 +93,29 @@ namespace DotNetCommon.PersistenceHelpers
             return obj;
         }
 
-        public async Task<T> ReadAsync<T>()
+        public async Task<T> ReadAsync<T>() where T : new()
         {
-            if (!FileExists) return default(T);
+            if (!FileExists) return new T();
             string contents = await SystemFunctions.ReadAllTextAsync(this.FullFilePath);
             if (contents == null) return default(T);
             T obj = JsonSerializer.Deserialize<T>(contents);
             this.SaveObject = obj;
+            return obj;
+        }
+
+        public T Update<T>(Action<T> updateFunction) where T : new()
+        {
+            T obj = this.Read<T>();
+            updateFunction.Invoke(obj);
+            this.Save(obj);
+            return obj;
+        }
+
+        public async Task<T> UpdateAsync<T>(Action<T> updateFunction) where T : new()
+        {
+            T obj = await this.ReadAsync<T>();
+            updateFunction.Invoke(obj);
+            await this.SaveAsync(obj);
             return obj;
         }
 

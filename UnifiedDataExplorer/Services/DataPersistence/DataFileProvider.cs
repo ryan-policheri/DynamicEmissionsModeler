@@ -1,14 +1,13 @@
 ﻿using DotNetCommon.PersistenceHelpers;
 using DotNetCommon.Security;
 using DotNetCommon.SystemHelpers;
-using UnifiedDataExplorer.Services.DataFiles;
 
-namespace UnifiedDataExplorer.Services
+namespace UnifiedDataExplorer.Services.DataPersistence
 {
     public class DataFileProvider
     {
         private readonly string _appDataDirectory;
-        private readonly CredentialProvider _credentialProvider;
+        private readonly ICredentialProvider _credentialProvider;
 
         public DataFileProvider(string appDataDirectory)
         {
@@ -16,7 +15,7 @@ namespace UnifiedDataExplorer.Services
             SystemFunctions.CreateDirectory(_appDataDirectory);
         }
 
-        public DataFileProvider(string appDataDirectory, CredentialProvider credentialProvider) : this(appDataDirectory)
+        public DataFileProvider(string appDataDirectory, ICredentialProvider credentialProvider) : this(appDataDirectory)
         {
             _credentialProvider = credentialProvider;
         }
@@ -26,11 +25,9 @@ namespace UnifiedDataExplorer.Services
             return BuildAppDataFile("DataViews");
         }
 
-        public CredentialsDataFile BuildCredentialsFile()
+        public EncryptedAppDataFile BuildCredentialsFile()
         {
-            AppDataFile appDataFile = BuildAppDataFile(null, "Credentials");
-            CredentialsDataFile credentialsDataFile = new CredentialsDataFile(appDataFile.FullFilePath, _credentialProvider);
-            return credentialsDataFile;
+            return BuildEncryptedAppDataFile(null, "Credentials");
         }
 
         public AppDataFile BuildKeyFile()
@@ -44,6 +41,14 @@ namespace UnifiedDataExplorer.Services
             if(subdirectoryPath != null) directory = SystemFunctions.CombineDirectoryComponents(_appDataDirectory, subdirectoryPath);
             SystemFunctions.CreateDirectory(directory);
             return new AppDataFile(directory, fileName);
+        }
+
+        private EncryptedAppDataFile BuildEncryptedAppDataFile(string subdirectoryPath = null, string fileName = null)
+        {
+            string directory = _appDataDirectory;
+            if (subdirectoryPath != null) directory = SystemFunctions.CombineDirectoryComponents(_appDataDirectory, subdirectoryPath);
+            SystemFunctions.CreateDirectory(directory);
+            return new EncryptedAppDataFile(directory, fileName, _credentialProvider);
         }
     }
 }

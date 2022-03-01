@@ -13,7 +13,8 @@ using PiServices;
 using UnifiedDataExplorer.ViewModel;
 using UnifiedDataExplorer.ViewModel.Base;
 using UnifiedDataExplorer.ViewModel.MainMenu;
-using UnifiedDataExplorer.Services;
+using UnifiedDataExplorer.Services.Window;
+using UnifiedDataExplorer.Services.DataPersistence;
 
 namespace UnifiedDataExplorer.Startup
 {
@@ -46,7 +47,7 @@ namespace UnifiedDataExplorer.Startup
             CredentialProvider credProvider = new CredentialProvider(encryptionKeyFile.FullFilePath);
             dataFileProvider = new DataFileProvider(config.AppDataDirectory, credProvider);
 
-            AppDataFile credentialsFile = dataFileProvider.BuildCredentialsFile();
+            EncryptedAppDataFile credentialsFile = dataFileProvider.BuildCredentialsFile();
             CredentialConfig credConfig = new CredentialConfig();
             if (credentialsFile.FileExists)
             {

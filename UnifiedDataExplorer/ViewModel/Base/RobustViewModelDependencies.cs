@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 using DotNetCommon.EventAggregation;
-using UIowaBuildingsModel;
-using UnifiedDataExplorer.Services;
+using UnifiedDataExplorer.Services.Window;
+using UnifiedDataExplorer.Services.DataPersistence;
 
 namespace UnifiedDataExplorer.ViewModel.Base
 {

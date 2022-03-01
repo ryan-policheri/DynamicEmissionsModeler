@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnifiedDataExplorer.Services
+namespace UnifiedDataExplorer.Services.Window
 {
     public class DialogService : IDialogService
     {
