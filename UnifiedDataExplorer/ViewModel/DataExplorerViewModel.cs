@@ -61,6 +61,11 @@ namespace UnifiedDataExplorer.ViewModel
                 CurrentChild = _eiaDatasetFinderViewModel;
                 this.Children.Remove(args.Sender as ViewModelBase);
             }
+            if (args.SenderTypeName == nameof(JsonDisplayViewModel))
+            {
+                CurrentChild = _piDatasetFinderViewModel;
+                this.Children.Remove(args.Sender as ViewModelBase);
+            }
         }
 
         private async void OnOpenViewModel(OpenViewModelEvent args)

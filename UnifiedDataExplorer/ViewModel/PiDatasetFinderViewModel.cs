@@ -107,7 +107,7 @@ namespace UnifiedDataExplorer.ViewModel
             if (model != null)
             {
                 string json = model.ItemBase.ToBeautifulJson();
-                JsonDisplayViewModel vm = new JsonDisplayViewModel
+                JsonDisplayViewModel vm = new JsonDisplayViewModel(this.MessageHub)
                 {
                     Json = json,
                     Header = model.ItemBase.Name + " (Json)"

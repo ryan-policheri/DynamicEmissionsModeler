@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Data;
 using DotNetCommon.DelegateCommand;
 using DotNetCommon.EventAggregation;
 using DotNetCommon.MVVM;
 using EIA.Domain.Model;
 using EIA.Services.Clients;
 using UnifiedDataExplorer.Events;
-using System.Data;
 
 namespace UnifiedDataExplorer.ViewModel
 {
