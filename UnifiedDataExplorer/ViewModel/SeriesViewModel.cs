@@ -1,42 +1,19 @@
 ﻿using System.Threading.Tasks;
-using System.Windows.Input;
 using System.Data;
-using DotNetCommon.DelegateCommand;
 using DotNetCommon.EventAggregation;
-using DotNetCommon.MVVM;
 using EIA.Domain.Model;
 using EIA.Services.Clients;
-using UnifiedDataExplorer.Events;
 
 namespace UnifiedDataExplorer.ViewModel
 {
-    public class SeriesViewModel : ViewModelBase
+    public class SeriesViewModel : ExplorePointViewModel
     {
         private readonly EiaClient _client;
-        private readonly IMessageHub _messageHub;
 
-        public SeriesViewModel(EiaClient client, IMessageHub messageHub)
+        public SeriesViewModel(EiaClient client, IMessageHub messageHub) : base(messageHub)
         {
             _client = client;
-            _messageHub = messageHub;
-
-            CloseSeriesCommand = new DelegateCommand(OnCloseSeries);
         }
-
-        private string _header;
-        public string Header 
-        {
-            get { return _header; }
-            set
-            {
-                _header = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string HeaderDetail => SeriesName;
-
-        public bool IsCloseable => true;
 
         private string _seriesName;
         public string SeriesName
@@ -63,21 +40,15 @@ namespace UnifiedDataExplorer.ViewModel
             }
         }
 
-        public ICommand CloseSeriesCommand { get; }
-
         public async Task LoadAsync(string seriesId)
         {
             Series series = await _client.GetSeriesByIdAsync(seriesId);
             SeriesName = series.Name;
             SeriesId = series.Id;
             Header = series.Id;
+            HeaderDetail = this.SeriesName;
             ConstructedDataSet dataSet = series.ToConstructedDataSet();
             DataSet = dataSet.Table;
-        }
-
-        private void OnCloseSeries()
-        {
-            _messageHub.Publish<CloseViewModelEvent>(new CloseViewModelEvent { Sender = this, SenderTypeName = nameof(SeriesViewModel) });
         }
     }
 }

@@ -43,5 +43,12 @@ namespace DotNetCommon.Extensions
         {
             return JsonSerializer.Deserialize<T>(source, options);
         }
+
+        public static string First(this string source, int howMany, bool addDots = true)
+        {
+            if (source == null) return null;
+            if (source.Length <= howMany) return source;
+            return source.Substring(0, howMany) + "...";
+        }
     }
 }

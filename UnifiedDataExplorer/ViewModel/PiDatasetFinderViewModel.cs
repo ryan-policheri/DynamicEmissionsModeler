@@ -106,13 +106,8 @@ namespace UnifiedDataExplorer.ViewModel
             ServerDatabaseAssetWrapper model = modelInterface as ServerDatabaseAssetWrapper;
             if (model != null)
             {
-                string json = model.ItemBase.ToBeautifulJson();
-                JsonDisplayViewModel vm = new JsonDisplayViewModel(this.MessageHub)
-                {
-                    Json = json,
-                    Header = model.ItemBase.Name + " (Json)"
-                    
-                };
+                JsonDisplayViewModel vm = new JsonDisplayViewModel(this.MessageHub);
+                vm.LoadAsync(model.ItemBase);
 
                 this.MessageHub.Publish<OpenViewModelEvent>(new OpenViewModelEvent { Sender = this, SenderTypeName = nameof(PiDatasetFinderViewModel), Id = model.GetId(), Name = model.GetItemName(), ViewModel = vm });
                 return;

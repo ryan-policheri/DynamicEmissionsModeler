@@ -56,15 +56,12 @@ namespace UnifiedDataExplorer.ViewModel
 
         private void OnCloseViewModel(CloseViewModelEvent args)
         {
-            if (args.SenderTypeName == nameof(SeriesViewModel))
+            if (args.SenderTypeName == nameof(ExplorePointViewModel))
             {
-                CurrentChild = _eiaDatasetFinderViewModel;
+                int indexBefore = this.Children.IndexOf(args.Sender as ViewModelBase) - 1;
+                ViewModelBase childBefore = this.Children[indexBefore];
                 this.Children.Remove(args.Sender as ViewModelBase);
-            }
-            if (args.SenderTypeName == nameof(JsonDisplayViewModel))
-            {
-                CurrentChild = _piDatasetFinderViewModel;
-                this.Children.Remove(args.Sender as ViewModelBase);
+                this.CurrentChild = childBefore;
             }
         }
 

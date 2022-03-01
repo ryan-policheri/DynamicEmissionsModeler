@@ -27,7 +27,6 @@
             <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource MaterialDesignScrollBarMinimal}" x:Key="ScrollBar"/>
             <Style TargetType="{x:Type Thumb}" BasedOn="{StaticResource MaterialDesignScrollBarThumb}" x:Key="Thumb"/>
             <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource MaterialDesignMenuItem}" x:Key="MenuItem"/>
-
         </ResourceDictionary>
     </Application.Resources>
 </Application>

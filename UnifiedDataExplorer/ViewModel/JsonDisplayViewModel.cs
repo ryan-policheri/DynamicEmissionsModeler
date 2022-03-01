@@ -1,44 +1,26 @@
-﻿using DotNetCommon.DelegateCommand;
+﻿using System.Threading.Tasks;
 using DotNetCommon.EventAggregation;
-using DotNetCommon.MVVM;
-using System.Windows.Input;
-using UnifiedDataExplorer.Events;
+using DotNetCommon.Extensions;
+using PiModel;
 
 namespace UnifiedDataExplorer.ViewModel
 {
-    public class JsonDisplayViewModel : ViewModelBase
+    public class JsonDisplayViewModel : ExplorePointViewModel
     {
         private readonly IMessageHub _messageHub;
 
-        public JsonDisplayViewModel(IMessageHub messageHub)
+        public JsonDisplayViewModel(IMessageHub messageHub) : base(messageHub)
         {
             _messageHub = messageHub;
-            CloseSeriesCommand = new DelegateCommand(OnCloseSeries);
         }
 
-        private string _header;
+        public string Json { get; private set; }
 
-        public string Header
+        public async Task LoadAsync(ItemBase itemBase)
         {
-            get { return _header; }
-            set
-            {
-                _header = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string HeaderDetail { get; set; }
-
-        public bool IsCloseable => true;
-
-        public string Json { get; set; }
-
-        public ICommand CloseSeriesCommand { get; }
-
-        private void OnCloseSeries()
-        {
-            _messageHub.Publish<CloseViewModelEvent>(new CloseViewModelEvent { Sender = this, SenderTypeName = nameof(JsonDisplayViewModel) });
+            Json = itemBase.ToBeautifulJson();
+            Header = itemBase.Name.First(25) + " (Json)";
+            HeaderDetail = itemBase.Name + " (Json)";
         }
     }
 }
