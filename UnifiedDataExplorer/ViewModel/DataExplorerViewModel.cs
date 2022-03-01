@@ -1,23 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using DotNetCommon.MVVM;
-using DotNetCommon.PersistenceHelpers;
 using UnifiedDataExplorer.Constants;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ViewModel.Base;
-using System;
 
 namespace UnifiedDataExplorer.ViewModel
 {
     public class DataExplorerViewModel : RobustViewModelBase
     {
-        private readonly DatasetFinderViewModel _datasetFinderViewModel;
+        private readonly EiaDatasetFinderViewModel _eiaDatasetFinderViewModel;
+        private readonly PiDatasetFinderViewModel _piDatasetFinderViewModel;
 
-        public DataExplorerViewModel(DatasetFinderViewModel datasetFinderViewModel, RobustViewModelDependencies facade) : base(facade)
+        public DataExplorerViewModel(EiaDatasetFinderViewModel datasetFinderViewModel,
+            PiDatasetFinderViewModel piDatasetFinderViewModel, 
+            RobustViewModelDependencies facade) : base(facade)
         {
-            _datasetFinderViewModel = datasetFinderViewModel;
+            _eiaDatasetFinderViewModel = datasetFinderViewModel;
+            _piDatasetFinderViewModel = piDatasetFinderViewModel;
+
             CurrentChild = datasetFinderViewModel;
             Children = new ObservableCollection<ViewModelBase>();
 
@@ -41,23 +45,27 @@ namespace UnifiedDataExplorer.ViewModel
 
         public async Task LoadAsync()
         {
-            Children.Add(_datasetFinderViewModel);
-            CurrentChild = _datasetFinderViewModel;
-            await _datasetFinderViewModel.LoadAsync();
+            Children.Add(_eiaDatasetFinderViewModel);
+            CurrentChild = _eiaDatasetFinderViewModel;
+            await _eiaDatasetFinderViewModel.LoadAsync();
+
+            Children.Add(_piDatasetFinderViewModel);
+            CurrentChild = _piDatasetFinderViewModel;
+            await _piDatasetFinderViewModel.LoadAsync();
         }
 
         private void OnCloseViewModel(CloseViewModelEvent args)
         {
             if (args.SenderTypeName == nameof(SeriesViewModel))
             {
-                CurrentChild = _datasetFinderViewModel;
+                CurrentChild = _eiaDatasetFinderViewModel;
                 this.Children.Remove(args.Sender as ViewModelBase);
             }
         }
 
         private async void OnOpenViewModel(OpenViewModelEvent args)
         {
-            if (args.SenderTypeName == nameof(DatasetFinderViewModel))
+            if (args.SenderTypeName == nameof(EiaDatasetFinderViewModel))
             {
                 SeriesViewModel vm = this.Resolve<SeriesViewModel>();
                 Logger.LogInformation($"Loading series {args.Id}");

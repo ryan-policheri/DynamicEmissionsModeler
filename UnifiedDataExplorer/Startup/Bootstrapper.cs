@@ -73,7 +73,8 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<EiaClient>(x => new EiaClient(config.EiaWebApiBaseAddress, credProvider.DecryptValue(credConfig.EncryptedEiaWebApiKey)));
             services.AddTransient<PiHttpClient>(x => new PiHttpClient(config.PiWebApiBaseAddress,
                 credProvider.DecryptValue(credConfig.EncryptedPiUserName),
-                credProvider.DecryptValue(credConfig.EncryptedPiPassword)));
+                credProvider.DecryptValue(credConfig.EncryptedPiPassword),
+                config.PiAssestServerName));
 
             services.AddSingleton<IMessageHub, MessageHub>();
             services.AddSingleton<IDialogService, DialogService>();
@@ -85,10 +86,17 @@ namespace UnifiedDataExplorer.Startup
                 x.GetRequiredService<DataFileProvider>()));
             services.AddTransient<RobustViewModelBase>();
 
+            //MAIN
             services.AddTransient<MainViewModel>();
             services.AddTransient<MainMenuViewModel>();
+
+            //DATA EXPLORATION
             services.AddTransient<DataExplorerViewModel>();
-            services.AddTransient<DatasetFinderViewModel>();
+
+            services.AddTransient<EiaDatasetFinderViewModel>();
+            services.AddTransient<PiDatasetFinderViewModel>();
+            
+            //DATASET RENDERING
             services.AddTransient<SeriesViewModel>();
 
             return services.BuildServiceProvider();

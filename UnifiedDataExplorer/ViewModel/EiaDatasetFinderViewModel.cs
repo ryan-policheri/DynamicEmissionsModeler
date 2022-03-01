@@ -10,17 +10,17 @@ using UnifiedDataExplorer.ViewModel.Base;
 
 namespace UnifiedDataExplorer.ViewModel
 {
-    public class DatasetFinderViewModel : RobustViewModelBase
+    public class EiaDatasetFinderViewModel : RobustViewModelBase
     {
         private readonly EiaClient _client;
 
-        public DatasetFinderViewModel(EiaClient client, RobustViewModelDependencies facade) : base(facade)
+        public EiaDatasetFinderViewModel(EiaClient client, RobustViewModelDependencies facade) : base(facade)
         {
             _client = client;
             _categories = new ObservableCollection<LazyTreeItemViewModel>();
         }
 
-        public string Header => "Dataset Finder";
+        public string Header => "EIA Dataset Finder";
         public string HeaderDetail => "Navigate to a EIA dataset";
         public bool IsCloseable => false;
 
@@ -72,7 +72,7 @@ namespace UnifiedDataExplorer.ViewModel
             CategorySeriesWrapper model = modelInterface as CategorySeriesWrapper;
             if (model != null && model.IsSeries())
             {
-                this.MessageHub.Publish<OpenViewModelEvent>(new OpenViewModelEvent { Sender = this, SenderTypeName = nameof(DatasetFinderViewModel), Id = model.GetId() });
+                this.MessageHub.Publish<OpenViewModelEvent>(new OpenViewModelEvent { Sender = this, SenderTypeName = nameof(EiaDatasetFinderViewModel), Id = model.GetId() });
                 return;
             }
         }

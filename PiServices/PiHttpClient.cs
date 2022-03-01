@@ -7,18 +7,23 @@ namespace PiServices
     public class PiHttpClient : WebApiClientBase
     {
 
-        public PiHttpClient(string baseAddress, string userName, string password) : base()
+        public PiHttpClient(string baseAddress, string userName, string password, string defaultAssetServer = null) : base()
         {
             HttpClientHandler handler = new HttpClientHandler();
             handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
             this.Client = new HttpClient(handler);
 
             this.Client.BaseAddress = new Uri(baseAddress);
+            this.DefaultAssetServer = defaultAssetServer;
             this.UserName = userName;
             this.Password = password;
             this.AddAuthorizationHeader();
             this.NestedPropertyToStartFrom = "Items";
         }
+
+        public string BaseAddress => this.Client.BaseAddress.ToString();
+
+        public string DefaultAssetServer { get; }
 
         public string UserName { get; set; }
 
@@ -26,7 +31,7 @@ namespace PiServices
 
         public bool HasAuthorization => this.Client.DefaultRequestHeaders.Contains("Authorization");
 
-        private void AddAuthorizationHeader()
+        public void AddAuthorizationHeader()
         {
             if (!String.IsNullOrWhiteSpace(this.UserName) && !String.IsNullOrWhiteSpace(this.Password) && !HasAuthorization)
             {
@@ -46,12 +51,23 @@ namespace PiServices
             return assetServers.Where(x => x.Name.CapsAndTrim() == assetServer.CapsAndTrim()).FirstOrDefault();
         }
 
-        public async Task<Database> DatabaseSearch(string assetServer, string database)
+        public async Task<IEnumerable<Database>> GetAssetServerDatabases(string assetServer)
         {
             AssetServer server = await AssetServerSearch(assetServer);
             if (server == null) return null;
             IEnumerable<Database> databases = await this.GetAllAsync<Database>(server.Links.Databases);
+            return databases;
+        }
+
+        public async Task<Database> DatabaseSearch(string assetServer, string database)
+        {
+            IEnumerable<Database> databases = await this.GetAssetServerDatabases(assetServer);
             return databases.Where(x => x.Name.CapsAndTrim() == database.CapsAndTrim()).FirstOrDefault();
+        }
+
+        public async Task<IEnumerable<Asset>> GetDatabaseAssets(Database database)
+        {
+            return await this.GetAllAsync<Asset>(database.Links.Elements);
         }
 
         public async Task<IEnumerable<Asset>> AssetSearchAll(string assetServer, string database, int depthLimit = 3)
@@ -62,6 +78,11 @@ namespace PiServices
             owningDatabase.ChildAssets = databaseChildren;
             await AssetSearchAllInternal(databaseChildren, databaseChildren, depthLimit, 1);
             return databaseChildren.ToList();
+        }
+
+        public async Task<IEnumerable<Asset>> GetChildAssets(Asset asset)
+        {
+            return await this.GetAllAsync<Asset>(asset.Links.Elements);
         }
 
         private async Task<List<Asset>> AssetSearchAllInternal(List<Asset> parents, List<Asset> assets, int depthLimit, int currentDepth)

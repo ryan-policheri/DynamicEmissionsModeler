@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:UnifiedDataExplorer"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="EIA Data Viewer" Height="450" Width="800" FontSize="16"
+        Title="Unified Data Explorer" Height="450" Width="800" FontSize="16"
         WindowStyle="ThreeDBorderWindow">
     <Grid>
         <Grid.RowDefinitions>

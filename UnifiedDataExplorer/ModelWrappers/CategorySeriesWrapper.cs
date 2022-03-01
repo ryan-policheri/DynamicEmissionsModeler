@@ -5,7 +5,7 @@ using EIA.Domain.Model;
 
 namespace UnifiedDataExplorer.ModelWrappers
 {
-    public class CategorySeriesWrapper : Category, ILazyTreeItemBackingModel
+    public class CategorySeriesWrapper : ILazyTreeItemBackingModel
     {
         private readonly Category _category;
         private readonly Series _series;
