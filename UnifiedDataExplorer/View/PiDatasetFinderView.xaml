@@ -29,7 +29,7 @@
                         <Button Margin="5 0 0 0" ToolTip="View json" Padding="5 0 5 0" Height="Auto" Background="Transparent"
                                 Command="{Binding Path=DataContext.ViewJsonCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
                                 CommandParameter="{Binding}">
-                            <materialDesign:PackIcon Kind="CodeJson" Width="10" Height="7" Padding="0" Margin="0"/>
+                            <materialDesign:PackIcon Kind="CodeJson" Width="10" Height="10" Padding="0" Margin="0"/>
                         </Button>
                     </StackPanel>
                 </HierarchicalDataTemplate>
