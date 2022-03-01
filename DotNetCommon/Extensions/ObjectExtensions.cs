@@ -103,6 +103,11 @@ namespace DotNetCommon.Extensions
             return JsonSerializer.Serialize(source);
         }
 
+        public static string ToBeautifulJson(this object source)
+        {
+            return JsonSerializer.Serialize(source, CommonJsonSerializerOptions.CaseInsensitiveBeautiful);
+        }
+
         public static bool TrySetValueWithTypeRespect(this PropertyInfo property, object instance, string rawValue)
         {
             try

@@ -1,4 +1,6 @@
-﻿namespace UnifiedDataExplorer.Events
+﻿using DotNetCommon.MVVM;
+
+namespace UnifiedDataExplorer.Events
 {
     public class OpenViewModelEvent
     {
@@ -9,5 +11,7 @@
         public string Id { get; set; }
 
         public string Name { get; set; }
+
+        public ViewModelBase ViewModel { get; set; }
     }
 }

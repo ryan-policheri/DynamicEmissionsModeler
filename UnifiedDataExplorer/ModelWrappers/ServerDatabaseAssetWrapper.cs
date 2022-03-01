@@ -30,7 +30,7 @@ namespace UnifiedDataExplorer.ModelWrappers
             _asset = asset;
         }
 
-        private ItemBase _itemBase
+        public ItemBase ItemBase
         {
             get
             {
@@ -43,12 +43,12 @@ namespace UnifiedDataExplorer.ModelWrappers
 
         public string GetId()
         {
-            return _itemBase.Id;
+            return ItemBase.Id;
         }
 
         public string GetItemName()
         {
-            return _itemBase.Name;
+            return ItemBase.Name;
         }
 
         public bool IsKnownLeaf()

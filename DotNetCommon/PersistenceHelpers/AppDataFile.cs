@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using DotNetCommon.Extensions;
 using DotNetCommon.SystemHelpers;
 
 namespace DotNetCommon.PersistenceHelpers
@@ -61,7 +62,7 @@ namespace DotNetCommon.PersistenceHelpers
         private void InternalSave<T>(T saveObject, string filePath) where T : new()
         {
             this.SaveObject = saveObject;
-            string json = JsonSerializer.Serialize(this.SaveObject);
+            string json = this.SaveObject.ToBeautifulJson();
             SystemFunctions.WriteAllText(filePath, json);
         }
 
@@ -79,7 +80,7 @@ namespace DotNetCommon.PersistenceHelpers
         private async Task InternalSaveAsync<T>(T saveObject, string filePath) where T : new()
         {
             this.SaveObject = saveObject;
-            string json = JsonSerializer.Serialize(this.SaveObject);
+            string json = this.SaveObject.ToBeautifulJson();
             await SystemFunctions.WriteAllTextAsync(filePath, json);
         }
 

@@ -1,9 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using DotNetCommon.DelegateCommand;
+using DotNetCommon.Extensions;
 using DotNetCommon.MVVM;
 using PiModel;
 using PiServices;
+using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ModelWrappers;
 using UnifiedDataExplorer.ViewModel.Base;
 
@@ -17,6 +21,8 @@ namespace UnifiedDataExplorer.ViewModel
         {
             _client = client;
             _categories = new ObservableCollection<LazyTreeItemViewModel>();
+
+            ViewJsonCommand = new DelegateCommand<LazyTreeItemViewModel>(OnViewJson);
         }
 
         public string Header => "PI Dataset Finder";
@@ -33,6 +39,8 @@ namespace UnifiedDataExplorer.ViewModel
                 OnPropertyChanged();
             }
         }
+
+        public ICommand ViewJsonCommand { get; }
 
         public async Task LoadAsync()
         {
@@ -90,6 +98,25 @@ namespace UnifiedDataExplorer.ViewModel
             //    this.MessageHub.Publish<OpenViewModelEvent>(new OpenViewModelEvent { Sender = this, SenderTypeName = nameof(DatasetFinderViewModel), Id = model.GetId() });
             //    return;
             //}
+        }
+
+        public void OnViewJson(LazyTreeItemViewModel treeItem)
+        {
+            ILazyTreeItemBackingModel modelInterface = treeItem.GetBackingModel();
+            ServerDatabaseAssetWrapper model = modelInterface as ServerDatabaseAssetWrapper;
+            if (model != null)
+            {
+                string json = model.ItemBase.ToBeautifulJson();
+                JsonDisplayViewModel vm = new JsonDisplayViewModel
+                {
+                    Json = json,
+                    Header = model.ItemBase.Name + " (Json)"
+                    
+                };
+
+                this.MessageHub.Publish<OpenViewModelEvent>(new OpenViewModelEvent { Sender = this, SenderTypeName = nameof(PiDatasetFinderViewModel), Id = model.GetId(), Name = model.GetItemName(), ViewModel = vm });
+                return;
+            }
         }
     }
 }

@@ -23,7 +23,12 @@
             </TreeView.ItemContainerStyle>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type MVVMInterfaces:LazyTreeItemViewModel}" ItemsSource="{Binding Children}">
-                    <TextBlock Text="{Binding Name}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Name}"/>
+                        <Button Content="View Json" Margin="5 0 0 0" Height="30" Width="80" FontSize="10"
+                                Command="{Binding Path=DataContext.ViewJsonCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                                CommandParameter="{Binding}"/>
+                    </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

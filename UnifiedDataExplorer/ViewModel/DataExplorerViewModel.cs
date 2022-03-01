@@ -73,6 +73,11 @@ namespace UnifiedDataExplorer.ViewModel
                 CurrentChild = vm;
                 await vm.LoadAsync(args.Id);
             }
+            if (args.SenderTypeName == nameof(PiDatasetFinderViewModel))
+            {
+                Children.Add(args.ViewModel);
+                CurrentChild = args.ViewModel;
+            }
         }
 
         private async void OnMenuItemEvent(MenuItemEvent args)
