@@ -7,7 +7,8 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Unified Data Explorer" Height="450" Width="800" FontSize="16"
-        WindowStyle="ThreeDBorderWindow">
+        WindowStyle="ThreeDBorderWindow"
+        Icon="./Resources/Images/Leaf.png">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -17,7 +18,9 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+
         <ContentControl Grid.Row="0" Grid.Column="0" Content="{Binding MainToolBar}"/>
+
         <ContentControl Grid.Row="1" Grid.Column="0" Content="{Binding CurrentChild}"/>
     </Grid>
 </Window>
