@@ -117,6 +117,18 @@ namespace UnifiedDataExplorer.ViewModel
                 AppDataFile file = DataFileProvider.BuildDataViewFile();
                 file.Save<List<OpenViewModelEvent>>(openingEvents, vm.SaveName);
             }
+            else if (args.MenuItemHeader == MenuItemHeaders.OPEN_SAVE)
+            {
+                AppDataFile file = args.Data as AppDataFile;
+                if (file != null)
+                {
+                    List<OpenViewModelEvent> openingEvents = file.Read<List<OpenViewModelEvent>>();
+                    foreach (OpenViewModelEvent openEvent in openingEvents)
+                    {
+                        this.OnOpenViewModel(openEvent);
+                    }
+                }
+            }
         }
     }
 }
