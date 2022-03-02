@@ -20,6 +20,17 @@ namespace UnifiedDataExplorer.ViewModel
             AssetValues = new ObservableCollection<PiAssetValueViewModel>();
         }
 
+        private string _messge;
+
+        public string Message
+        {
+            get { return _messge; }
+            set { SetField<string>(ref _messge, value); OnPropertyChanged(nameof(HasMessage)); }
+        }
+
+        public bool HasMessage => !String.IsNullOrWhiteSpace(this.Message);
+
+
         public ObservableCollection<PiAssetValueViewModel> AssetValues { get; }
 
         public async Task LoadAsync(IPiDetailLoadingInfo loadingInfo) //Assume Id is a link, assume tag is a "type"
@@ -31,6 +42,8 @@ namespace UnifiedDataExplorer.ViewModel
 
                 Header = asset.Name.First(25) + " (Values)";
                 HeaderDetail = $"Value for asset {asset.Name}";
+
+                if (asset.ChildValues.Count() == 0) Message = "No values found for this asset";
 
                 foreach (AssetValue item in asset.ChildValues)
                 {
