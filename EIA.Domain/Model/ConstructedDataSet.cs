@@ -72,7 +72,7 @@ namespace EIA.Domain.Model
                     default:
                         throw new NotImplementedException($"Fequency {_series.Frequency} is not implemented");
                 }    
-                row["VALUE"] = dataPoint.ColumnValue;
+                row["VALUE"] = dataPoint.ColumnValue.HasValue ? dataPoint.ColumnValue.Value : DBNull.Value;
                 table.Rows.Add(row);
             }
 

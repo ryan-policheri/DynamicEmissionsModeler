@@ -32,6 +32,9 @@ namespace EIA.Domain.DataBind
                             case JsonTokenType.Number:
                                 currentDataArray.Add(reader.GetDouble());
                                 break;
+                            case JsonTokenType.Null:
+                                currentDataArray.Add(null); //TODO: 
+                                break;
                             default:
                                 throw new NotImplementedException($"Json type {reader.TokenType.ToString()} conversion to series data element has not been implemented");
                         }

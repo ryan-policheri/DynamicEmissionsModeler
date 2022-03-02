@@ -7,7 +7,7 @@ namespace EIA.Domain.Model
 
         public string ColumnHeader => this[0].ToString();
 
-        public double ColumnValue => double.Parse(this[1].ToString());
+        public double? ColumnValue => this[1] != null ? double.Parse(this[1].ToString()) : null;
 
 
     }
