@@ -1,19 +1,7 @@
 ﻿using UnifiedDataExplorer.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace UnifiedDataExplorer.View
 {
@@ -30,6 +18,12 @@ namespace UnifiedDataExplorer.View
         {
             ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            DataContextChanged += SeriesView_DataContextChanged;
+            OnDataChanged();
+        }
+
+        private void SeriesView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
             OnDataChanged();
         }
 

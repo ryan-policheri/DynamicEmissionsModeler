@@ -15,7 +15,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <TabControl Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Children}" SelectedItem="{Binding CurrentChild}">
+        <TabControl Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Children}" SelectedItem="{Binding CurrentChild}" >
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
