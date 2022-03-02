@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DotNetCommon.EventAggregation;
 using EIA.Domain.Model;
@@ -56,6 +54,44 @@ namespace UnifiedDataExplorer.Services.Reporting
 
             string misoWindId = "EBA.MISO-ALL.NG.WND.HL";
             Series series = await _eiaClient.GetSeriesByIdAsync(misoWindId);
+        }
+
+        private IEnumerable<HourlySource> BuildSources()
+        {
+            ICollection<HourlySource> sources = new List<HourlySource>();
+            sources.Add(new HourlySource { Source = "Wind", SourceId = "EBA.MISO-ALL.NG.WND.HL", PoundsOfCo2PerKwh = 0 });
+            sources.Add(new HourlySource { Source = "Solar", SourceId = "EBA.MISO-ALL.NG.SUN.HL", PoundsOfCo2PerKwh = 0 });
+            sources.Add(new HourlySource { Source = "Hydro", SourceId = "EBA.MISO-ALL.NG.WAT.HL", PoundsOfCo2PerKwh = 0 });
+            sources.Add(new HourlySource { Source = "Coal", SourceId = "EBA.MISO-ALL.NG.COL.HL", PoundsOfCo2PerKwh = int.MaxValue });
+            sources.Add(new HourlySource { Source = "Natural Gas", SourceId = "EBA.MISO-ALL.NG.NG.HL", PoundsOfCo2PerKwh = int.MaxValue });
+            sources.Add(new HourlySource { Source = "Nuclear", SourceId = "EBA.MISO-ALL.NG.NUC.HL", PoundsOfCo2PerKwh = int.MaxValue });
+            sources.Add(new HourlySource { Source = "Petro", SourceId = "EBA.MISO-ALL.NG.OIL.HL", PoundsOfCo2PerKwh = int.MaxValue });
+            sources.Add(new HourlySource { Source = "Other", SourceId = "EBA.MISO-ALL.NG.OTH.HL", PoundsOfCo2PerKwh = int.MaxValue });
+            return sources;
+        }
+
+        private class HourlySource
+        {
+            //Constants
+            public string Source { get; set; }
+            public string SourceId { get; set; }
+            public double PoundsOfCo2PerKwh { get; set; }
+
+            //Changes by hour
+            public DateTime Hour { get; set; }
+            public double Value { get; set; }
+
+            public HourlySource ProduceHour(DateTime hour, double value)
+            {
+                return new HourlySource
+                {
+                    Source = this.Source,
+                    SourceId = this.SourceId,
+                    PoundsOfCo2PerKwh = this.PoundsOfCo2PerKwh,
+                    Hour = hour,
+                    Value = value
+                };
+            }
         }
     }
 }
