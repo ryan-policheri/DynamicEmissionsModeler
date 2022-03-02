@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="UnifiedDataExplorer.View.JsonDisplayView"
+﻿<UserControl x:Class="UnifiedDataExplorer.View.PiJsonDisplayView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -14,6 +14,6 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Text="{Binding Json}" TextWrapping="Wrap"/>
+        <TextBox Text="{Binding Json, Mode=OneWay}" TextWrapping="Wrap" IsReadOnly="True"/>
     </Grid>
 </UserControl>

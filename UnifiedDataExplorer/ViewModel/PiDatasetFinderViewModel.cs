@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -17,12 +18,16 @@ namespace UnifiedDataExplorer.ViewModel
     {
         private readonly PiHttpClient _client;
 
+        public const string SHOW_JSON = "SHOW_JSON";
+        public const string RENDER_VALUES = "RENDER_VALUES";
+
         public PiDatasetFinderViewModel(PiHttpClient client, RobustViewModelDependencies facade) : base(facade)
         {
             _client = client;
             _categories = new ObservableCollection<LazyTreeItemViewModel>();
 
             ViewJsonCommand = new DelegateCommand<LazyTreeItemViewModel>(OnViewJson);
+            RenderValuesCommand = new DelegateCommand<LazyTreeItemViewModel>(OnRenderValues);
         }
 
         public string Header => "PI Dataset Finder";
@@ -41,6 +46,7 @@ namespace UnifiedDataExplorer.ViewModel
         }
 
         public ICommand ViewJsonCommand { get; }
+        public ICommand RenderValuesCommand { get; }
 
         public async Task LoadAsync()
         {
@@ -106,11 +112,35 @@ namespace UnifiedDataExplorer.ViewModel
             ServerDatabaseAssetWrapper model = modelInterface as ServerDatabaseAssetWrapper;
             if (model != null)
             {
-                JsonDisplayViewModel vm = new JsonDisplayViewModel(this.MessageHub);
-                vm.LoadAsync(model.ItemBase);
+                this.MessageHub.Publish<OpenViewModelEvent>(new OpenViewModelEvent {
+                    Sender = this,
+                    SenderTypeName = nameof(PiDatasetFinderViewModel),
+                    Id = model.GetLinkToSelf(),
+                    Name = model.GetItemName(),
+                    Verb = SHOW_JSON,
+                    Tag = model.GetTypeTag(),
+                });
+            }
+        }
 
-                this.MessageHub.Publish<OpenViewModelEvent>(new OpenViewModelEvent { Sender = this, SenderTypeName = nameof(PiDatasetFinderViewModel), Id = model.GetId(), Name = model.GetItemName(), ViewModel = vm });
-                return;
+
+        private async void OnRenderValues(LazyTreeItemViewModel treeItem)
+        {
+            ILazyTreeItemBackingModel modelInterface = treeItem.GetBackingModel();
+            ServerDatabaseAssetWrapper model = modelInterface as ServerDatabaseAssetWrapper;
+            if (model != null && model.IsAsset())
+            {
+                Asset asset = model.AsAsset();
+                await _client.LoadAssetValues(asset);
+
+                this.MessageHub.Publish<OpenViewModelEvent>(new OpenViewModelEvent { 
+                    Sender = this, 
+                    SenderTypeName = nameof(PiDatasetFinderViewModel), 
+                    Id = model.GetLinkToSelf(),
+                    Name = model.GetItemName(),
+                    Verb = RENDER_VALUES,
+                    Tag = model.GetTypeTag()
+                });
             }
         }
     }

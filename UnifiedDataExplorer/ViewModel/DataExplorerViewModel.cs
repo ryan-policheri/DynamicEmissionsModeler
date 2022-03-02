@@ -16,7 +16,7 @@ namespace UnifiedDataExplorer.ViewModel
         private readonly PiDatasetFinderViewModel _piDatasetFinderViewModel;
 
         public DataExplorerViewModel(EiaDatasetFinderViewModel datasetFinderViewModel,
-            PiDatasetFinderViewModel piDatasetFinderViewModel, 
+            PiDatasetFinderViewModel piDatasetFinderViewModel,
             RobustViewModelDependencies facade) : base(facade)
         {
             _eiaDatasetFinderViewModel = datasetFinderViewModel;
@@ -54,6 +54,12 @@ namespace UnifiedDataExplorer.ViewModel
             await _piDatasetFinderViewModel.LoadAsync();
         }
 
+        private void AddAndSwitchChild(ViewModelBase viewModel)
+        {
+            Children.Add(viewModel);
+            CurrentChild = viewModel;
+        }
+
         private void OnCloseViewModel(CloseViewModelEvent args)
         {
             if (args.SenderTypeName == nameof(ExplorePointViewModel))
@@ -71,20 +77,29 @@ namespace UnifiedDataExplorer.ViewModel
             {
                 SeriesViewModel vm = this.Resolve<SeriesViewModel>();
                 Logger.LogInformation($"Loading series {args.Id}");
-                Children.Add(vm);
-                CurrentChild = vm;
+                AddAndSwitchChild(vm);
                 await vm.LoadAsync(args.Id);
             }
             if (args.SenderTypeName == nameof(PiDatasetFinderViewModel))
             {
-                Children.Add(args.ViewModel);
-                CurrentChild = args.ViewModel;
+                if (args.Verb == PiDatasetFinderViewModel.SHOW_JSON)
+                {
+                    PiJsonDisplayViewModel vm = this.Resolve<PiJsonDisplayViewModel>();
+                    AddAndSwitchChild(vm);
+                    await vm.LoadAsync(args);
+                }
+                if (args.Verb == PiDatasetFinderViewModel.RENDER_VALUES)
+                {
+                    PiAssetValuesViewModel vm = this.Resolve<PiAssetValuesViewModel>();
+                    AddAndSwitchChild(vm);
+                    await vm.LoadAsync(args);
+                }
             }
         }
 
         private async void OnMenuItemEvent(MenuItemEvent args)
         {
-            if(args.MenuItemHeader == MenuItemHeaders.SAVE_OPEN_SERIES)
+            if (args.MenuItemHeader == MenuItemHeaders.SAVE_OPEN_SERIES)
             {
                 ICollection<string> ids = new List<string>();
 

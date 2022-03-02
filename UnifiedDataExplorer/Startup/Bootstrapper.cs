@@ -98,6 +98,8 @@ namespace UnifiedDataExplorer.Startup
             
             //DATASET RENDERING
             services.AddTransient<SeriesViewModel>();
+            services.AddTransient<PiJsonDisplayViewModel>();
+            services.AddTransient<PiAssetValuesViewModel>();
 
             return services.BuildServiceProvider();
         }

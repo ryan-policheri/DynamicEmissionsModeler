@@ -12,6 +12,10 @@ namespace UnifiedDataExplorer.ModelWrappers
         private readonly Database _database;
         private readonly Asset _asset;
 
+        public const string ASSET_SERVER_TYPE = "ASSET_SERVER";
+        public const string DATABASE_TYPE = "DATABASE";
+        public const string ASSET_TYPE = "ASSET";
+
         public ServerDatabaseAssetWrapper(AssetServer assetServer)
         {
             if (assetServer == null) throw new ArgumentNullException();
@@ -40,6 +44,14 @@ namespace UnifiedDataExplorer.ModelWrappers
         }
 
         public ICollection<ServerDatabaseAssetWrapper> Children { get; } = new List<ServerDatabaseAssetWrapper>();
+
+        public string GetLinkToSelf()
+        {
+            if (IsAssetServer()) return AsAssetServer().Links.Self;
+            else if (IsDatabase()) return AsDatabase().Links.Self;
+            else if (IsAsset()) return AsAsset().Links.Self;
+            else throw new InvalidOperationException("Link to self not implemented");
+        }
 
         public string GetId()
         {
@@ -85,6 +97,14 @@ namespace UnifiedDataExplorer.ModelWrappers
         public Asset AsAsset()
         {
             return _asset;
+        }
+
+        public string GetTypeTag()
+        {
+            if (IsAssetServer()) return ASSET_SERVER_TYPE;
+            else if (IsDatabase()) return DATABASE_TYPE;
+            else if (IsAsset()) return ASSET_TYPE;
+            else throw new InvalidOperationException("Type tag not implemented");
         }
     }
 }

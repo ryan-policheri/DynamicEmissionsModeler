@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace UnifiedDataExplorer.View
 {
     /// <summary>
-    /// Interaction logic for JsonDisplayView.xaml
+    /// Interaction logic for PiAssetValuesView.xaml
     /// </summary>
-    public partial class JsonDisplayView : UserControl
+    public partial class PiAssetValuesView : UserControl
     {
-        public JsonDisplayView()
+        public PiAssetValuesView()
         {
             InitializeComponent();
         }

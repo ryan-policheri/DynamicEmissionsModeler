@@ -1,8 +1,8 @@
-﻿using DotNetCommon.MVVM;
+﻿using UnifiedDataExplorer.ModelWrappers;
 
 namespace UnifiedDataExplorer.Events
 {
-    public class OpenViewModelEvent
+    public class OpenViewModelEvent : IPiDetailLoadingInfo
     {
         public object Sender { get; set; }
 
@@ -12,6 +12,8 @@ namespace UnifiedDataExplorer.Events
 
         public string Name { get; set; }
 
-        public ViewModelBase ViewModel { get; set; }
+        public string Verb { get; set; }
+
+        public string Tag { get; set; }
     }
 }

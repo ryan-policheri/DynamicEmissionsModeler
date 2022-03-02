@@ -6,6 +6,7 @@ namespace PiServices
 {
     public class PiHttpClient : WebApiClientBase
     {
+        private const string ITEMS_PROPERTY = "Items";
 
         public PiHttpClient(string baseAddress, string userName, string password, string defaultAssetServer = null) : base()
         {
@@ -18,7 +19,7 @@ namespace PiServices
             this.UserName = userName;
             this.Password = password;
             this.AddAuthorizationHeader();
-            this.NestedPropertyToStartFrom = "Items";
+            //this.NestedPropertyToStartFrom = "Items"; //Using the self link does have an items property
         }
 
         public string BaseAddress => this.Client.BaseAddress.ToString();
@@ -45,9 +46,14 @@ namespace PiServices
             string data = await this.GetAsync("assetservers");
         }
 
+        public async Task<T> GetBySelfLink<T>(string link)
+        {
+            return await this.GetAsync<T>(link);
+        }
+
         public async Task<AssetServer> AssetServerSearch(string assetServer)
         {
-            IEnumerable<AssetServer> assetServers = await this.GetAllAsync<AssetServer>("assetservers");
+            IEnumerable<AssetServer> assetServers = await this.GetAllAsync<AssetServer>("assetservers", ITEMS_PROPERTY);
             return assetServers.Where(x => x.Name.CapsAndTrim() == assetServer.CapsAndTrim()).FirstOrDefault();
         }
 
@@ -55,7 +61,7 @@ namespace PiServices
         {
             AssetServer server = await AssetServerSearch(assetServer);
             if (server == null) return null;
-            IEnumerable<Database> databases = await this.GetAllAsync<Database>(server.Links.Databases);
+            IEnumerable<Database> databases = await this.GetAllAsync<Database>(server.Links.Databases, ITEMS_PROPERTY);
             return databases;
         }
 
@@ -67,14 +73,14 @@ namespace PiServices
 
         public async Task<IEnumerable<Asset>> GetDatabaseAssets(Database database)
         {
-            return await this.GetAllAsync<Asset>(database.Links.Elements);
+            return await this.GetAllAsync<Asset>(database.Links.Elements, ITEMS_PROPERTY);
         }
 
         public async Task<IEnumerable<Asset>> AssetSearchAll(string assetServer, string database, int depthLimit = 3)
         {
             Database owningDatabase = await DatabaseSearch(assetServer, database);
             if (owningDatabase == null) return null;
-            List<Asset> databaseChildren = (await this.GetAllAsync<Asset>(owningDatabase.Links.Elements)).ToList();
+            List<Asset> databaseChildren = (await this.GetAllAsync<Asset>(owningDatabase.Links.Elements, ITEMS_PROPERTY)).ToList();
             owningDatabase.ChildAssets = databaseChildren;
             await AssetSearchAllInternal(databaseChildren, databaseChildren, depthLimit, 1);
             return databaseChildren.ToList();
@@ -82,7 +88,13 @@ namespace PiServices
 
         public async Task<IEnumerable<Asset>> GetChildAssets(Asset asset)
         {
-            return await this.GetAllAsync<Asset>(asset.Links.Elements);
+            return await this.GetAllAsync<Asset>(asset.Links.Elements, ITEMS_PROPERTY);
+        }
+
+        public async Task LoadAssetValues(Asset asset)
+        {
+            IEnumerable<AssetValue> assetValues = await this.GetAllAsync<AssetValue>(asset.Links.Value, ITEMS_PROPERTY);
+            asset.ChildValues = assetValues;
         }
 
         private async Task<List<Asset>> AssetSearchAllInternal(List<Asset> parents, List<Asset> assets, int depthLimit, int currentDepth)
@@ -91,9 +103,9 @@ namespace PiServices
 
             foreach(Asset parent in parents.ToList())
             {
-                List<Asset> children = (await this.GetAllAsync<Asset>(parent.Links.Elements)).ToList();
+                List<Asset> children = (await this.GetAllAsync<Asset>(parent.Links.Elements, ITEMS_PROPERTY)).ToList();
                 foreach (var child in children) { child.Parent = parent; }
-                parent.Children = children;
+                parent.ChildAssets = children;
                 assets.AddRange(children);
                 await AssetSearchAllInternal(children, assets, depthLimit, currentDepth + 1);
             }
