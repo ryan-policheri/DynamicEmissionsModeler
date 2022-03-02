@@ -19,7 +19,7 @@ namespace UnifiedDataExplorer.ViewModel.MainMenu
         private void BuildMenuItems()
         {
             MenuItemViewModel file = new MenuItemViewModel("File", null, null);
-            MenuItemViewModel saveOpenSeries = new MenuItemViewModel(MenuItemHeaders.SAVE_OPEN_SERIES, new DelegateCommand(SaveOpenSeries), file);
+            MenuItemViewModel saveOpenSeries = new MenuItemViewModel(MenuItemHeaders.SAVE_OPEN_EXPLORE_POINTS, new DelegateCommand(SaveOpenSeries), file);
             file.Children.Add(saveOpenSeries);
 
             MenuItemViewModel edit = new MenuItemViewModel("Edit", null, null);
@@ -31,7 +31,7 @@ namespace UnifiedDataExplorer.ViewModel.MainMenu
 
         private void SaveOpenSeries()
         {
-            MessageHub.Publish<MenuItemEvent>(new MenuItemEvent { Sender = this, SenderTypeName = nameof(MainMenuViewModel), MenuItemHeader = MenuItemHeaders.SAVE_OPEN_SERIES });
+            MessageHub.Publish<MenuItemEvent>(new MenuItemEvent { Sender = this, SenderTypeName = nameof(MainMenuViewModel), MenuItemHeader = MenuItemHeaders.SAVE_OPEN_EXPLORE_POINTS });
         }
     }
 }

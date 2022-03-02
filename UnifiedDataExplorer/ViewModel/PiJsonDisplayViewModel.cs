@@ -34,6 +34,7 @@ namespace UnifiedDataExplorer.ViewModel
             Json = itemBase.ToBeautifulJson();
             Header = itemBase.Name.First(25) + " (Json)";
             HeaderDetail = itemBase.Name + " (Json)";
+            CurrentLoadingInfo = loadingInfo;
         }
     }
 }

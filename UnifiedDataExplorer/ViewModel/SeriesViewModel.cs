@@ -3,6 +3,7 @@ using System.Data;
 using DotNetCommon.EventAggregation;
 using EIA.Domain.Model;
 using EIA.Services.Clients;
+using UnifiedDataExplorer.ModelWrappers;
 
 namespace UnifiedDataExplorer.ViewModel
 {
@@ -40,13 +41,14 @@ namespace UnifiedDataExplorer.ViewModel
             }
         }
 
-        public async Task LoadAsync(string seriesId)
+        public async Task LoadAsync(IEiaDetailLoadingInfo loadingInfo)
         {
-            Series series = await _client.GetSeriesByIdAsync(seriesId);
+            Series series = await _client.GetSeriesByIdAsync(loadingInfo.Id);
             SeriesName = series.Name;
             SeriesId = series.Id;
             Header = series.Id;
             HeaderDetail = this.SeriesName;
+            CurrentLoadingInfo = loadingInfo;
             ConstructedDataSet dataSet = series.ToConstructedDataSet();
             DataSet = dataSet.Table;
         }

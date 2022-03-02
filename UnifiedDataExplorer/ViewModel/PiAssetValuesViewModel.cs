@@ -42,6 +42,7 @@ namespace UnifiedDataExplorer.ViewModel
 
                 Header = asset.Name.First(25) + " (Values)";
                 HeaderDetail = $"Value for asset {asset.Name}";
+                CurrentLoadingInfo = loadingInfo;
 
                 if (asset.ChildValues.Count() == 0) Message = "No values found for this asset";
 

@@ -1,6 +1,7 @@
 ﻿using DotNetCommon.MVVM;
 using System.Windows;
 using System.Windows.Controls;
+using UnifiedDataExplorer.ModelWrappers;
 using UnifiedDataExplorer.ViewModel;
 
 namespace UnifiedDataExplorer.View
@@ -33,6 +34,23 @@ namespace UnifiedDataExplorer.View
                         await _viewModel.PeformLeafActionAsync(treeItemViewModel);
                         args.Handled = true;
                     }
+                }
+            }
+        }
+
+        private void RenderValuesButton_Loaded(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if(button?.DataContext != null)
+            {
+                LazyTreeItemViewModel vm = (LazyTreeItemViewModel)button.DataContext;
+                if(vm != null)
+                {
+                    ServerDatabaseAssetWrapper model = vm.GetBackingModel() as ServerDatabaseAssetWrapper;
+                    if(model != null)
+                    {
+                        if(model.IsAsset()) button.Visibility = Visibility.Visible;
+                    }    
                 }
             }
         }

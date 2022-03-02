@@ -2,10 +2,10 @@
 {
     public interface IPiDetailLoadingInfo
     {
-        public string Id { get; }
+        public string Id { get; set; }
 
-        public string Verb { get; }
+        public string Verb { get; set; }
 
-        public string Tag { get; }
+        public string Tag { get; set; }
     }
 }

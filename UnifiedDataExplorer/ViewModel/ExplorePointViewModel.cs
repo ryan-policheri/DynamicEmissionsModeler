@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Threading.Tasks;
+using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
 using DotNetCommon.EventAggregation;
 using DotNetCommon.MVVM;
@@ -6,7 +7,7 @@ using UnifiedDataExplorer.Events;
 
 namespace UnifiedDataExplorer.ViewModel
 {
-    public class ExplorePointViewModel : ViewModelBase
+    public abstract class ExplorePointViewModel : ViewModelBase
     {
         private readonly IMessageHub _messageHub;
 
@@ -35,10 +36,12 @@ namespace UnifiedDataExplorer.ViewModel
             {
                 _headerDetail = value;
                 OnPropertyChanged();
-            } 
+            }
         }
 
         public bool IsCloseable => true;
+
+        public object CurrentLoadingInfo { get; protected set; }
 
         public ICommand CloseExplorePointCommand { get; }
 

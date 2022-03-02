@@ -42,6 +42,8 @@ namespace DotNetCommon.PersistenceHelpers
             }
         }
 
+        public string FileDisplayName => DefaultFileName.TrimEnd(".json");
+
         public string FullFilePath => SystemFunctions.CombineDirectoryComponents(RootSaveDirectory, DefaultFileName);
 
         public bool FileExists => File.Exists(FullFilePath);
@@ -55,6 +57,7 @@ namespace DotNetCommon.PersistenceHelpers
 
         public void Save<T>(T saveObject, string customFileName) where T : new()
         {
+            if (!customFileName.EndsWith(".json")) customFileName += ".json";
             string filePath = SystemFunctions.CombineDirectoryComponents(RootSaveDirectory, customFileName);
             InternalSave<T>(saveObject, filePath);
         }
@@ -73,6 +76,7 @@ namespace DotNetCommon.PersistenceHelpers
 
         public async Task SaveAsync<T>(T saveObject, string customFileName) where T : new()
         {
+            if (!customFileName.EndsWith(".json")) customFileName += ".json";
             string filePath = SystemFunctions.CombineDirectoryComponents(RootSaveDirectory, customFileName);
             await InternalSaveAsync(saveObject, filePath);
         }

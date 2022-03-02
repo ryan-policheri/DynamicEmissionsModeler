@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -7,6 +6,7 @@ using DotNetCommon.MVVM;
 using UnifiedDataExplorer.Constants;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ViewModel.Base;
+using DotNetCommon.PersistenceHelpers;
 
 namespace UnifiedDataExplorer.ViewModel
 {
@@ -45,13 +45,13 @@ namespace UnifiedDataExplorer.ViewModel
 
         public async Task LoadAsync()
         {
-            Children.Add(_eiaDatasetFinderViewModel);
-            CurrentChild = _eiaDatasetFinderViewModel;
-            await _eiaDatasetFinderViewModel.LoadAsync();
-
             Children.Add(_piDatasetFinderViewModel);
             CurrentChild = _piDatasetFinderViewModel;
             await _piDatasetFinderViewModel.LoadAsync();
+
+            Children.Add(_eiaDatasetFinderViewModel);
+            CurrentChild = _eiaDatasetFinderViewModel;
+            await _eiaDatasetFinderViewModel.LoadAsync();
         }
 
         private void AddAndSwitchChild(ViewModelBase viewModel)
@@ -78,7 +78,7 @@ namespace UnifiedDataExplorer.ViewModel
                 SeriesViewModel vm = this.Resolve<SeriesViewModel>();
                 Logger.LogInformation($"Loading series {args.Id}");
                 AddAndSwitchChild(vm);
-                await vm.LoadAsync(args.Id);
+                await vm.LoadAsync(args);
             }
             if (args.SenderTypeName == nameof(PiDatasetFinderViewModel))
             {
@@ -97,32 +97,25 @@ namespace UnifiedDataExplorer.ViewModel
             }
         }
 
-        private async void OnMenuItemEvent(MenuItemEvent args)
+        private void OnMenuItemEvent(MenuItemEvent args)
         {
-            if (args.MenuItemHeader == MenuItemHeaders.SAVE_OPEN_SERIES)
+            if (args.MenuItemHeader == MenuItemHeaders.SAVE_OPEN_EXPLORE_POINTS)
             {
-                ICollection<string> ids = new List<string>();
+                List<OpenViewModelEvent> openingEvents = new List<OpenViewModelEvent>();
 
                 foreach (ViewModelBase child in this.Children)
                 {
-                    if (child.GetType() == typeof(SeriesViewModel))
+                    if (child is ExplorePointViewModel)
                     {
-                        SeriesViewModel vm = child as SeriesViewModel;
-                        ids.Add(vm.SeriesId);
+                        openingEvents.Add(((ExplorePointViewModel)child).CurrentLoadingInfo as OpenViewModelEvent);
                     }
                 }
 
-                throw new NotImplementedException();
-
-                //AppDataFile file = new AppDataFile(ids);
-                //try
-                //{
-                //    await DataFiler.SaveObjectAsFile(file);
-                //}
-                //catch(Exception ex)
-                //{
-                //    throw;
-                //}
+                FileSaveSettingsViewModel vm = new FileSaveSettingsViewModel();
+                while (vm.SaveName == null) { DialogService.ShowModalWindow(vm); }
+                
+                AppDataFile file = DataFileProvider.BuildDataViewFile();
+                file.Save<List<OpenViewModelEvent>>(openingEvents, vm.SaveName);
             }
         }
     }
