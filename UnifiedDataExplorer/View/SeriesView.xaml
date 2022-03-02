@@ -43,10 +43,24 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
-        <StackPanel Grid.Row="0">
-            <TextBlock Text="{Binding SeriesName}" Margin="10" FontWeight="Bold"/>
-            <Button Content="Close Series" Command="{Binding CloseExplorePointCommand}" Width="250" Height="50" Margin="0 0 0 5" Background="Transparent"/>
-        </StackPanel>
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding SeriesName}" Margin="10" FontWeight="Bold"/>
+            <DockPanel Grid.Row="1" Grid.Column="0">
+                <TextBlock Text="Value units: " Margin="10" FontWeight="Bold"/>
+                <TextBlock Text="{Binding ValueUnit}" Margin="10" FontWeight="Bold"/>
+            </DockPanel>
+            <Button Grid.Row="1" Grid.Column="1" Content="Close Series" Command="{Binding CloseExplorePointCommand}" Width="250" Height="50" Margin="0 0 0 5" Background="Transparent"/>
+        </Grid>
 
         <DataGrid Grid.Row="1" Name="MainDataGrid" BorderThickness="1" BorderBrush="Gray" AutoGenerateColumns="True"
                     CanUserDeleteRows="False" CanUserAddRows="False" IsReadOnly="true" CanUserResizeColumns="True"

@@ -15,6 +15,7 @@ using UnifiedDataExplorer.ViewModel.Base;
 using UnifiedDataExplorer.ViewModel.MainMenu;
 using UnifiedDataExplorer.Services.Window;
 using UnifiedDataExplorer.Services.DataPersistence;
+using UnifiedDataExplorer.Services.Reporting;
 
 namespace UnifiedDataExplorer.Startup
 {
@@ -79,11 +80,7 @@ namespace UnifiedDataExplorer.Startup
             services.AddSingleton<IMessageHub, MessageHub>();
             services.AddSingleton<IDialogService, DialogService>();
 
-            services.AddTransient<RobustViewModelDependencies>(x => new RobustViewModelDependencies(x.GetRequiredService<IServiceProvider>(), 
-                x.GetRequiredService<IMessageHub>(), 
-                x.GetRequiredService<ILogger<RobustViewModelDependencies>>(),
-                x.GetRequiredService<IDialogService>(),
-                x.GetRequiredService<DataFileProvider>()));
+            services.AddTransient<RobustViewModelDependencies>();
             services.AddTransient<RobustViewModelBase>();
 
             //MAIN
@@ -100,6 +97,8 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<SeriesViewModel>();
             services.AddTransient<PiJsonDisplayViewModel>();
             services.AddTransient<PiAssetValuesViewModel>();
+
+            services.AddSingleton<ReportProcessor>();
 
             return services.BuildServiceProvider();
         }

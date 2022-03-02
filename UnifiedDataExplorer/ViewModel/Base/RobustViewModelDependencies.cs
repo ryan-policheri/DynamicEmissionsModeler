@@ -8,7 +8,9 @@ namespace UnifiedDataExplorer.ViewModel.Base
 {
     public class RobustViewModelDependencies
     {
-        public RobustViewModelDependencies(IServiceProvider serviceProvider, IMessageHub messageHub, ILogger logger, IDialogService dialogService, DataFileProvider provider)
+        public RobustViewModelDependencies(IServiceProvider serviceProvider, IMessageHub messageHub,
+            ILogger<RobustViewModelDependencies> logger, IDialogService dialogService,
+            DataFileProvider provider)
         {
             ServiceProvider = serviceProvider;
             MessageHub = messageHub;

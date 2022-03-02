@@ -50,7 +50,6 @@ namespace UnifiedDataExplorer.ViewModel
             await _piDatasetFinderViewModel.LoadAsync();
 
             Children.Add(_eiaDatasetFinderViewModel);
-            CurrentChild = _eiaDatasetFinderViewModel;
             await _eiaDatasetFinderViewModel.LoadAsync();
         }
 

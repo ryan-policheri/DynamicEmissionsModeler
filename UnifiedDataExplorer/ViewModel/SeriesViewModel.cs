@@ -30,6 +30,8 @@ namespace UnifiedDataExplorer.ViewModel
 
         public string SeriesId { get; private set; }
 
+        public string ValueUnit { get; private set; }
+
         private DataTable _dataSet;
         public DataTable DataSet 
         {
@@ -46,6 +48,7 @@ namespace UnifiedDataExplorer.ViewModel
             Series series = await _client.GetSeriesByIdAsync(loadingInfo.Id);
             SeriesName = series.Name;
             SeriesId = series.Id;
+            ValueUnit = series.Units;
             Header = series.Id;
             HeaderDetail = this.SeriesName;
             CurrentLoadingInfo = loadingInfo;

@@ -40,10 +40,15 @@ namespace UnifiedDataExplorer.ViewModel.MainMenu
             MenuItemViewModel closeAll = new MenuItemViewModel(MenuItemHeaders.CLOSE_ALL, new DelegateCommand(OnCloseAll), actions);
             actions.Children.Add(closeAll);
 
+            MenuItemViewModel reports = new MenuItemViewModel("Reports", null, null);
+            MenuItemViewModel buildingEmissionsReport = new MenuItemViewModel(MenuItemHeaders.RENDER_BUILDING_REPORT, new DelegateCommand(OnBuildingReport), reports);
+            reports.Children.Add(buildingEmissionsReport);
+
             MenuItemViewModel edit = new MenuItemViewModel("Edit", null, null);
             MenuItemViewModel settings = new MenuItemViewModel("Settings", null, null);
             MenuItems.Add(file);
             MenuItems.Add(actions);
+            MenuItems.Add(reports);
             MenuItems.Add(edit);
             MenuItems.Add(settings);
         }
@@ -71,6 +76,17 @@ namespace UnifiedDataExplorer.ViewModel.MainMenu
                 SenderTypeName = nameof(MainMenuViewModel),
                 MenuItemHeader = MenuItemHeaders.CLOSE_ALL,
                 Action = MenuItemHeaders.CLOSE_ALL
+            });
+        }
+
+        private void OnBuildingReport()
+        {
+            MessageHub.Publish<MenuItemEvent>(new MenuItemEvent
+            {
+                Sender = this,
+                SenderTypeName = nameof(MainMenuViewModel),
+                MenuItemHeader = MenuItemHeaders.RENDER_BUILDING_REPORT,
+                Action = MenuItemHeaders.RENDER_BUILDING_REPORT
             });
         }
     }
