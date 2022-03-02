@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
 using DotNetCommon.PersistenceHelpers;
 using UnifiedDataExplorer.Constants;
@@ -34,9 +36,14 @@ namespace UnifiedDataExplorer.ViewModel.MainMenu
                 openExplorePoints.Children.Add(vm);
             }
 
+            MenuItemViewModel actions = new MenuItemViewModel("Actions", null, null);
+            MenuItemViewModel closeAll = new MenuItemViewModel(MenuItemHeaders.CLOSE_ALL, new DelegateCommand(OnCloseAll), actions);
+            actions.Children.Add(closeAll);
+
             MenuItemViewModel edit = new MenuItemViewModel("Edit", null, null);
             MenuItemViewModel settings = new MenuItemViewModel("Settings", null, null);
             MenuItems.Add(file);
+            MenuItems.Add(actions);
             MenuItems.Add(edit);
             MenuItems.Add(settings);
         }
@@ -53,6 +60,17 @@ namespace UnifiedDataExplorer.ViewModel.MainMenu
                 MenuItemHeader = MenuItemHeaders.OPEN_SAVE,
                 Action = MenuItemHeaders.OPEN_SAVE,
                 Data = saveFile
+            });
+        }
+
+        private void OnCloseAll()
+        {
+            MessageHub.Publish<MenuItemEvent>(new MenuItemEvent
+            {
+                Sender = this,
+                SenderTypeName = nameof(MainMenuViewModel),
+                MenuItemHeader = MenuItemHeaders.CLOSE_ALL,
+                Action = MenuItemHeaders.CLOSE_ALL
             });
         }
     }

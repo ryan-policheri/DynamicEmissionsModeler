@@ -129,6 +129,17 @@ namespace UnifiedDataExplorer.ViewModel
                     }
                 }
             }
+            else if (args.MenuItemHeader == MenuItemHeaders.CLOSE_ALL)
+            {
+                for (int i = Children.Count - 1; i >= 0; i--)
+                {
+                    ViewModelBase child = Children[i];
+                    if (child is ExplorePointViewModel)
+                    {
+                        Children.RemoveAt(i);
+                    }
+                }
+            }
         }
     }
 }
