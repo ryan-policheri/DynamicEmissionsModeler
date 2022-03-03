@@ -18,7 +18,7 @@
             return total;
         }
 
-        private double CalculateCO2EmissionsInKgFromSource(HourlySource hourlySource, double kilowattHours)
+        public double CalculateCO2EmissionsInKgFromSource(HourlySource hourlySource, double kilowattHours)
         {
             Source source = hourlySource.Source;
             if (source.KiloGramsOfCo2PerKwh <= 0) return 0;

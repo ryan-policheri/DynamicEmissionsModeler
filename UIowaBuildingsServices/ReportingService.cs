@@ -1,14 +1,16 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Globalization;
+using Microsoft.Extensions.Logging;
+using OfficeOpenXml;
 using EIA.Services.Clients;
+using EIA.Domain.Model;
 using PiServices;
 using PiModel;
 using UIowaBuildingsModel;
-using EIA.Domain.Model;
-using System.Globalization;
+using System.Data;
 
 namespace UIowaBuildingsServices
 {
-    public class ReportingService
+    public class ReportingService : ExcelBuilderBase
     {
         private readonly PiHttpClient _piClient;
         private readonly EiaClient _eiaClient;
@@ -17,23 +19,62 @@ namespace UIowaBuildingsServices
         {
             _piClient = piClient;
             _eiaClient = eiaClient;
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         }
 
-        public async Task GenerateHourlyEmissionsReport(string filePath)
+        public async Task GenerateHourlyEmissionsReport(string outputFilePath)
         {
+            ICollection<Asset> assets = new List<Asset>();
+
             string macleanLink = "https://pi.facilities.uiowa.edu/piwebapi/elements/F1EmAVYciAZHVU6DzQbJjxTxWwcE7mI49J6RGuHFS_ZKR9xgSVRTTlQyMjU5XFVJLUVORVJHWVxNQUlOIENBTVBVU1xNQUNMRUFOIEhBTEw";
             Asset maclean = await _piClient.GetBySelfLink<Asset>(macleanLink);
             await _piClient.LoadAssetValues(maclean);
+            assets.Add(maclean);
 
             string libraryLink = "https://pi.facilities.uiowa.edu/piwebapi/elements/F1EmAVYciAZHVU6DzQbJjxTxWw3k7mI49J6RGuHFS_ZKR9xgSVRTTlQyMjU5XFVJLUVORVJHWVxNQUlOIENBTVBVU1xNQUlOIExJQlJBUlk";
             Asset library = await _piClient.GetBySelfLink<Asset>(libraryLink);
             await _piClient.LoadAssetValues(library);
+            assets.Add(library);
 
             string usbLink = "https://pi.facilities.uiowa.edu/piwebapi/elements/F1EmAVYciAZHVU6DzQbJjxTxWwWFPfKY9J6RGuHFS_ZKR9xgSVRTTlQyMjU5XFVJLUVORVJHWVxNQUlOIENBTVBVU1xVTklWRVJTSVRZIFNFUlZJQ0VTIEJVSUxESU5H";
             Asset usb = await _piClient.GetBySelfLink<Asset>(usbLink);
             await _piClient.LoadAssetValues(usb);
+            assets.Add(usb);
 
             IEnumerable<HourSummary> summaries = await BuildHourlySources();
+
+            DataRenderingEngine engine = new DataRenderingEngine(assets, summaries);
+
+            using (ExcelPackage package = new ExcelPackage())
+            {
+                ExcelWorksheet dailyEmissionsSummary = package.Workbook.Worksheets.Add("Daily Emissions Summary");
+                TableWithMeta dailyEmissionsTable = engine.BuildDailySummary();
+                this.BuildWorksheetHeader(dailyEmissionsSummary, dailyEmissionsTable.Header, 1, dailyEmissionsTable.ColumnCount);
+                this.BuildDataSection(dailyEmissionsSummary, dailyEmissionsTable.Table, 2);
+                this.AutoFitColumns(dailyEmissionsSummary);
+
+                ExcelWorksheet hourlyEmissionsSummary = package.Workbook.Worksheets.Add("Hourly Emissions Summary");
+                TableWithMeta hourlyEmissionsTable = engine.BuildHourlySummary();
+                this.BuildWorksheetHeader(hourlyEmissionsSummary, hourlyEmissionsTable.Header, 1, hourlyEmissionsTable.ColumnCount);
+                this.BuildDataSection(hourlyEmissionsSummary, hourlyEmissionsTable.Table, 2);
+                this.AutoFitColumns(hourlyEmissionsSummary);
+
+
+                ExcelWorksheet misoSummary = package.Workbook.Worksheets.Add("MISO Emissions Summary");
+                TableWithMeta misoSummaryTable = engine.BuildMisoEmissionsTable();
+                this.BuildWorksheetHeader(misoSummary, misoSummaryTable.Header, 1, misoSummaryTable.ColumnCount);
+                this.BuildDataSection(misoSummary, misoSummaryTable.Table, 2);
+                this.AutoFitColumns(misoSummary);
+
+                ExcelWorksheet sourceCoefficients = package.Workbook.Worksheets.Add("Source Coefficients");
+                TableWithMeta sourceCoefficientsTable = engine.BuildSourceCoefficientsTable();
+                this.BuildWorksheetHeader(sourceCoefficients, sourceCoefficientsTable.Header, 1, sourceCoefficientsTable.ColumnCount);
+                this.BuildDataSection(sourceCoefficients, sourceCoefficientsTable.Table, 2);
+                this.AutoFitColumns(sourceCoefficients);
+
+                FileInfo file = new FileInfo(outputFilePath);
+                package.SaveAs(file);
+            }
         }
 
         private async Task<IEnumerable<HourSummary>> BuildHourlySources()

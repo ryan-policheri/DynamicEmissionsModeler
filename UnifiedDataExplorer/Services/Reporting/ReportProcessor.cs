@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DotNetCommon.EventAggregation;
+using DotNetCommon.PersistenceHelpers;
+using DotNetCommon.SystemHelpers;
 using Microsoft.Extensions.Logging;
 using UIowaBuildingsServices;
 using UnifiedDataExplorer.Constants;
 using UnifiedDataExplorer.Events;
+using UnifiedDataExplorer.Services.DataPersistence;
 
 namespace UnifiedDataExplorer.Services.Reporting
 {
@@ -12,12 +15,14 @@ namespace UnifiedDataExplorer.Services.Reporting
     {
         private readonly ReportingService _reportingService;
         private readonly IMessageHub _messageHub;
+        private readonly DataFileProvider _dataFileProvider;
         private readonly ILogger _logger;
 
-        public ReportProcessor(ReportingService reportingService, IMessageHub messageHub, ILogger<ReportProcessor> logger)
+        public ReportProcessor(ReportingService reportingService, IMessageHub messageHub, DataFileProvider dataFileProvider, ILogger<ReportProcessor> logger)
         {
             _reportingService = reportingService;
             _messageHub = messageHub;
+            _dataFileProvider = dataFileProvider;
             _logger = logger;
 
             _messageHub.Subscribe<MenuItemEvent>(OnMenuItemEvent);
@@ -42,7 +47,11 @@ namespace UnifiedDataExplorer.Services.Reporting
 
         public async Task RenderBuildingEmissionsReport()
         {
-            await _reportingService.GenerateHourlyEmissionsReport("Put path here");
+            string reportDirectory = _dataFileProvider.GetReportsDirectory();
+            string fileName = "temp" + DateTime.Now.Minute.ToString() + ".xlsx";
+            string fullPath = SystemFunctions.CombineDirectoryComponents(reportDirectory, fileName);
+            await _reportingService.GenerateHourlyEmissionsReport(fullPath);
+            SystemFunctions.OpenFile(fullPath);
         }
     }
 }
