@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PiModel;
 using PiServices;
 using UIowaBuildingsConsoleApp.Startup;
-using UIowaBuildingsModel;
+using UIowaBuildingsModelConsoleApp;
 
 IConfiguration rawConfig = Bootstrapper.LoadConfiguration();
 Config config = new Config(rawConfig);

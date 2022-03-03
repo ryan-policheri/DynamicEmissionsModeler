@@ -10,6 +10,7 @@ using DotNetCommon.SystemHelpers;
 using DotNetCommon.PersistenceHelpers;
 using EIA.Services.Clients;
 using PiServices;
+using UIowaBuildingsServices;
 using UnifiedDataExplorer.ViewModel;
 using UnifiedDataExplorer.ViewModel.Base;
 using UnifiedDataExplorer.ViewModel.MainMenu;
@@ -99,6 +100,7 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<PiAssetValuesViewModel>();
 
             services.AddSingleton<ReportProcessor>();
+            services.AddSingleton<ReportingService>();
 
             return services.BuildServiceProvider();
         }

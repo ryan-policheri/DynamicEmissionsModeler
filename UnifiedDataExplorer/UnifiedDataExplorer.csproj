@@ -28,8 +28,10 @@
     <ProjectReference Include="..\EIA.Domain\EIA.Domain.csproj" />
     <ProjectReference Include="..\EIA.Services\EIA.Services.csproj" />
     <ProjectReference Include="..\DotNetCommon\DotNetCommon.csproj" />
+    <ProjectReference Include="..\PiModel\PiModel.csproj" />
     <ProjectReference Include="..\PiServices\PiServices.csproj" />
     <ProjectReference Include="..\UIowaBuildingsModel\UIowaBuildingsModel.csproj" />
+    <ProjectReference Include="..\UIowaBuildingsServices\UIowaBuildingsServices.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.Reflection;
 using DotNetCommon.Extensions;
-using DotNetCommon.SystemHelpers;
 
-namespace UIowaBuildingsModel
+namespace UIowaBuildingsModelConsoleApp
 {
     public class Config
     {
@@ -29,6 +28,10 @@ namespace UIowaBuildingsModel
         public string AppDataDirectory { get; set; }
 
         public string PiWebApiBaseAddress { get; set; }
+
+        public string PiUserName { get; set; }
+
+        public string PiPassword { get; set; }
 
         public string PiAssestServerName { get; set; }
 
