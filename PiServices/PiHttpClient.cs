@@ -1,6 +1,7 @@
 ﻿using DotNetCommon.Extensions;
 using DotNetCommon.WebApiClient;
 using PiModel;
+using System.Text.Json;
 
 namespace PiServices
 {
@@ -97,14 +98,25 @@ namespace PiServices
             asset.ChildValues = assetValues;
         }
 
-        public async Task LoadAssetValueDetail(AssetValue assetValue)
+        public async Task<AssetValue> LoadAssetValueDetail(AssetValue assetValue)
         {
             assetValue = await this.GetByDirectLink<AssetValue>(assetValue.Links.Source);
+            return assetValue;
         }
 
-        public async Task LoadInterpolatedValues(AssetValue value)
+        public async Task LoadInterpolatedValues(AssetValue value, bool convertTimeStampsToLocalTime = false)
         {
+            string url = value.Links.InterpolatedData;
+            url = url.WithParameter("startTime", "*-16d").WithParameter("interval", "1h");
+            value.InterpolatedDataPoints = await this.GetAllAsync<InterpolatedDataPoint>(url, ITEMS_PROPERTY);
 
+            if(convertTimeStampsToLocalTime)
+            {
+                foreach(InterpolatedDataPoint point in value.InterpolatedDataPoints)
+                {
+                    point.Timestamp = point.Timestamp.ToLocalTime();
+                }
+            }
         }
 
         private async Task<List<Asset>> AssetSearchAllInternal(List<Asset> parents, List<Asset> assets, int depthLimit, int currentDepth)

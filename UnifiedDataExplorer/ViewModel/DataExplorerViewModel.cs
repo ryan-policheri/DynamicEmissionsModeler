@@ -104,7 +104,9 @@ namespace UnifiedDataExplorer.ViewModel
                 }
                 if (args.Verb == PiAssetValuesViewModel.RENDER_INTERPOLATED_VALUES)
                 {
-
+                    PiInterpolatedDataViewModel vm = this.Resolve<PiInterpolatedDataViewModel>();
+                    AddAndSwitchChild(vm);
+                    await vm.LoadAsync(args);
                 }
             }
         }

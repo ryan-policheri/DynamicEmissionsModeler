@@ -1,4 +1,6 @@
-﻿namespace PiModel
+﻿using System.Data;
+
+namespace PiModel
 {
     public class AssetValue : ItemBase
     {
@@ -28,5 +30,23 @@
         public string TraitName { get; set; }
         public double? Span { get; set; }
         public double? Zero { get; set; }
+
+        public IEnumerable<InterpolatedDataPoint> InterpolatedDataPoints { get; set; }
+
+        public DataTable RenderDataPointsAsTable()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("TIMESTAMP (LocalTime)", typeof(DateTime));
+            table.Columns.Add("VALUE", typeof(double));
+
+            foreach(var dataPoint in InterpolatedDataPoints)
+            {
+                DataRow row = table.NewRow();
+                row["TIMESTAMP (LocalTime)"] = dataPoint.Timestamp;
+                row["VALUE"] = dataPoint.Value;
+                table.Rows.Add(row);
+            }
+            return table;
+        }
     }
 }
