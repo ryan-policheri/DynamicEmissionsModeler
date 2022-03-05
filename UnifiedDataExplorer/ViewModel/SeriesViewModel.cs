@@ -45,7 +45,7 @@ namespace UnifiedDataExplorer.ViewModel
 
         public async Task LoadAsync(IEiaDetailLoadingInfo loadingInfo)
         {
-            Series series = await _client.GetSeriesByIdAsync(loadingInfo.Id);
+            Series series = await _client.GetSeriesByIdAsync(loadingInfo.Id, 16);
             SeriesName = series.Name;
             SeriesId = series.Id;
             ValueUnit = series.Units;

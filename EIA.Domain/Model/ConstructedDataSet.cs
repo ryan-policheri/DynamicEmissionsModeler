@@ -69,6 +69,9 @@ namespace EIA.Domain.Model
                     case "HL":
                         row["PERIOD"] = DateTime.ParseExact(dataPoint.ColumnHeader, "yyyyMMddTHH-mm", us);
                         break;
+                    case "H":
+                        row["PERIOD"] = DateTime.ParseExact(dataPoint.ColumnHeader, "yyyyMMddTHHZ", us);
+                        break;
                     default:
                         throw new NotImplementedException($"Fequency {_series.Frequency} is not implemented");
                 }    

@@ -66,9 +66,15 @@ namespace EIA.Services.Clients
             return await this.GetAsync<Category>(path, "category");
         }
 
-        public async Task<Series> GetSeriesByIdAsync(string seriesId)
+        public async Task<Series> GetSeriesByIdAsync(string seriesId, int numberOfDays = -1)
         {
             string path = "series/".WithQueryString("api_key", SubscriptionKey).WithQueryString("series_id", seriesId);
+            if(numberOfDays > 0)
+            {
+                DateTime startDate = DateTime.UtcNow.AddDays(-numberOfDays);
+                string dateFilterValue = startDate.ToString("yyyyMMddTHHZ");
+                path = path.WithQueryString("start", dateFilterValue);
+            }
             return await this.GetFirstAsync<Series>(path, "series");
         }
     }
