@@ -13,7 +13,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-            
+
             <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}" x:Key="DataGridColumnHeaderStyle"/>
             <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource MaterialDesignDataGridCell}" x:Key="DataGridCellStyle"/>
             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignRaisedButton}" x:Key="Button"/>
@@ -27,6 +27,36 @@
             <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource MaterialDesignScrollBarMinimal}" x:Key="ScrollBar"/>
             <Style TargetType="{x:Type Thumb}" BasedOn="{StaticResource MaterialDesignScrollBarThumb}" x:Key="Thumb"/>
             <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource MaterialDesignMenuItem}" x:Key="MenuItem"/>
+
+            
+            <!--DYNAMIC DATAGRID-->
+            <Style x:Key="DataGridHeaderStyle" TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle}">
+                <Setter Property="Padding" Value="3 2 2 2"/>
+                <Setter Property="Margin" Value="0 0 0 0"/>
+                <Setter Property="BorderBrush" Value="Gray"/>
+                <Setter Property="BorderThickness" Value="0 0 1 2"/>
+                <Setter Property="Background" Value="#E8E6E6"/>
+            </Style>
+
+            <Style x:Key="CustomDataGridCellStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DataGridCellStyle}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type DataGridCell}">
+                            <Border Name="DataGridCellBorder" SnapsToDevicePixels="True">
+                                <ContentControl Content="{TemplateBinding Content}">
+                                    <ContentControl.ContentTemplate>
+                                        <DataTemplate>
+                                            <TextBox Background="Transparent" TextWrapping="WrapWithOverflow" IsReadOnly="True" BorderThickness="0"
+                                                     Height="Auto" Width="Auto" Padding="3 0 2 0" Text="{Binding Text}" SnapsToDevicePixels="True"/>
+                                        </DataTemplate>
+                                    </ContentControl.ContentTemplate>
+                                </ContentControl>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <!--END DYNAMIC DATAGRID-->
         </ResourceDictionary>
     </Application.Resources>
 </Application>

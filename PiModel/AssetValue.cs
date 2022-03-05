@@ -36,14 +36,14 @@ namespace PiModel
         public DataTable RenderDataPointsAsTable()
         {
             DataTable table = new DataTable();
-            table.Columns.Add("TIMESTAMP (LocalTime)", typeof(DateTime));
-            table.Columns.Add("VALUE", typeof(double));
+            table.Columns.Add("TimeStamp (LocalTime)", typeof(DateTime));
+            table.Columns.Add(DefaultUnitsName, typeof(double));
 
             foreach(var dataPoint in InterpolatedDataPoints)
             {
                 DataRow row = table.NewRow();
-                row["TIMESTAMP (LocalTime)"] = dataPoint.Timestamp;
-                row["VALUE"] = dataPoint.Value;
+                row["TimeStamp (LocalTime)"] = dataPoint.Timestamp;
+                row[DefaultUnitsName] = dataPoint.Value;
                 table.Rows.Add(row);
             }
             return table;
