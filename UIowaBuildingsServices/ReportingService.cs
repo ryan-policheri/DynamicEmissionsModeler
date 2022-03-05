@@ -27,18 +27,18 @@ namespace UIowaBuildingsServices
             ICollection<Asset> assets = new List<Asset>();
 
             string macleanLink = "https://pi.facilities.uiowa.edu/piwebapi/elements/F1EmAVYciAZHVU6DzQbJjxTxWwcE7mI49J6RGuHFS_ZKR9xgSVRTTlQyMjU5XFVJLUVORVJHWVxNQUlOIENBTVBVU1xNQUNMRUFOIEhBTEw";
-            Asset maclean = await _piClient.GetBySelfLink<Asset>(macleanLink);
-            await _piClient.LoadAssetValues(maclean);
+            Asset maclean = await _piClient.GetByDirectLink<Asset>(macleanLink);
+            await _piClient.LoadAssetValueList(maclean);
             assets.Add(maclean);
 
             string libraryLink = "https://pi.facilities.uiowa.edu/piwebapi/elements/F1EmAVYciAZHVU6DzQbJjxTxWw3k7mI49J6RGuHFS_ZKR9xgSVRTTlQyMjU5XFVJLUVORVJHWVxNQUlOIENBTVBVU1xNQUlOIExJQlJBUlk";
-            Asset library = await _piClient.GetBySelfLink<Asset>(libraryLink);
-            await _piClient.LoadAssetValues(library);
+            Asset library = await _piClient.GetByDirectLink<Asset>(libraryLink);
+            await _piClient.LoadAssetValueList(library);
             assets.Add(library);
 
             string usbLink = "https://pi.facilities.uiowa.edu/piwebapi/elements/F1EmAVYciAZHVU6DzQbJjxTxWwWFPfKY9J6RGuHFS_ZKR9xgSVRTTlQyMjU5XFVJLUVORVJHWVxNQUlOIENBTVBVU1xVTklWRVJTSVRZIFNFUlZJQ0VTIEJVSUxESU5H";
-            Asset usb = await _piClient.GetBySelfLink<Asset>(usbLink);
-            await _piClient.LoadAssetValues(usb);
+            Asset usb = await _piClient.GetByDirectLink<Asset>(usbLink);
+            await _piClient.LoadAssetValueList(usb);
             assets.Add(usb);
 
             IEnumerable<HourSummary> summaries = await BuildHourlySources();

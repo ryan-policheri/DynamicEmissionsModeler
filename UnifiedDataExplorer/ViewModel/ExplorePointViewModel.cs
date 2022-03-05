@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
 using DotNetCommon.EventAggregation;
 using DotNetCommon.MVVM;
@@ -9,11 +8,11 @@ namespace UnifiedDataExplorer.ViewModel
 {
     public abstract class ExplorePointViewModel : ViewModelBase
     {
-        private readonly IMessageHub _messageHub;
+        protected readonly IMessageHub MessageHub;
 
         public ExplorePointViewModel(IMessageHub messageHub)
         {
-            _messageHub = messageHub;
+            MessageHub = messageHub;
             CloseExplorePointCommand = new DelegateCommand(OnCloseExplorePoint);
         }
 
@@ -21,22 +20,14 @@ namespace UnifiedDataExplorer.ViewModel
         public string Header
         {
             get { return _header; }
-            protected set
-            {
-                _header = value;
-                OnPropertyChanged();
-            }
+            protected set { SetField(ref _header, value); }
         }
 
         private string _headerDetail;
         public string HeaderDetail
         {
             get { return _headerDetail; }
-            protected set
-            {
-                _headerDetail = value;
-                OnPropertyChanged();
-            }
+            protected set{ SetField(ref _headerDetail, value); }
         }
 
         public bool IsCloseable => true;
@@ -47,7 +38,7 @@ namespace UnifiedDataExplorer.ViewModel
 
         private void OnCloseExplorePoint()
         {
-            _messageHub.Publish<CloseViewModelEvent>(new CloseViewModelEvent { Sender = this, SenderTypeName = nameof(ExplorePointViewModel) });
+            MessageHub.Publish<CloseViewModelEvent>(new CloseViewModelEvent { Sender = this, SenderTypeName = nameof(ExplorePointViewModel) });
         }
     }
 }

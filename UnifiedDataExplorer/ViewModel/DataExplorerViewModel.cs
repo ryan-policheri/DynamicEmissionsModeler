@@ -94,6 +94,19 @@ namespace UnifiedDataExplorer.ViewModel
                     await vm.LoadAsync(args);
                 }
             }
+            if(args.SenderTypeName == nameof(PiAssetValuesViewModel))
+            {
+                if (args.Verb == PiAssetValuesViewModel.SHOW_DETAILS_AS_JSON)
+                {
+                    PiJsonDisplayViewModel vm = this.Resolve<PiJsonDisplayViewModel>();
+                    AddAndSwitchChild(vm);
+                    await vm.LoadAsync(args);
+                }
+                if (args.Verb == PiAssetValuesViewModel.RENDER_INTERPOLATED_VALUES)
+                {
+
+                }
+            }
         }
 
         private void OnMenuItemEvent(MenuItemEvent args)

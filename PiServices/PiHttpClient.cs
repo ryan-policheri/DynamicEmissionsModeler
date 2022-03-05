@@ -46,7 +46,7 @@ namespace PiServices
             string data = await this.GetAsync("assetservers");
         }
 
-        public async Task<T> GetBySelfLink<T>(string link)
+        public async Task<T> GetByDirectLink<T>(string link)
         {
             return await this.GetAsync<T>(link);
         }
@@ -91,10 +91,20 @@ namespace PiServices
             return await this.GetAllAsync<Asset>(asset.Links.Elements, ITEMS_PROPERTY);
         }
 
-        public async Task LoadAssetValues(Asset asset)
+        public async Task LoadAssetValueList(Asset asset)
         {
             IEnumerable<AssetValue> assetValues = await this.GetAllAsync<AssetValue>(asset.Links.Value, ITEMS_PROPERTY);
             asset.ChildValues = assetValues;
+        }
+
+        public async Task LoadAssetValueDetail(AssetValue assetValue)
+        {
+            assetValue = await this.GetByDirectLink<AssetValue>(assetValue.Links.Source);
+        }
+
+        public async Task LoadInterpolatedValues(AssetValue value)
+        {
+
         }
 
         private async Task<List<Asset>> AssetSearchAllInternal(List<Asset> parents, List<Asset> assets, int depthLimit, int currentDepth)

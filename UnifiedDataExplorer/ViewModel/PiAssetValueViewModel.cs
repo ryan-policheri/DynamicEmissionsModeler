@@ -5,14 +5,22 @@ namespace UnifiedDataExplorer.ViewModel
 {
     public class PiAssetValueViewModel : ViewModelBase
     {
+
+        private AssetValue _model;
+
         public PiAssetValueViewModel(AssetValue item)
         {
-            Name = item.Name;
-            Value = item.Value.UntypedValue?.ToString();
+            _model = item;
+            Name = _model.Name;
+            Value = _model.Value.UntypedValue?.ToString();
         }
-
         public string Name { get; }
 
         public string Value { get; }
+
+        public AssetValue GetBackingModel()
+        {
+            return _model;
+        }
     }
 }

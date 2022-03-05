@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
-using DotNetCommon.Extensions;
 using DotNetCommon.MVVM;
 using PiModel;
 using PiServices;
@@ -30,8 +28,8 @@ namespace UnifiedDataExplorer.ViewModel
             RenderValuesCommand = new DelegateCommand<LazyTreeItemViewModel>(OnRenderValues);
         }
 
-        public string Header => "PI Dataset Finder";
-        public string HeaderDetail => "Navigate to a PI dataset";
+        public string Header => "PI AF Dataset Finder";
+        public string HeaderDetail => "Navigate to a PI AssetFramework (AF) dataset";
         public bool IsCloseable => false;
 
         private ObservableCollection<LazyTreeItemViewModel> _categories;
@@ -96,14 +94,7 @@ namespace UnifiedDataExplorer.ViewModel
         }
 
         public async Task PeformLeafActionAsync(LazyTreeItemViewModel treeItem)
-        {
-            //ILazyTreeItemBackingModel modelInterface = treeItem.GetBackingModel();
-            //CategorySeriesWrapper model = modelInterface as CategorySeriesWrapper;
-            //if (model != null && model.IsSeries())
-            //{
-            //    this.MessageHub.Publish<OpenViewModelEvent>(new OpenViewModelEvent { Sender = this, SenderTypeName = nameof(DatasetFinderViewModel), Id = model.GetId() });
-            //    return;
-            //}
+        {//This gets executed when the tree item is double clicked. Because we present different options with buttons this isn't being used
         }
 
         public void OnViewJson(LazyTreeItemViewModel treeItem)
@@ -112,36 +103,31 @@ namespace UnifiedDataExplorer.ViewModel
             ServerDatabaseAssetWrapper model = modelInterface as ServerDatabaseAssetWrapper;
             if (model != null)
             {
-                this.MessageHub.Publish<OpenViewModelEvent>(new OpenViewModelEvent {
-                    Sender = this,
-                    SenderTypeName = nameof(PiDatasetFinderViewModel),
-                    Id = model.GetLinkToSelf(),
-                    Name = model.GetItemName(),
-                    Verb = SHOW_JSON,
-                    Tag = model.GetTypeTag(),
-                });
+                PublishOpenViewModelEvent(model, SHOW_JSON);
             }
         }
 
-
-        private async void OnRenderValues(LazyTreeItemViewModel treeItem)
+        private void OnRenderValues(LazyTreeItemViewModel treeItem)
         {
             ILazyTreeItemBackingModel modelInterface = treeItem.GetBackingModel();
             ServerDatabaseAssetWrapper model = modelInterface as ServerDatabaseAssetWrapper;
             if (model != null && model.IsAsset())
             {
-                Asset asset = model.AsAsset();
-                await _client.LoadAssetValues(asset);
-
-                this.MessageHub.Publish<OpenViewModelEvent>(new OpenViewModelEvent { 
-                    Sender = this, 
-                    SenderTypeName = nameof(PiDatasetFinderViewModel), 
-                    Id = model.GetLinkToSelf(),
-                    Name = model.GetItemName(),
-                    Verb = RENDER_VALUES,
-                    Tag = model.GetTypeTag()
-                });
+                PublishOpenViewModelEvent(model, RENDER_VALUES);
             }
+        }
+
+        private void PublishOpenViewModelEvent(ServerDatabaseAssetWrapper model, string verb)
+        {
+            this.MessageHub.Publish<OpenViewModelEvent>(new OpenViewModelEvent
+            {
+                Sender = this,
+                SenderTypeName = nameof(PiDatasetFinderViewModel),
+                Id = model.GetLinkToSelf(),
+                Name = model.GetItemName(),
+                Verb = verb,
+                Tag = model.GetTypeTag()
+            });
         }
     }
 }
