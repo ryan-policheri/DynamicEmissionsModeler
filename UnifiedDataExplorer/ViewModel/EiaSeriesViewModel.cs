@@ -7,11 +7,11 @@ using UnifiedDataExplorer.ModelWrappers;
 
 namespace UnifiedDataExplorer.ViewModel
 {
-    public class SeriesViewModel : ExplorePointViewModel
+    public class EiaSeriesViewModel : ExplorePointViewModel
     {
         private readonly EiaClient _client;
 
-        public SeriesViewModel(EiaClient client, IMessageHub messageHub) : base(messageHub)
+        public EiaSeriesViewModel(EiaClient client, IMessageHub messageHub) : base(messageHub)
         {
             _client = client;
         }

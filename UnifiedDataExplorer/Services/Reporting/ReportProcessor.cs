@@ -8,6 +8,7 @@ using UIowaBuildingsServices;
 using UnifiedDataExplorer.Constants;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.Services.DataPersistence;
+using UnifiedDataExplorer.Services.Window;
 
 namespace UnifiedDataExplorer.Services.Reporting
 {
@@ -16,13 +17,16 @@ namespace UnifiedDataExplorer.Services.Reporting
         private readonly ReportingService _reportingService;
         private readonly IMessageHub _messageHub;
         private readonly DataFileProvider _dataFileProvider;
+        private readonly IDialogService _dialogService;
         private readonly ILogger _logger;
 
-        public ReportProcessor(ReportingService reportingService, IMessageHub messageHub, DataFileProvider dataFileProvider, ILogger<ReportProcessor> logger)
+        public ReportProcessor(ReportingService reportingService, IMessageHub messageHub,
+            DataFileProvider dataFileProvider, IDialogService dialogService, ILogger<ReportProcessor> logger)
         {
             _reportingService = reportingService;
             _messageHub = messageHub;
             _dataFileProvider = dataFileProvider;
+            _dialogService = dialogService;
             _logger = logger;
 
             _messageHub.Subscribe<MenuItemEvent>(OnMenuItemEvent);
@@ -47,6 +51,7 @@ namespace UnifiedDataExplorer.Services.Reporting
 
         public async Task RenderBuildingEmissionsReport()
         {
+
             string reportDirectory = _dataFileProvider.GetReportsDirectory();
             string fileName = "temp" + DateTime.Now.Minute.ToString() + ".xlsx";
             string fullPath = SystemFunctions.CombineDirectoryComponents(reportDirectory, fileName);

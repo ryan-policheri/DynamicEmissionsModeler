@@ -5,11 +5,11 @@ using System.Windows.Data;
 
 namespace UnifiedDataExplorer.View
 {
-    public partial class SeriesView : UserControl
+    public partial class EiaSeriesView : UserControl
     {
-        private SeriesViewModel ViewModel => this.DataContext as SeriesViewModel;
+        private EiaSeriesViewModel ViewModel => this.DataContext as EiaSeriesViewModel;
 
-        public SeriesView()
+        public EiaSeriesView()
         {
             InitializeComponent();
         }
@@ -29,7 +29,7 @@ namespace UnifiedDataExplorer.View
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == nameof(SeriesViewModel.DataSet) && ViewModel != null)
+            if(e.PropertyName == nameof(EiaSeriesViewModel.DataSet) && ViewModel != null)
             {
                 OnDataChanged();
             }

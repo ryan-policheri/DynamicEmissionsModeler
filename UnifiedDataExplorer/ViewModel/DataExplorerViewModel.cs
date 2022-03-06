@@ -74,7 +74,7 @@ namespace UnifiedDataExplorer.ViewModel
         {
             if (args.SenderTypeName == nameof(EiaDatasetFinderViewModel))
             {
-                SeriesViewModel vm = this.Resolve<SeriesViewModel>();
+                EiaSeriesViewModel vm = this.Resolve<EiaSeriesViewModel>();
                 Logger.LogInformation($"Loading series {args.Id}");
                 AddAndSwitchChild(vm);
                 await vm.LoadAsync(args);

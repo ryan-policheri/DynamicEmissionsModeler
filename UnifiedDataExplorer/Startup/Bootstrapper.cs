@@ -95,7 +95,7 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<PiDatasetFinderViewModel>();
             
             //DATASET RENDERING
-            services.AddTransient<SeriesViewModel>();
+            services.AddTransient<EiaSeriesViewModel>();
             services.AddTransient<PiJsonDisplayViewModel>();
             services.AddTransient<PiAssetValuesViewModel>();
             services.AddTransient<PiInterpolatedDataViewModel>();

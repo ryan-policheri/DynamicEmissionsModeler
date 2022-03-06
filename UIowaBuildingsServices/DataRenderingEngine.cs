@@ -21,7 +21,6 @@ namespace UIowaBuildingsServices
             DataTable table = new DataTable();
             table.Columns.Add("Building Name");
             table.Columns.Add("Daily Kilowatt Hours");
-            table.Columns.Add("Daily Kilowatt Hours (From Hourly Averages)");
             table.Columns.Add("Daily CO2 Emissions in Kilograms");
 
             foreach (Asset asset in _assets)
@@ -43,7 +42,6 @@ namespace UIowaBuildingsServices
                     dailyCo2EmissionsInKg += hourlyEmissions;
                 }
 
-                row["Daily Kilowatt Hours (From Hourly Averages)"] = dailyDemandInkwh;
                 row["Daily CO2 Emissions in Kilograms"] = dailyCo2EmissionsInKg;
 
                 table.Rows.Add(row);
