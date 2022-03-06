@@ -52,8 +52,7 @@ namespace UnifiedDataExplorer.ViewModel
             Header = series.Id;
             HeaderDetail = this.SeriesName;
             CurrentLoadingInfo = loadingInfo;
-            ConstructedDataSet dataSet = series.ToConstructedDataSet();
-            DataSet = dataSet.Table;
+            DataSet = series.RenderDataPointsAsTable();
         }
     }
 }

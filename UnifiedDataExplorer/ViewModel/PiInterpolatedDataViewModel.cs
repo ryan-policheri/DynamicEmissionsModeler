@@ -58,7 +58,7 @@ namespace UnifiedDataExplorer.ViewModel
                 HeaderDetail = $"Interpolated {value.Name} data for {asset.Name}";
                 AssetName = asset.Name;
                 ValueName = value.Name;
-                await this._client.LoadInterpolatedValues(value, true);
+                await this._client.LoadInterpolatedValues(value, false);
                 DataSet = value.RenderDataPointsAsTable();
             }
             else

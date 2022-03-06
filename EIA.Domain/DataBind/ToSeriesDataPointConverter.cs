@@ -6,34 +6,34 @@ using EIA.Domain.Model;
 
 namespace EIA.Domain.DataBind
 {
-    public class ToSeriesDataPointsConverter : JsonConverter<ICollection<SeriesData>>
+    internal class ToSeriesDataPointConverter : JsonConverter<ICollection<SeriesDataPoint>>
     {
-        public override ICollection<SeriesData> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override ICollection<SeriesDataPoint> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            ICollection<SeriesData> all = new List<SeriesData>();
+            ICollection<SeriesDataPoint> all = new List<SeriesDataPoint>();
             int startDepth = reader.CurrentDepth;
-            SeriesData currentDataArray = null;
+            int outerArrayDepth = reader.CurrentDepth + 1;
+            SeriesDataPoint currentPoint = null;
 
             while (reader.Read())
             {
                 if (reader.CurrentDepth == startDepth) return all;
                 else
                 {
-
-                    if (reader.TokenType == JsonTokenType.StartArray) currentDataArray = new SeriesData();
-                    else if (reader.TokenType == JsonTokenType.EndArray) all.Add(currentDataArray);
+                    if (reader.TokenType == JsonTokenType.StartArray && reader.CurrentDepth == outerArrayDepth) currentPoint = new SeriesDataPoint();
+                    else if (reader.TokenType == JsonTokenType.EndArray && reader.CurrentDepth == outerArrayDepth) all.Add(currentPoint);
                     else
                     {
-                        switch(reader.TokenType)
+                        switch (reader.TokenType)
                         {
                             case JsonTokenType.String:
-                                currentDataArray.Add(reader.GetString());
+                                currentPoint.RawTimestamp = reader.GetString();
                                 break;
                             case JsonTokenType.Number:
-                                currentDataArray.Add(reader.GetDouble());
+                                currentPoint.Value = reader.GetDouble();
                                 break;
                             case JsonTokenType.Null:
-                                currentDataArray.Add(null); //TODO: 
+                                currentPoint.Value = null;
                                 break;
                             default:
                                 throw new NotImplementedException($"Json type {reader.TokenType.ToString()} conversion to series data element has not been implemented");
@@ -45,7 +45,7 @@ namespace EIA.Domain.DataBind
             throw new JsonException(); // Truncated file or internal error
         }
 
-        public override void Write(Utf8JsonWriter writer, ICollection<SeriesData> value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, ICollection<SeriesDataPoint> value, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }

@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+﻿using System.Data;
 using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
 using EIA.Services.Clients;
@@ -6,7 +6,6 @@ using EIA.Domain.Model;
 using PiServices;
 using PiModel;
 using UIowaBuildingsModel;
-using System.Data;
 
 namespace UIowaBuildingsServices
 {
@@ -90,7 +89,7 @@ namespace UIowaBuildingsServices
             }
 
             ICollection<HourSummary> summaries = new List<HourSummary>();
-            DateTime startingHour = ParseHour(seriesBySource.First().Data.OrderByDescending(x => ParseHour(x.ColumnHeader)).First().ColumnHeader);
+            DateTime startingHour = seriesBySource.First().DataPoints.OrderByDescending(x => x.Timestamp).First().Timestamp;
 
             for (int i = 0; i < numberOfHours; i++)
             {
@@ -101,8 +100,8 @@ namespace UIowaBuildingsServices
                 {
                     Source source = sources.ElementAt(j);
                     Series series = seriesBySource.ElementAt(j);
-                    SeriesData seriesData = series.Data.Where(x => ParseHour(x.ColumnHeader).Hour == startingHour.Hour).First();
-                    HourlySource hourlySource = source.ProduceHour(ParseHour(seriesData.ColumnHeader), seriesData.ColumnValue.Value);
+                    SeriesDataPoint seriesData = series.DataPoints.Where(x => x.Timestamp.Hour == startingHour.Hour).First();
+                    HourlySource hourlySource = source.ProduceHour(seriesData.Timestamp, seriesData.Value.Value);
                     summary.Sources.Add(hourlySource);
                 }
 
@@ -111,12 +110,6 @@ namespace UIowaBuildingsServices
             }
 
             return summaries;
-        }
-
-        private DateTime ParseHour(string hourAsString)
-        {
-            CultureInfo us = new CultureInfo("en-US");
-            return DateTime.ParseExact(hourAsString, "yyyyMMddTHH-mm", us);
         }
 
         private IEnumerable<Source> BuildSources()

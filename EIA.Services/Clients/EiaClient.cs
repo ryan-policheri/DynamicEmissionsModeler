@@ -68,14 +68,21 @@ namespace EIA.Services.Clients
 
         public async Task<Series> GetSeriesByIdAsync(string seriesId, int numberOfDays = -1)
         {
-            string path = "series/".WithQueryString("api_key", SubscriptionKey).WithQueryString("series_id", seriesId);
+            string pathPreDayFilter = "series/".WithQueryString("api_key", SubscriptionKey).WithQueryString("series_id", seriesId);
+            string path = pathPreDayFilter;
             if(numberOfDays > 0)
             {
                 DateTime startDate = DateTime.UtcNow.AddDays(-numberOfDays);
                 string dateFilterValue = startDate.ToString("yyyyMMddTHHZ");
-                path = path.WithQueryString("start", dateFilterValue);
+                path = pathPreDayFilter.WithQueryString("start", dateFilterValue);
             }
-            return await this.GetFirstAsync<Series>(path, "series");
+            Series series = await this.GetFirstAsync<Series>(path, "series");
+            if (series.Frequency != "HL" && series.Frequency != "H") //This is smelly, but essentially we are saying that if the data isn't hourly, remove the numberOfDays filter
+            {
+                series = await this.GetFirstAsync<Series>(pathPreDayFilter, "series");
+            }
+            series.ParseAllDates();
+            return series;
         }
     }
 }

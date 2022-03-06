@@ -2,24 +2,22 @@
 {
     public static class DateTimeExtensions
     {
-        public static DateTime ParseQuarter(this string source)
+        public static DateTime StartOfQuarter(this DateTime dt)
         {
-            string year = source.Substring(0, 4);
-            string quarter = source.Substring(4);
+            if (dt.Month >= 1 && dt.Month <= 3) return new DateTime(dt.Year, 1, 1).Date;
+            else if (dt.Month >= 4 && dt.Month <= 6) return new DateTime(dt.Year, 4, 1).Date;
+            else if (dt.Month >= 7 && dt.Month <= 9) return new DateTime(dt.Year, 7, 1).Date;
+            else if (dt.Month >= 10 && dt.Month <= 12) return new DateTime(dt.Year, 10, 1).Date;
+            throw new NotSupportedException("DateTime is not following a gregorian calendar");
+        }
 
-            int yearInt = int.Parse(year);
-
-            int quarterAsMonth;
-            switch (quarter.CapsAndTrim())
-            {
-                case "Q1": quarterAsMonth = 1; break;
-                case "Q2": quarterAsMonth = 4; break;
-                case "Q3": quarterAsMonth = 7; break;
-                case "Q4": quarterAsMonth = 10; break;
-                default: throw new ArgumentOutOfRangeException("Only four quarters in a year");
-            }
-
-            return new DateTime(yearInt, quarterAsMonth, 1);
+        public static DateTime EndOfQuarter(this DateTime dt)
+        {
+            if (dt.Month >= 1 && dt.Month <= 3) return new DateTime(dt.Year, 3, 31).Date;
+            else if (dt.Month >= 4 && dt.Month <= 6) return new DateTime(dt.Year, 6, 30).Date;
+            else if (dt.Month >= 7 && dt.Month <= 9) return new DateTime(dt.Year, 9, 30).Date;
+            else if (dt.Month >= 10 && dt.Month <= 12) return new DateTime(dt.Year, 12, 31).Date;
+            throw new NotSupportedException("DateTime is not following a gregorian calendar");
         }
     }
 }
