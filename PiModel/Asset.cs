@@ -16,6 +16,6 @@ namespace PiModel
         public ICollection<Asset> ChildAssets { get; set; }
 
         [JsonIgnore]
-        public IEnumerable<AssetValue> ChildValues { get; set; }
+        public ICollection<AssetValue> ChildValues { get; set; }
     }
 }

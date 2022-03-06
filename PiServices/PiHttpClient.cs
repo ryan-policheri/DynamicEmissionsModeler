@@ -94,7 +94,7 @@ namespace PiServices
 
         public async Task LoadAssetValueList(Asset asset)
         {
-            IEnumerable<AssetValue> assetValues = await this.GetAllAsync<AssetValue>(asset.Links.Value, ITEMS_PROPERTY);
+            ICollection<AssetValue> assetValues = (await this.GetAllAsync<AssetValue>(asset.Links.Value, ITEMS_PROPERTY)).ToList();
             asset.ChildValues = assetValues;
         }
 

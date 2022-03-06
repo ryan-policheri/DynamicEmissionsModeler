@@ -6,6 +6,7 @@ using EIA.Domain.Model;
 using PiServices;
 using PiModel;
 using UIowaBuildingsModel;
+using DotNetCommon.Extensions;
 
 namespace UIowaBuildingsServices
 {
@@ -28,16 +29,31 @@ namespace UIowaBuildingsServices
             string macleanLink = "https://pi.facilities.uiowa.edu/piwebapi/elements/F1EmAVYciAZHVU6DzQbJjxTxWwcE7mI49J6RGuHFS_ZKR9xgSVRTTlQyMjU5XFVJLUVORVJHWVxNQUlOIENBTVBVU1xNQUNMRUFOIEhBTEw";
             Asset maclean = await _piClient.GetByDirectLink<Asset>(macleanLink);
             await _piClient.LoadAssetValueList(maclean);
+            AssetValue macleanDailyElectric = maclean.ChildValues.Where(x => x.Name.CapsAndTrim() == "EL POWER HOURLY AVG").First();
+            maclean.ChildValues.Remove(macleanDailyElectric);
+            macleanDailyElectric = await _piClient.LoadAssetValueDetail(macleanDailyElectric);
+            await _piClient.LoadInterpolatedValues(macleanDailyElectric);
+            maclean.ChildValues.Add(macleanDailyElectric);
             assets.Add(maclean);
 
             string libraryLink = "https://pi.facilities.uiowa.edu/piwebapi/elements/F1EmAVYciAZHVU6DzQbJjxTxWw3k7mI49J6RGuHFS_ZKR9xgSVRTTlQyMjU5XFVJLUVORVJHWVxNQUlOIENBTVBVU1xNQUlOIExJQlJBUlk";
             Asset library = await _piClient.GetByDirectLink<Asset>(libraryLink);
             await _piClient.LoadAssetValueList(library);
+            AssetValue libraryDailyElectric = library.ChildValues.Where(x => x.Name.CapsAndTrim() == "EL POWER HOURLY AVG").First();
+            library.ChildValues.Remove(libraryDailyElectric);
+            libraryDailyElectric = await _piClient.LoadAssetValueDetail(libraryDailyElectric);
+            await _piClient.LoadInterpolatedValues(libraryDailyElectric);
+            library.ChildValues.Add(libraryDailyElectric);
             assets.Add(library);
 
             string usbLink = "https://pi.facilities.uiowa.edu/piwebapi/elements/F1EmAVYciAZHVU6DzQbJjxTxWwWFPfKY9J6RGuHFS_ZKR9xgSVRTTlQyMjU5XFVJLUVORVJHWVxNQUlOIENBTVBVU1xVTklWRVJTSVRZIFNFUlZJQ0VTIEJVSUxESU5H";
             Asset usb = await _piClient.GetByDirectLink<Asset>(usbLink);
             await _piClient.LoadAssetValueList(usb);
+            AssetValue usbDailyElectric = usb.ChildValues.Where(x => x.Name.CapsAndTrim() == "EL POWER HOURLY AVG").First();
+            usb.ChildValues.Remove(usbDailyElectric);
+            usbDailyElectric = await _piClient.LoadAssetValueDetail(usbDailyElectric);
+            await _piClient.LoadInterpolatedValues(usbDailyElectric);
+            usb.ChildValues.Add(usbDailyElectric);
             assets.Add(usb);
 
             IEnumerable<HourSummary> summaries = await BuildHourlySources();
@@ -116,14 +132,14 @@ namespace UIowaBuildingsServices
         {//https://www.eia.gov/tools/faqs/faq.php?id=74&t=11
             //Converted to kg because we like the metric system
             ICollection<Source> sources = new List<Source>();
-            sources.Add(new Source { SourceName = "Wind", HourlySourceId = "EBA.MISO-ALL.NG.WND.HL", KiloGramsOfCo2PerKwh = 0 });
-            sources.Add(new Source { SourceName = "Solar", HourlySourceId = "EBA.MISO-ALL.NG.SUN.HL", KiloGramsOfCo2PerKwh = 0 });
-            sources.Add(new Source { SourceName = "Hydro", HourlySourceId = "EBA.MISO-ALL.NG.WAT.HL", KiloGramsOfCo2PerKwh = 0 });
-            sources.Add(new Source { SourceName = "Coal", HourlySourceId = "EBA.MISO-ALL.NG.COL.HL", KiloGramsOfCo2PerKwh = 1.011511 });
-            sources.Add(new Source { SourceName = "Natural Gas", HourlySourceId = "EBA.MISO-ALL.NG.NG.HL", KiloGramsOfCo2PerKwh = 0.4127691 });
-            sources.Add(new Source { SourceName = "Nuclear", HourlySourceId = "EBA.MISO-ALL.NG.NUC.HL", KiloGramsOfCo2PerKwh = 0 });
-            sources.Add(new Source { SourceName = "Petro", HourlySourceId = "EBA.MISO-ALL.NG.OIL.HL", KiloGramsOfCo2PerKwh = 0.9661517 });
-            sources.Add(new Source { SourceName = "Other", HourlySourceId = "EBA.MISO-ALL.NG.OTH.HL", KiloGramsOfCo2PerKwh = 0.30 }); //What to use for other?
+            sources.Add(new Source { SourceName = "Wind", HourlySourceId = "EBA.MISO-ALL.NG.WND.H", KiloGramsOfCo2PerKwh = 0 });
+            sources.Add(new Source { SourceName = "Solar", HourlySourceId = "EBA.MISO-ALL.NG.SUN.H", KiloGramsOfCo2PerKwh = 0 });
+            sources.Add(new Source { SourceName = "Hydro", HourlySourceId = "EBA.MISO-ALL.NG.WAT.H", KiloGramsOfCo2PerKwh = 0 });
+            sources.Add(new Source { SourceName = "Coal", HourlySourceId = "EBA.MISO-ALL.NG.COL.H", KiloGramsOfCo2PerKwh = 1.011511 });
+            sources.Add(new Source { SourceName = "Natural Gas", HourlySourceId = "EBA.MISO-ALL.NG.NG.H", KiloGramsOfCo2PerKwh = 0.4127691 });
+            sources.Add(new Source { SourceName = "Nuclear", HourlySourceId = "EBA.MISO-ALL.NG.NUC.H", KiloGramsOfCo2PerKwh = 0 });
+            sources.Add(new Source { SourceName = "Petro", HourlySourceId = "EBA.MISO-ALL.NG.OIL.H", KiloGramsOfCo2PerKwh = 0.9661517 });
+            sources.Add(new Source { SourceName = "Other", HourlySourceId = "EBA.MISO-ALL.NG.OTH.H", KiloGramsOfCo2PerKwh = 0.30 }); //What to use for other?
             return sources;
         }
     }

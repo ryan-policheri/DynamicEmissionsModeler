@@ -21,6 +21,7 @@ namespace UIowaBuildingsServices
             DataTable table = new DataTable();
             table.Columns.Add("Building Name");
             table.Columns.Add("Daily Kilowatt Hours");
+            table.Columns.Add("Daily Kilowatt Hours (From Hourly Averages)");
             table.Columns.Add("Daily CO2 Emissions in Kilograms");
 
             foreach (Asset asset in _assets)
@@ -28,17 +29,21 @@ namespace UIowaBuildingsServices
                 DataRow row = table.NewRow();
                 row["Building Name"] = asset.Name;
                 Value dailyKwh = asset.ChildValues.First(x => x.Name.CapsAndTrim() == "EL DAILY KWH").Value;
-                double asDouble = double.Parse(dailyKwh.UntypedValue.ToString());
-                row["Daily Kilowatt Hours"] = asDouble;
+                double dailyKwhAsDouble = double.Parse(dailyKwh.UntypedValue.ToString());
+                IEnumerable<InterpolatedDataPoint> hourlyAverages = asset.ChildValues.First(x => x.Name.CapsAndTrim() == "EL POWER HOURLY AVG").InterpolatedDataPoints;
+                row["Daily Kilowatt Hours"] = dailyKwhAsDouble;
 
+                double dailyDemandInkwh = 0;
                 double dailyCo2EmissionsInKg = 0;
-                double crudeHourlyDemand = asDouble / 24;
                 foreach (HourSummary summary in _summaries)
                 {
-                    double hourlyEmissions = summary.CalculateHourlyCO2EmissionsInKg(crudeHourlyDemand);
+                    double hourlyDemand = hourlyAverages.Where(x => x.Timestamp.Hour == summary.Hour.Hour).First().Value;
+                    double hourlyEmissions = summary.CalculateHourlyCO2EmissionsInKg(hourlyDemand);
+                    dailyDemandInkwh += hourlyDemand;
                     dailyCo2EmissionsInKg += hourlyEmissions;
                 }
 
+                row["Daily Kilowatt Hours (From Hourly Averages)"] = dailyDemandInkwh;
                 row["Daily CO2 Emissions in Kilograms"] = dailyCo2EmissionsInKg;
 
                 table.Rows.Add(row);
@@ -62,16 +67,17 @@ namespace UIowaBuildingsServices
             foreach (Asset asset in _assets)
             {
                 Value dailyKwh = asset.ChildValues.First(x => x.Name.CapsAndTrim() == "EL DAILY KWH").Value;
-                double asDouble = double.Parse(dailyKwh.UntypedValue.ToString());
+                double dailyKwhAsDouble = double.Parse(dailyKwh.UntypedValue.ToString());
+                IEnumerable<InterpolatedDataPoint> hourlyAverages = asset.ChildValues.First(x => x.Name.CapsAndTrim() == "EL POWER HOURLY AVG").InterpolatedDataPoints;
 
-                double crudeHourlyDemand = asDouble / 24;
                 foreach (HourSummary summary in _summaries)
                 {
                     DataRow row = table.NewRow();
                     row["Building Name"] = asset.Name;
                     row["Hour"] = summary.Hour.ToShortDateString() + " Hour: " + summary.Hour.Hour;
-                    row["Kilowatt Hours"] = crudeHourlyDemand;
-                    double hourlyEmissions = summary.CalculateHourlyCO2EmissionsInKg(crudeHourlyDemand);
+                    double hourlyDemand = hourlyAverages.Where(x => x.Timestamp.Hour == summary.Hour.Hour).First().Value;
+                    row["Kilowatt Hours"] = hourlyDemand;
+                    double hourlyEmissions = summary.CalculateHourlyCO2EmissionsInKg(hourlyDemand);
                     row["CO2 Emissions in Kilograms"] = hourlyEmissions;
                     table.Rows.Add(row);
                 }
