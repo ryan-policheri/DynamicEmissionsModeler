@@ -119,6 +119,31 @@ namespace PiServices
             }
         }
 
+        public async Task LoadInterpolatedValues(AssetValue value, DateTime startDate, DateTime endDate, bool useLocalTime = false)
+        {
+            string url = value.Links.InterpolatedData;
+            int startDaysAgo = (DateTime.Today - startDate.Date).Days;
+            int endDaysAgo = (DateTime.Today - endDate.Date).Days;
+            //The api seems to cut off day filtering with the current time. I.E. if i want yesterday i'd enter -1d, but i'd only see timestamps that are before today's current time
+            //It seems like it should be possible to pass in a timestamp for your startTime and endTime and have everything filter perfectly, but i'm seeing odd behavior with that as well
+            //Anyway the workaround for now is to buffer the query with an extra day on each end and trim unwanted dates client side.
+            startDaysAgo++;
+            endDaysAgo--; 
+            url = url.WithParameter("startTime", $"*-{startDaysAgo}d").WithParameter("interval", "1h");
+            if (endDaysAgo > 0) url = url.WithParameter("endTime", $"*-{endDaysAgo}d");
+            value.InterpolatedDataPoints = await this.GetAllAsync<InterpolatedDataPoint>(url, ITEMS_PROPERTY);
+
+            if (useLocalTime)
+            {
+                foreach (InterpolatedDataPoint point in value.InterpolatedDataPoints)
+                {
+                    point.Timestamp = point.Timestamp.ToLocalTime();
+                }
+            }
+
+            value.InterpolatedDataPoints = value.InterpolatedDataPoints.Where(x => x.Timestamp.Date.Date >= startDate.Date && x.Timestamp.Date.Date <= endDate.Date).ToList();
+        }
+
         private async Task<List<Asset>> AssetSearchAllInternal(List<Asset> parents, List<Asset> assets, int depthLimit, int currentDepth)
         {
             if (currentDepth > depthLimit) return assets;

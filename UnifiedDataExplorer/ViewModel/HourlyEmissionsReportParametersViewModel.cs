@@ -11,8 +11,8 @@ namespace UnifiedDataExplorer.ViewModel
     {
         public HourlyEmissionsReportParametersViewModel(HourlyEmissionsReportParameters model, IEnumerable<Asset> availableAssets)
         {
-            StartDate = model.StartDateTime;
-            EndDate = model.EndDateTime;
+            StartDate = model.StartDate;
+            EndDate = model.EndDate;
             AvailableAssets = new ObservableCollection<SelectableAssetViewModel>();
             foreach(var asset in availableAssets)
             {
@@ -41,8 +41,8 @@ namespace UnifiedDataExplorer.ViewModel
         public HourlyEmissionsReportParameters ToModel()
         {
             HourlyEmissionsReportParameters model = new HourlyEmissionsReportParameters();
-            model.StartDateTime = this.StartDate;
-            model.EndDateTime = this.EndDate;
+            model.StartDate = this.StartDate;
+            model.EndDate = this.EndDate;
             foreach(var asset in this.AvailableAssets)
             {
                 if(asset.IsSelected)

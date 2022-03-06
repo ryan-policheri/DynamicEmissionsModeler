@@ -6,7 +6,7 @@
         {
             if (String.IsNullOrWhiteSpace(parameterName) || String.IsNullOrWhiteSpace(parameterValue)) return url;
             if (!url.Contains("?")) return $"{url}?{parameterName}={parameterValue}";
-            else return $"{url} & {parameterName}={parameterValue}";
+            else return $"{url}&{parameterName}={parameterValue}";
         }
     }
 }

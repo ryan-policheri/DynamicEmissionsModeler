@@ -32,12 +32,12 @@ namespace UIowaBuildingsServices
                 AssetValue dailyElectric = asset.ChildValues.Where(x => x.Name.CapsAndTrim() == "EL POWER HOURLY AVG").First();
                 asset.ChildValues.Remove(dailyElectric);
                 dailyElectric = await _piClient.LoadAssetValueDetail(dailyElectric);
-                await _piClient.LoadInterpolatedValues(dailyElectric);
+                await _piClient.LoadInterpolatedValues(dailyElectric, parameters.StartDate, parameters.EndDate, true);
                 asset.ChildValues.Add(dailyElectric);
                 assets.Add(asset);
             }
 
-            IEnumerable<HourSummary> summaries = await BuildHourlySources();
+            IEnumerable<HourSummary> summaries = await BuildHourlySources(parameters);
 
             DataRenderingEngine engine = new DataRenderingEngine(assets, summaries);
 
@@ -73,7 +73,7 @@ namespace UIowaBuildingsServices
             }
         }
 
-        private async Task<IEnumerable<HourSummary>> BuildHourlySources()
+        private async Task<IEnumerable<HourSummary>> BuildHourlySources(HourlyEmissionsReportParameters parameters)
         {
             int numberOfHours = 24;
             IEnumerable<Source> sources = BuildSources();
@@ -81,32 +81,42 @@ namespace UIowaBuildingsServices
             ICollection<Series> seriesBySource = new List<Series>();
             foreach (Source source in sources)
             {
-                Series sourceSeries = await _eiaClient.GetSeriesByIdAsync(source.HourlySourceId);
+                Series sourceSeries = await _eiaClient.GetSeriesByIdAsync(source.HourlySourceId, parameters.StartDate, parameters.EndDate);
+                ConvertSeriesToLocalTime(sourceSeries);
                 seriesBySource.Add(sourceSeries);
             }
 
             ICollection<HourSummary> summaries = new List<HourSummary>();
-            DateTime startingHour = seriesBySource.First().DataPoints.OrderByDescending(x => x.Timestamp).First().Timestamp;
+            DateTime hourIterator = seriesBySource.First().DataPoints.OrderByDescending(x => x.Timestamp).First().Timestamp;
 
             for (int i = 0; i < numberOfHours; i++)
             {
                 HourSummary summary = new HourSummary();
-                summary.Hour = startingHour;
+                summary.Hour = hourIterator;
 
                 for (int j = 0; j < sources.Count(); j++)
                 {
                     Source source = sources.ElementAt(j);
                     Series series = seriesBySource.ElementAt(j);
-                    SeriesDataPoint seriesData = series.DataPoints.Where(x => x.Timestamp.Hour == startingHour.Hour).First();
+                    SeriesDataPoint seriesData = series.DataPoints.Where(x => x.Timestamp.Hour == hourIterator.Hour).First();
                     HourlySource hourlySource = source.ProduceHour(seriesData.Timestamp, seriesData.Value.Value);
                     summary.Sources.Add(hourlySource);
                 }
 
                 summaries.Add(summary);
-                startingHour = startingHour.AddHours(-1);
+                hourIterator = hourIterator.AddHours(-1);
             }
 
             return summaries;
+        }
+
+        private void ConvertSeriesToLocalTime(Series sourceSeries)
+        {//The sources below are pulling everything in UTC time. There is an option to pull in local time but intentionally not using it
+         //because it is the local time of the grid operator not of this computing system.
+            foreach(SeriesDataPoint point in sourceSeries.DataPoints)
+            {
+                point.Timestamp = point.Timestamp.ToLocalTime();
+            }
         }
 
         private IEnumerable<Source> BuildSources()

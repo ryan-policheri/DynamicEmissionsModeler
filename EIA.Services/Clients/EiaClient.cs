@@ -84,5 +84,15 @@ namespace EIA.Services.Clients
             series.ParseAllDates();
             return series;
         }
+
+        public async Task<Series> GetSeriesByIdAsync(string seriesId, DateTime startDate, DateTime endDate)
+        {
+            string path = "series/".WithQueryString("api_key", SubscriptionKey).WithQueryString("series_id", seriesId);
+            path = path.WithQueryString("start", startDate.ToString("yyyyMMdd"));
+            path = path.WithQueryString("end", endDate.AddDays(1).ToString("yyyyMMdd"));
+            Series series = await this.GetFirstAsync<Series>(path, "series");
+            series.ParseAllDates();
+            return series;
+        }
     }
 }

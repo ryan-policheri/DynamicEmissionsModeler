@@ -68,8 +68,8 @@ namespace UnifiedDataExplorer.Services.Reporting
             if (savedParametersFile.FileExists) model = await savedParametersFile.ReadAsync<HourlyEmissionsReportParameters>();
 
             //not loading these from save because want yesterday to be default. Need fancier design to save relative dates like that.
-            model.StartDateTime = DateTime.Today.AddDays(-1);
-            model.EndDateTime = DateTime.Today;
+            model.StartDate = DateTime.Today.AddDays(-1);
+            model.EndDate = DateTime.Today;
 
             HourlyEmissionsReportParametersViewModel vm = new HourlyEmissionsReportParametersViewModel(model, childAssets);
             _dialogService.ShowModalWindow(vm);
