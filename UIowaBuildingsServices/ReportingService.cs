@@ -22,39 +22,20 @@ namespace UIowaBuildingsServices
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         }
 
-        public async Task GenerateHourlyEmissionsReport(string outputFilePath)
+        public async Task GenerateHourlyEmissionsReport(HourlyEmissionsReportParameters parameters, string outputFilePath)
         {
             ICollection<Asset> assets = new List<Asset>();
-
-            string macleanLink = "https://pi.facilities.uiowa.edu/piwebapi/elements/F1EmAVYciAZHVU6DzQbJjxTxWwcE7mI49J6RGuHFS_ZKR9xgSVRTTlQyMjU5XFVJLUVORVJHWVxNQUlOIENBTVBVU1xNQUNMRUFOIEhBTEw";
-            Asset maclean = await _piClient.GetByDirectLink<Asset>(macleanLink);
-            await _piClient.LoadAssetValueList(maclean);
-            AssetValue macleanDailyElectric = maclean.ChildValues.Where(x => x.Name.CapsAndTrim() == "EL POWER HOURLY AVG").First();
-            maclean.ChildValues.Remove(macleanDailyElectric);
-            macleanDailyElectric = await _piClient.LoadAssetValueDetail(macleanDailyElectric);
-            await _piClient.LoadInterpolatedValues(macleanDailyElectric);
-            maclean.ChildValues.Add(macleanDailyElectric);
-            assets.Add(maclean);
-
-            string libraryLink = "https://pi.facilities.uiowa.edu/piwebapi/elements/F1EmAVYciAZHVU6DzQbJjxTxWw3k7mI49J6RGuHFS_ZKR9xgSVRTTlQyMjU5XFVJLUVORVJHWVxNQUlOIENBTVBVU1xNQUlOIExJQlJBUlk";
-            Asset library = await _piClient.GetByDirectLink<Asset>(libraryLink);
-            await _piClient.LoadAssetValueList(library);
-            AssetValue libraryDailyElectric = library.ChildValues.Where(x => x.Name.CapsAndTrim() == "EL POWER HOURLY AVG").First();
-            library.ChildValues.Remove(libraryDailyElectric);
-            libraryDailyElectric = await _piClient.LoadAssetValueDetail(libraryDailyElectric);
-            await _piClient.LoadInterpolatedValues(libraryDailyElectric);
-            library.ChildValues.Add(libraryDailyElectric);
-            assets.Add(library);
-
-            string usbLink = "https://pi.facilities.uiowa.edu/piwebapi/elements/F1EmAVYciAZHVU6DzQbJjxTxWwWFPfKY9J6RGuHFS_ZKR9xgSVRTTlQyMjU5XFVJLUVORVJHWVxNQUlOIENBTVBVU1xVTklWRVJTSVRZIFNFUlZJQ0VTIEJVSUxESU5H";
-            Asset usb = await _piClient.GetByDirectLink<Asset>(usbLink);
-            await _piClient.LoadAssetValueList(usb);
-            AssetValue usbDailyElectric = usb.ChildValues.Where(x => x.Name.CapsAndTrim() == "EL POWER HOURLY AVG").First();
-            usb.ChildValues.Remove(usbDailyElectric);
-            usbDailyElectric = await _piClient.LoadAssetValueDetail(usbDailyElectric);
-            await _piClient.LoadInterpolatedValues(usbDailyElectric);
-            usb.ChildValues.Add(usbDailyElectric);
-            assets.Add(usb);
+            foreach (string link in parameters.AssetLinks)
+            {
+                Asset asset = await _piClient.GetByDirectLink<Asset>(link);
+                await _piClient.LoadAssetValueList(asset);
+                AssetValue dailyElectric = asset.ChildValues.Where(x => x.Name.CapsAndTrim() == "EL POWER HOURLY AVG").First();
+                asset.ChildValues.Remove(dailyElectric);
+                dailyElectric = await _piClient.LoadAssetValueDetail(dailyElectric);
+                await _piClient.LoadInterpolatedValues(dailyElectric);
+                asset.ChildValues.Add(dailyElectric);
+                assets.Add(asset);
+            }
 
             IEnumerable<HourSummary> summaries = await BuildHourlySources();
 

@@ -60,8 +60,8 @@ namespace UnifiedDataExplorer.Startup
 
             string logFileName = $"UnifiedDataExplorer_Log_{DateTime.Today.Year}-{DateTime.Today.Month}-{DateTime.Today.Day}.log";
             string logFileDirectory = SystemFunctions.CombineDirectoryComponents(AppDataFolderOptions.Local, "Unified Data Explorer", "Logs");
-            FileLoggerConfig fileLoggetConfig = new FileLoggerConfig(logFileDirectory, logFileName);
-            FileLoggerProvider fileLoggerProvider = new FileLoggerProvider(fileLoggetConfig);
+            FileLoggerConfig fileLoggerConfig = new FileLoggerConfig(logFileDirectory, logFileName);
+            FileLoggerProvider fileLoggerProvider = new FileLoggerProvider(fileLoggerConfig);
 
             services.AddLogging(logging =>
             {
@@ -100,7 +100,14 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<PiAssetValuesViewModel>();
             services.AddTransient<PiInterpolatedDataViewModel>();
 
-            services.AddSingleton<ReportProcessor>();
+            services.AddSingleton<ReportProcessor>(x => new ReportProcessor(
+                x.GetRequiredService<ReportingService>(),
+                x.GetRequiredService<PiHttpClient>(),
+                config.HourlyEmissionsReportRootAssetLink,
+                x.GetRequiredService<IMessageHub>(),
+                x.GetRequiredService<DataFileProvider>(),
+                x.GetRequiredService<IDialogService>(),
+                x.GetRequiredService<ILogger<ReportProcessor>>()));
             services.AddSingleton<ReportingService>();
 
             return services.BuildServiceProvider();

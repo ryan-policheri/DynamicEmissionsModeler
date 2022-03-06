@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
-using System.Reflection;
-using DotNetCommon.Extensions;
+﻿using System.Reflection;
 using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
+using DotNetCommon.Extensions;
 
 namespace UnifiedDataExplorer
 {
@@ -34,6 +34,6 @@ namespace UnifiedDataExplorer
 
         public string EiaWebApiBaseAddress { get; set; }
 
-        public string CredentialsFile { get; set; }
+        public string HourlyEmissionsReportRootAssetLink { get; set; }
     }
 }

@@ -25,6 +25,11 @@ namespace UnifiedDataExplorer.Services.DataPersistence
             return BuildAppDataFile("Reports").RootSaveDirectory;
         }
 
+        public AppDataFile BuildHourlyEmissionsReportDataFile()
+        {
+            return BuildAppDataFile("Reports", "HourlyEmissionsReportParameters");
+        }
+
         public AppDataFile BuildDataViewFile()
         {
             return BuildAppDataFile("DataViews");
