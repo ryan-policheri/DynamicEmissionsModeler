@@ -10,26 +10,34 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" Text="Hourly Emissions Report - Parameter Entry" FontWeight="Bold" FontSize="18"/>
+        <TextBlock Grid.Row="0" Text="Hourly Emissions Report - Parameter Entry" FontWeight="Bold" FontSize="22"/>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="1">
-            <TextBlock Text="Start Date" FontWeight="Bold"/>
-            <DatePicker SelectedDate="{Binding StartDate}" MaxWidth="200"/>
-            <TextBlock Text="End Date" FontWeight="Bold"/>
-            <DatePicker SelectedDate="{Binding EndDate}" MaxWidth="200"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0 15 0 10">
+            <TextBlock Text="Start Date" FontWeight="Bold" FontSize="16"/>
+            <DatePicker SelectedDate="{Binding StartDate}" MaxWidth="200" Margin="5 0 0 0" Padding="0 0 0 5" FontSize="14"/>
+            <TextBlock Text="End Date" FontWeight="Bold" Margin="20 0 0 0" FontSize="16"/>
+            <DatePicker SelectedDate="{Binding EndDate}" MaxWidth="200" Margin="5 0 0 0" Padding="0 0 0 5" FontSize="14"/>
         </StackPanel>
 
-        <ListBox Grid.Row="2" ItemsSource="{Binding AvailableAssets}">
+        <StackPanel Orientation="Horizontal" Grid.Row="2" >
+            <TextBlock Text="Select Buildings" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+            <Button Background="Transparent" Content="{Binding SelectAllText}" Command="{Binding SelectAllCommand}" 
+                    Margin="10 0 0 0" FontSize="12" VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <ListBox Grid.Row="3" ItemsSource="{Binding AvailableAssets}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <DockPanel>
-                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"/>
-                        <TextBlock Text="{Binding Name, Mode=OneTime}"/>
+                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}">
+                            <TextBlock Text="{Binding Name, Mode=OneTime}"/>
+                        </CheckBox>
                     </DockPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

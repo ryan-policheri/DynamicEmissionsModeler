@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
+using DotNetCommon.DelegateCommand;
 using DotNetCommon.MVVM;
 using PiModel;
 using UIowaBuildingsModel;
@@ -9,10 +11,15 @@ namespace UnifiedDataExplorer.ViewModel
 {
     public class HourlyEmissionsReportParametersViewModel : ViewModelBase
     {
+        private const string SELECT_ALL = "Select All";
+        private const string UNSELECT_ALL = "Unselect All";
+
         public HourlyEmissionsReportParametersViewModel(HourlyEmissionsReportParameters model, IEnumerable<Asset> availableAssets)
         {
             StartDate = model.StartDate;
             EndDate = model.EndDate;
+            SelectAllCommand = new DelegateCommand(OnSelectAll);
+            SelectAllText = SELECT_ALL;
             AvailableAssets = new ObservableCollection<SelectableAssetViewModel>();
             foreach(var asset in availableAssets)
             {
@@ -36,6 +43,15 @@ namespace UnifiedDataExplorer.ViewModel
             set { SetField<DateTime>(ref _endTime, value); }
         }
 
+        public ICommand SelectAllCommand { get; }
+
+        private string _selectAllText;
+        public string SelectAllText
+        {
+            get { return _selectAllText; }
+            private set { SetField<string>(ref _selectAllText, value); }
+        }
+
         public ObservableCollection<SelectableAssetViewModel> AvailableAssets { get; }
 
         public HourlyEmissionsReportParameters ToModel()
@@ -51,6 +67,16 @@ namespace UnifiedDataExplorer.ViewModel
                 }
             }
             return model;
+        }
+
+        private void OnSelectAll()
+        {
+            foreach (var asset in this.AvailableAssets)
+            {
+                asset.IsSelected = SelectAllText == SELECT_ALL;
+            }
+            if (SelectAllText == SELECT_ALL) SelectAllText = UNSELECT_ALL;
+            else SelectAllText = SELECT_ALL;
         }
     }
 
