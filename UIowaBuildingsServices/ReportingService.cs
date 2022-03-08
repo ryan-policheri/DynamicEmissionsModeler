@@ -24,6 +24,7 @@ namespace UIowaBuildingsServices
 
         public async Task GenerateHourlyEmissionsReport(HourlyEmissionsReportParameters parameters, string outputFilePath)
         {
+            //For every asset, get the electric power hourly average, where hours are in local time of this computing system
             ICollection<Asset> assets = new List<Asset>();
             foreach (string link in parameters.AssetLinks)
             {
@@ -37,9 +38,13 @@ namespace UIowaBuildingsServices
                 assets.Add(asset);
             }
 
+            //Pull the MISO data for every source for the given timeframe, in local time of this computing system
             IEnumerable<HourSummary> summaries = await BuildHourlySources(parameters);
 
-            DataRenderingEngine engine = new DataRenderingEngine(assets, summaries);
+            //These are the hours we care about for this report. We should have data from EIA and PI for all these hours
+            IEnumerable<DateTime> hours = GenerateHoursInLocalTime(parameters.StartDate, parameters.EndDate);
+
+            DataRenderingEngine engine = new DataRenderingEngine(hours, assets, summaries);
 
             using (ExcelPackage package = new ExcelPackage())
             {
@@ -132,6 +137,18 @@ namespace UIowaBuildingsServices
             sources.Add(new Source { SourceName = "Petro", HourlySourceId = "EBA.MISO-ALL.NG.OIL.H", KiloGramsOfCo2PerKwh = 0.9661517 });
             sources.Add(new Source { SourceName = "Other", HourlySourceId = "EBA.MISO-ALL.NG.OTH.H", KiloGramsOfCo2PerKwh = 0.30 }); //What to use for other?
             return sources;
+        }
+
+        private IEnumerable<DateTime> GenerateHoursInLocalTime(DateTime startDate, DateTime endDate)
+        {
+            ICollection<DateTime> hours = new List<DateTime>();
+            DateTime dateIterator = startDate.Date; //Should get 12AM on the starting date (first hour of day)
+            while(dateIterator.Date <= endDate.Date)
+            {
+                hours.Add(dateIterator);
+                dateIterator = dateIterator.AddHours(1);
+            }
+            return hours;
         }
     }
 }

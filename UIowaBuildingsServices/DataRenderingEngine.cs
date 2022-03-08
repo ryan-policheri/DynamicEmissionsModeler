@@ -7,11 +7,13 @@ namespace UIowaBuildingsServices
 {
     internal class DataRenderingEngine
     {
-        private ICollection<Asset> _assets;
-        private IEnumerable<HourSummary> _summaries;
+        private readonly IEnumerable<DateTime> _hours;
+        private readonly IEnumerable<Asset> _assets;
+        private readonly IEnumerable<HourSummary> _summaries;
 
-        public DataRenderingEngine(ICollection<Asset> assets, IEnumerable<HourSummary> summaries)
+        public DataRenderingEngine(IEnumerable<DateTime> hours, ICollection<Asset> assets, IEnumerable<HourSummary> summaries)
         {
+            _hours = hours;
             _assets = assets;
             _summaries = summaries;
         }
@@ -34,9 +36,10 @@ namespace UIowaBuildingsServices
 
                 double dailyDemandInkwh = 0;
                 double dailyCo2EmissionsInKg = 0;
-                foreach (HourSummary summary in _summaries)
+                foreach (DateTime hour in _hours)
                 {
-                    double hourlyDemand = hourlyAverages.Where(x => x.Timestamp.Hour == summary.Hour.Hour).First().Value;
+                    HourSummary summary = _summaries.Where(x => x.Hour.Date == hour.Date && x.Hour.Hour == hour.Hour).First();
+                    double hourlyDemand = hourlyAverages.Where(x => x.Timestamp.Date == hour.Date && x.Timestamp.Hour == hour.Hour).First().Value;
                     double hourlyEmissions = summary.CalculateHourlyCO2EmissionsInKg(hourlyDemand);
                     dailyDemandInkwh += hourlyDemand;
                     dailyCo2EmissionsInKg += hourlyEmissions;
@@ -68,12 +71,13 @@ namespace UIowaBuildingsServices
                 double dailyKwhAsDouble = double.Parse(dailyKwh.UntypedValue.ToString());
                 IEnumerable<InterpolatedDataPoint> hourlyAverages = asset.ChildValues.First(x => x.Name.CapsAndTrim() == "EL POWER HOURLY AVG").InterpolatedDataPoints;
 
-                foreach (HourSummary summary in _summaries)
+                foreach (DateTime hour in _hours)
                 {
+                    HourSummary summary = _summaries.Where(x => x.Hour.Date == hour.Date && x.Hour.Hour == hour.Hour).First();
                     DataRow row = table.NewRow();
                     row["Building Name"] = asset.Name;
                     row["Hour"] = summary.Hour.ToShortDateString() + " Hour: " + summary.Hour.Hour;
-                    double hourlyDemand = hourlyAverages.Where(x => x.Timestamp.Hour == summary.Hour.Hour).First().Value;
+                    double hourlyDemand = hourlyAverages.Where(x => x.Timestamp.Date == hour.Date && x.Timestamp.Hour == hour.Hour).First().Value;
                     row["Kilowatt Hours"] = hourlyDemand;
                     double hourlyEmissions = summary.CalculateHourlyCO2EmissionsInKg(hourlyDemand);
                     row["CO2 Emissions in Kilograms"] = hourlyEmissions;
@@ -99,10 +103,11 @@ namespace UIowaBuildingsServices
                 table.Columns.Add("CO2 in Kilograms from " + source.SourceName);
             }
 
-            foreach (HourSummary summary in _summaries)
+            foreach (DateTime hour in _hours)
             {
+                HourSummary summary = _summaries.Where(x => x.Hour.Date == hour.Date && x.Hour.Hour == hour.Hour).First();
                 DataRow row = table.NewRow();
-                row["Hour"] = summary.Hour.ToShortDateString() + " Hour: " + summary.Hour.Hour;
+                row["Hour"] = summary.Hour.ToString();
                 foreach (HourlySource source in summary.Sources)
                 {
                     row["Megawatt hours from " + source.Source.SourceName] = source.Value;

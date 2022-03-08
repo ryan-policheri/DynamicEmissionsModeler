@@ -137,7 +137,7 @@ namespace PiServices
             {
                 foreach (InterpolatedDataPoint point in value.InterpolatedDataPoints)
                 {
-                    point.Timestamp = point.Timestamp.ToLocalTime();
+                    point.Timestamp = point.Timestamp.ToLocalTime(); //Pi gives back all dates in UTC, so a call to ToLocalTime() should take care of it
                 }
             }
 
