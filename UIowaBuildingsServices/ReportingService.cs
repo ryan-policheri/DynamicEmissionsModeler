@@ -33,7 +33,7 @@ namespace UIowaBuildingsServices
                 AssetValue dailyElectric = asset.ChildValues.Where(x => x.Name.CapsAndTrim() == "EL POWER HOURLY AVG").First();
                 asset.ChildValues.Remove(dailyElectric);
                 dailyElectric = await _piClient.LoadAssetValueDetail(dailyElectric);
-                await _piClient.LoadInterpolatedValues(dailyElectric, parameters.StartDate, parameters.EndDate, true);
+                await _piClient.LoadInterpolatedValues(dailyElectric, parameters.StartDateInLocalTime, parameters.EndDateInLocalTime, true);
                 asset.ChildValues.Add(dailyElectric);
                 assets.Add(asset);
             }
@@ -42,7 +42,7 @@ namespace UIowaBuildingsServices
             IEnumerable<HourSummary> summaries = await BuildHourlySources(parameters);
 
             //These are the hours we care about for this report. We should have data from EIA and PI for all these hours
-            IEnumerable<DateTime> hours = GenerateHoursInLocalTime(parameters.StartDate, parameters.EndDate);
+            IEnumerable<DateTime> hours = GenerateHoursInLocalTime(parameters.StartDateInLocalTime, parameters.EndDateInLocalTime);
 
             DataRenderingEngine engine = new DataRenderingEngine(hours, assets, summaries);
 
@@ -86,13 +86,13 @@ namespace UIowaBuildingsServices
             ICollection<Series> seriesBySource = new List<Series>();
             foreach (Source source in sources)
             {
-                Series sourceSeries = await _eiaClient.GetSeriesByIdAsync(source.HourlySourceId, parameters.StartDate, parameters.EndDate);
+                Series sourceSeries = await _eiaClient.GetSeriesByIdAsync(source.HourlySourceId, parameters.StartDateInLocalTime, parameters.EndDateInLocalTime);
                 ConvertSeriesToLocalTime(sourceSeries);
                 seriesBySource.Add(sourceSeries);
             }
 
             ICollection<HourSummary> summaries = new List<HourSummary>();
-            DateTime hourIterator = seriesBySource.First().DataPoints.OrderByDescending(x => x.Timestamp).First().Timestamp;
+            DateTime hourIterator = parameters.StartDateInLocalTime.Date;
 
             for (int i = 0; i < numberOfHours; i++)
             {
@@ -109,7 +109,7 @@ namespace UIowaBuildingsServices
                 }
 
                 summaries.Add(summary);
-                hourIterator = hourIterator.AddHours(-1);
+                hourIterator = hourIterator.AddHours(1);
             }
 
             return summaries;

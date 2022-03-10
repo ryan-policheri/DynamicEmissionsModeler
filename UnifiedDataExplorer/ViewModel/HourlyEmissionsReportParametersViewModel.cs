@@ -16,8 +16,8 @@ namespace UnifiedDataExplorer.ViewModel
 
         public HourlyEmissionsReportParametersViewModel(HourlyEmissionsReportParameters model, IEnumerable<Asset> availableAssets)
         {
-            StartDate = model.StartDate;
-            EndDate = model.EndDate;
+            StartDate = model.StartDateInLocalTime;
+            EndDate = model.EndDateInLocalTime;
             SelectAllCommand = new DelegateCommand(OnSelectAll);
             SelectAllText = SELECT_ALL;
             AvailableAssets = new ObservableCollection<SelectableAssetViewModel>();
@@ -33,14 +33,24 @@ namespace UnifiedDataExplorer.ViewModel
         public DateTime StartDate
         {
             get { return _startTime; }
-            set { SetField<DateTime>(ref _startTime, value); }
+            set
+            {
+                if (value.Kind == DateTimeKind.Utc) throw new ArgumentException("Local or unspecified time expected"); //TODO: Do this in a converter
+                if (value.Kind == DateTimeKind.Unspecified) value = new DateTime(value.Ticks, DateTimeKind.Local);
+                SetField<DateTime>(ref _startTime, value); 
+            }
         }
 
         private DateTime _endTime;
         public DateTime EndDate
         {
             get { return _endTime; }
-            set { SetField<DateTime>(ref _endTime, value); }
+            set
+            {
+                if (value.Kind == DateTimeKind.Utc) throw new ArgumentException("Local or unspecified time expected"); // TODO: Do this in a converter
+                if (value.Kind == DateTimeKind.Unspecified) value = new DateTime(value.Ticks, DateTimeKind.Local);
+                SetField<DateTime>(ref _endTime, value); 
+            }
         }
 
         public ICommand SelectAllCommand { get; }
@@ -57,8 +67,8 @@ namespace UnifiedDataExplorer.ViewModel
         public HourlyEmissionsReportParameters ToModel()
         {
             HourlyEmissionsReportParameters model = new HourlyEmissionsReportParameters();
-            model.StartDate = this.StartDate;
-            model.EndDate = this.EndDate;
+            model.StartDateInLocalTime = this.StartDate;
+            model.EndDateInLocalTime = this.EndDate;
             foreach(var asset in this.AvailableAssets)
             {
                 if(asset.IsSelected)
