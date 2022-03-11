@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using DotNetCommon.Extensions;
+using System.Data;
+using System.Text.Json.Serialization;
 
 namespace PiModel
 {
@@ -31,18 +33,21 @@ namespace PiModel
         public double? Span { get; set; }
         public double? Zero { get; set; }
 
+        [JsonIgnore]
+        public DateTimeKind InterpolatedDataTimestampTimeKind => InterpolatedDataPoints?.FirstOrDefault() == null ? DateTimeKind.Unspecified : InterpolatedDataPoints.First().Timestamp.Kind;
+
         public IEnumerable<InterpolatedDataPoint> InterpolatedDataPoints { get; set; }
 
         public DataTable RenderDataPointsAsTable()
         {
             DataTable table = new DataTable();
-            table.Columns.Add("TimeStamp (LocalTime)", typeof(DateTime));
+            table.Columns.Add($"TimeStamp ({InterpolatedDataTimestampTimeKind.ToDescription()})", typeof(DateTime));
             table.Columns.Add(DefaultUnitsName, typeof(double));
 
             foreach(var dataPoint in InterpolatedDataPoints)
             {
                 DataRow row = table.NewRow();
-                row["TimeStamp (LocalTime)"] = dataPoint.Timestamp;
+                row[$"TimeStamp ({InterpolatedDataTimestampTimeKind.ToDescription()})"] = dataPoint.Timestamp;
                 row[DefaultUnitsName] = dataPoint.Value;
                 table.Rows.Add(row);
             }

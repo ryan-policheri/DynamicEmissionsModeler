@@ -119,21 +119,31 @@ namespace PiServices
             }
         }
 
-        public async Task LoadInterpolatedValues(AssetValue value, DateTime startDate, DateTime endDate, bool useLocalTime = false)
+        public async Task LoadInterpolatedValues(AssetValue value, DateTime startDate, DateTime endDate)
         {
+            if (startDate.Kind != DateTimeKind.Utc && startDate.Kind != DateTimeKind.Local) throw new ArgumentException("The incoming start date must have a DateTimeKind of Utc or Local. " +
+                 "The DateTimeKind of loaded interpolated values will match that of the incoming date range");
+            if (endDate.Kind != DateTimeKind.Utc && endDate.Kind != DateTimeKind.Local) throw new ArgumentException("The incoming end date must have a DateTimeKind of Utc or Local. " +
+                "The DateTimeKind of loaded interpolated values will match that of the incoming date range");
+            if (startDate.Kind != endDate.Kind) throw new ArgumentException("The startDate and endDate must have the same DateTimeKind");
+
             string url = value.Links.InterpolatedData;
-            int startDaysAgo = (DateTime.Today - startDate.Date).Days;
-            int endDaysAgo = (DateTime.Today - endDate.Date).Days;
-            //The api seems to cut off day filtering with the current time. I.E. if i want yesterday i'd enter -1d, but i'd only see timestamps that are before today's current time
-            //It seems like it should be possible to pass in a timestamp for your startTime and endTime and have everything filter perfectly, but i'm seeing odd behavior with that as well
-            //Anyway the workaround for now is to buffer the query with an extra day on each end and trim unwanted dates client side.
-            startDaysAgo++;
-            endDaysAgo--; 
-            url = url.WithParameter("startTime", $"*-{startDaysAgo}d").WithParameter("interval", "1h");
-            if (endDaysAgo > 0) url = url.WithParameter("endTime", $"*-{endDaysAgo}d");
+
+            startDate = startDate.Date.AddMinutes(30); //30 minutes after the start of the start date
+            endDate = endDate.AddDays(1).Date.AddMinutes(-30); //30 minutes before the end of the end date
+            string startDateString;
+            string endDateString;
+
+            if(startDate.Kind == DateTimeKind.Utc) { startDateString = startDate.ToStringWithNoOffset(); endDateString = endDate.ToStringWithNoOffset(); }
+            else { startDateString = startDate.ToStringWithLocalOffset(); endDateString = endDate.ToStringWithLocalOffset(); }
+
+            url = url.WithParameter("startTime", $"{startDateString}")
+                .WithParameter("endTime", $"{endDateString}")
+                .WithParameter("interval", "1h");
+
             value.InterpolatedDataPoints = await this.GetAllAsync<InterpolatedDataPoint>(url, ITEMS_PROPERTY);
 
-            if (useLocalTime)
+            if (startDate.Kind == DateTimeKind.Local)
             {
                 foreach (InterpolatedDataPoint point in value.InterpolatedDataPoints)
                 {

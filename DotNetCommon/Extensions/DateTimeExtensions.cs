@@ -19,5 +19,23 @@
             else if (dt.Month >= 10 && dt.Month <= 12) return new DateTime(dt.Year, 12, 31).Date;
             throw new NotSupportedException("DateTime is not following a gregorian calendar");
         }
+
+        public static string ToStringWithLocalOffset(this DateTime dateTime)
+        {
+            if (dateTime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("DateTimeKind cannot be unspecified");
+            else if (dateTime.Kind == DateTimeKind.Utc) dateTime = dateTime.ToLocalTime();
+
+            TimeSpan baseOffset = TimeZoneInfo.Local.GetUtcOffset(dateTime);
+            DateTimeOffset dateTimeWithOffset = new DateTimeOffset(dateTime, baseOffset);
+            return dateTimeWithOffset.ToString("yyyy-MM-ddTHH:mm:sszzz");
+        }
+
+        public static string ToStringWithNoOffset(this DateTime dateTime)
+        {
+            if (dateTime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("DateTimeKind cannot be unspecified");
+            else if (dateTime.Kind == DateTimeKind.Local) dateTime = dateTime.ToUniversalTime();
+
+            return dateTime.ToString("yyyy-MM-ddTHH:mm:ssZ");
+        }
     }
 }

@@ -33,7 +33,7 @@ namespace UIowaBuildingsServices
                 AssetValue dailyElectric = asset.ChildValues.Where(x => x.Name.CapsAndTrim() == "EL POWER HOURLY AVG").First();
                 asset.ChildValues.Remove(dailyElectric);
                 dailyElectric = await _piClient.LoadAssetValueDetail(dailyElectric);
-                await _piClient.LoadInterpolatedValues(dailyElectric, parameters.StartDateInLocalTime, parameters.EndDateInLocalTime, true);
+                await _piClient.LoadInterpolatedValues(dailyElectric, parameters.StartDateInLocalTime, parameters.EndDateInLocalTime);
                 asset.ChildValues.Add(dailyElectric);
                 assets.Add(asset);
             }
