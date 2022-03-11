@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Text.Json.Serialization;
+using EIA.Domain.Constants;
 using EIA.Domain.DataBind;
 using EIA.Domain.Extensions;
 
@@ -39,20 +40,20 @@ namespace EIA.Domain.Model
             {
                 switch (this.Frequency)
                 {
-                    case "M":
+                    case Frequencies.MONTHLY:
                         dataPoint.Timestamp = DateTime.ParseExact(dataPoint.RawTimestamp, "yyyyMM", us);
                         break;
-                    case "A":
+                    case Frequencies.ANNUALLY:
                         dataPoint.Timestamp = DateTime.ParseExact(dataPoint.RawTimestamp, "yyyy", us);
                         break;
-                    case "Q":
+                    case Frequencies.QUARTERLY:
                         dataPoint.Timestamp = dataPoint.RawTimestamp.ParseQuarter();
                         break;
-                    case "HL":
+                    case Frequencies.HOURLY_LOCAL:
                         dataPoint.Timestamp = DateTime.ParseExact(dataPoint.RawTimestamp, "yyyyMMddTHHzz", us);
                         break;
-                    case "H":
-                        dataPoint.Timestamp = DateTime.ParseExact(dataPoint.RawTimestamp, "yyyyMMddTHHZ", us, DateTimeStyles.AdjustToUniversal);
+                    case Frequencies.HOURLY_UTC:
+                        dataPoint.Timestamp = DateTime.ParseExact(dataPoint.RawTimestamp, "yyyyMMddTHHZ", us);
                         break;
                     default:
                         throw new NotImplementedException($"Do not know how to parse date time for the given frequency: {this.Frequency}");

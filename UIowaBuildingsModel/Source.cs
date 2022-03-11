@@ -5,6 +5,7 @@
         public string SourceName { get; set; }
         public string HourlySourceId { get; set; }
         public double KiloGramsOfCo2PerKwh { get; set; }
+        public DateTimeKind HourlySourceDateTimeKind { get; set; }
 
         public HourlySource ProduceHour(DateTime hour, double value)
         {

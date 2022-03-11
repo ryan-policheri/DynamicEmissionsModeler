@@ -20,22 +20,22 @@
             throw new NotSupportedException("DateTime is not following a gregorian calendar");
         }
 
-        public static string ToStringWithLocalOffset(this DateTime dateTime)
+        public static string ToStringWithLocalOffset(this DateTime dateTime, string format = "yyyy-MM-ddTHH:mm:sszzz")
         {
             if (dateTime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("DateTimeKind cannot be unspecified");
             else if (dateTime.Kind == DateTimeKind.Utc) dateTime = dateTime.ToLocalTime();
 
             TimeSpan baseOffset = TimeZoneInfo.Local.GetUtcOffset(dateTime);
             DateTimeOffset dateTimeWithOffset = new DateTimeOffset(dateTime, baseOffset);
-            return dateTimeWithOffset.ToString("yyyy-MM-ddTHH:mm:sszzz");
+            return dateTimeWithOffset.ToString(format);
         }
 
-        public static string ToStringWithNoOffset(this DateTime dateTime)
+        public static string ToStringWithNoOffset(this DateTime dateTime, string format = "yyyy-MM-ddTHH:mm:ssZ")
         {
             if (dateTime.Kind == DateTimeKind.Unspecified) throw new ArgumentException("DateTimeKind cannot be unspecified");
             else if (dateTime.Kind == DateTimeKind.Local) dateTime = dateTime.ToUniversalTime();
 
-            return dateTime.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            return dateTime.ToString(format);
         }
     }
 }

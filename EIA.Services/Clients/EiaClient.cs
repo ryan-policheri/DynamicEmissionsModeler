@@ -5,6 +5,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using DotNetCommon.Extensions;
 using DotNetCommon.WebApiClient;
+using EIA.Domain.Constants;
+using EIA.Domain.Extensions;
 using EIA.Domain.Model;
 
 namespace EIA.Services.Clients
@@ -70,14 +72,14 @@ namespace EIA.Services.Clients
         {
             string pathPreDayFilter = "series/".WithQueryString("api_key", SubscriptionKey).WithQueryString("series_id", seriesId);
             string path = pathPreDayFilter;
-            if(numberOfDays > 0)
+            if (numberOfDays > 0)
             {
                 DateTime startDate = DateTime.UtcNow.AddDays(-numberOfDays);
                 string dateFilterValue = startDate.ToString("yyyyMMddTHHZ");
                 path = pathPreDayFilter.WithQueryString("start", dateFilterValue);
             }
             Series series = await this.GetFirstAsync<Series>(path, "series");
-            if (series.Frequency != "HL" && series.Frequency != "H") //This is smelly, but essentially we are saying that if the data isn't hourly, remove the numberOfDays filter
+            if (!series.Frequency.IsHourlyFrequency()) //This is smelly, but essentially we are saying that if the data isn't hourly, remove the numberOfDays filter
             {
                 series = await this.GetFirstAsync<Series>(pathPreDayFilter, "series");
             }
@@ -85,13 +87,38 @@ namespace EIA.Services.Clients
             return series;
         }
 
-        public async Task<Series> GetSeriesByIdAsync(string seriesId, DateTime startDate, DateTime endDate)
-        {
+        public async Task<Series> GetHourlySeriesByIdAsync(string seriesId, DateTime startDate, DateTime endDate, DateTimeKind dataSourceTimeKind)
+        {//This method assumes you know if your data is in utc or local time. It should be hourly data after all.
+            if (startDate.Kind == DateTimeKind.Unspecified || endDate.Kind == DateTimeKind.Unspecified) throw new ArgumentException("startDate and endDate cannot be unspecified");
+            if (startDate.Kind != endDate.Kind) throw new ArgumentException("startDate and endDate must have the same DateTimeKind");
+            if (dataSourceTimeKind == DateTimeKind.Unspecified) throw new ArgumentException("dataSourceTimeKind must be local or utc");
+
+            startDate = startDate.Date;
+            endDate = endDate.AddDays(1).Date.AddHours(-1); //last hour of the end date
+
+            string startDateString;
+            string endDateString;
+            if (dataSourceTimeKind == DateTimeKind.Utc) { startDateString = startDate.ToStringWithNoOffset("yyyyMMddTHHZ"); endDateString = endDate.ToStringWithNoOffset("yyyyMMddTHHZ"); }
+            else if (dataSourceTimeKind == DateTimeKind.Local) throw new NotImplementedException("Haven't implemented local date time query yet");
+            else throw new NotImplementedException($"Haven't implemented {dataSourceTimeKind} date time query yet");
+
             string path = "series/".WithQueryString("api_key", SubscriptionKey).WithQueryString("series_id", seriesId);
-            path = path.WithQueryString("start", startDate.ToString("yyyyMMdd"));
-            path = path.WithQueryString("end", endDate.AddDays(1).ToString("yyyyMMdd"));
+            path = path.WithQueryString("start", startDateString);
+            path = path.WithQueryString("end", endDateString);
             Series series = await this.GetFirstAsync<Series>(path, "series");
+
+            if (!series.Frequency.IsHourlyFrequency()) throw new ArgumentException("This method is only for series that are hourly in nature");
+
             series.ParseAllDates();
+
+            if (dataSourceTimeKind == DateTimeKind.Utc && startDate.Kind == DateTimeKind.Local)
+            {
+                foreach (SeriesDataPoint point in series.DataPoints)
+                {
+                    point.Timestamp = point.Timestamp.ToLocalTime();
+                }
+            }
+
             return series;
         }
     }
