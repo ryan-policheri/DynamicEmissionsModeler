@@ -16,7 +16,9 @@
 
             <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}" x:Key="DataGridColumnHeaderStyle"/>
             <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource MaterialDesignDataGridCell}" x:Key="DataGridCellStyle"/>
-            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignRaisedButton}" x:Key="Button"/>
+            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignRaisedButton}" x:Key="Button"> 
+                <Setter Property="Background" Value="Transparent"/>
+            </Style>
             <Style TargetType="{x:Type TreeView}" BasedOn="{StaticResource MaterialDesignTreeView}" x:Key="TreeView"/>
             <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource MaterialDesignTreeViewItem}" x:Key="TreeViewItem">
                 <Setter Property="Margin" Value="0"/>

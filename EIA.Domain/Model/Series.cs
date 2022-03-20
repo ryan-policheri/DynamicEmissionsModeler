@@ -35,25 +35,24 @@ namespace EIA.Domain.Model
 
         public void ParseAllDates()
         {//Could also do this in the JsonConverter using regexes and such but it's convenient to know the Frequency
-            CultureInfo us = new CultureInfo("en-US");
             foreach (SeriesDataPoint dataPoint in DataPoints)
             {
                 switch (this.Frequency)
                 {
                     case Frequencies.MONTHLY:
-                        dataPoint.Timestamp = DateTime.ParseExact(dataPoint.RawTimestamp, "yyyyMM", us);
+                        dataPoint.Timestamp = DateTime.ParseExact(dataPoint.RawTimestamp, "yyyyMM", CultureInfo.InvariantCulture);
                         break;
                     case Frequencies.ANNUALLY:
-                        dataPoint.Timestamp = DateTime.ParseExact(dataPoint.RawTimestamp, "yyyy", us);
+                        dataPoint.Timestamp = DateTime.ParseExact(dataPoint.RawTimestamp, "yyyy", CultureInfo.InvariantCulture);
                         break;
                     case Frequencies.QUARTERLY:
                         dataPoint.Timestamp = dataPoint.RawTimestamp.ParseQuarter();
                         break;
                     case Frequencies.HOURLY_LOCAL:
-                        dataPoint.Timestamp = DateTime.ParseExact(dataPoint.RawTimestamp, "yyyyMMddTHHzz", us);
+                        dataPoint.Timestamp = DateTime.ParseExact(dataPoint.RawTimestamp, "yyyyMMddTHHzz", CultureInfo.InvariantCulture);
                         break;
                     case Frequencies.HOURLY_UTC:
-                        dataPoint.Timestamp = DateTime.ParseExact(dataPoint.RawTimestamp, "yyyyMMddTHHZ", us);
+                        dataPoint.Timestamp = DateTime.ParseExact(dataPoint.RawTimestamp, "yyyyMMddTHHZ", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal).ToUniversalTime();
                         break;
                     default:
                         throw new NotImplementedException($"Do not know how to parse date time for the given frequency: {this.Frequency}");

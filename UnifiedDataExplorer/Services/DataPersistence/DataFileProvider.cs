@@ -20,6 +20,11 @@ namespace UnifiedDataExplorer.Services.DataPersistence
             _credentialProvider = credentialProvider;
         }
 
+        public string GetExportsDirectory()
+        {
+            return BuildAppDataFile("Exports").RootSaveDirectory;
+        }
+
         public string GetReportsDirectory()
         {
             return BuildAppDataFile("Reports").RootSaveDirectory;

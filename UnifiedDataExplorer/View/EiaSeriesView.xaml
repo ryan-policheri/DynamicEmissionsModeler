@@ -4,11 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UnifiedDataExplorer.View"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Loaded="UserControl_Loaded">
-    <UserControl.Resources>
-    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -32,6 +31,10 @@
                 <TextBlock Text="{Binding ValueUnit}" Margin="10" FontWeight="Bold"/>
             </DockPanel>
             <Button Grid.Row="1" Grid.Column="1" Content="Close Series" Command="{Binding CloseExplorePointCommand}" Width="250" Height="50" Margin="0 0 0 5" Background="Transparent"/>
+            <Button Grid.Row="0" Grid.Column="2" Height="Auto" Width="75" HorizontalAlignment="Right" Margin="10" Background="Transparent"
+                    ToolTip="Export Data to Excel"  Command="{Binding ExcelExportCommand}">
+                <materialDesign:PackIcon Kind="MicrosoftExcel" Width="25" Height="25" Padding="0" Margin="0"/>
+            </Button>
         </Grid>
 
         <DataGrid Grid.Row="1" Name="MainDataGrid" BorderThickness="1" BorderBrush="Gray" AutoGenerateColumns="True"

@@ -1,19 +1,30 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Windows.Input;
+using System.Threading.Tasks;
 using System.Data;
 using DotNetCommon.EventAggregation;
+using DotNetCommon.DelegateCommand;
 using EIA.Domain.Model;
 using EIA.Services.Clients;
 using UnifiedDataExplorer.ModelWrappers;
+using UnifiedDataExplorer.Services.DataPersistence;
+using UIowaBuildingsServices;
+using DotNetCommon.SystemHelpers;
 
 namespace UnifiedDataExplorer.ViewModel
 {
     public class EiaSeriesViewModel : ExplorePointViewModel
     {
         private readonly EiaClient _client;
+        private readonly DataFileProvider _dataFileProvider;
+        private readonly ExcelDataSetExporter _exporter;
 
-        public EiaSeriesViewModel(EiaClient client, IMessageHub messageHub) : base(messageHub)
+        public EiaSeriesViewModel(EiaClient client,  DataFileProvider dataFileProvider, ExcelDataSetExporter exporter, IMessageHub messageHub) : base(messageHub)
         {
             _client = client;
+            _dataFileProvider = dataFileProvider;
+            _exporter = exporter;
+            ExcelExportCommand = new DelegateCommand(OnExcelExport);
         }
 
         private string _seriesName;
@@ -43,6 +54,8 @@ namespace UnifiedDataExplorer.ViewModel
             }
         }
 
+        public ICommand ExcelExportCommand { get; }
+
         public async Task LoadAsync(IEiaDetailLoadingInfo loadingInfo)
         {
             Series series = await _client.GetSeriesByIdAsync(loadingInfo.Id, 16);
@@ -53,6 +66,16 @@ namespace UnifiedDataExplorer.ViewModel
             HeaderDetail = this.SeriesName;
             CurrentLoadingInfo = loadingInfo;
             DataSet = series.RenderDataPointsAsTable();
+        }
+
+        private void OnExcelExport()
+        {
+            string exportDirectory = _dataFileProvider.GetExportsDirectory();
+            string fileName = "temp" + DateTime.Now.Second.ToString() + ".xlsx";
+            string fullPath = SystemFunctions.CombineDirectoryComponents(exportDirectory, fileName);
+
+            _exporter.ExportDataSetToExcel(fullPath, this.DataSet, this.HeaderDetail);
+            SystemFunctions.OpenFile(fullPath);
         }
     }
 }
