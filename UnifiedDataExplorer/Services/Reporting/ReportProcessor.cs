@@ -60,6 +60,11 @@ namespace UnifiedDataExplorer.Services.Reporting
 
         public async Task RenderBuildingEmissionsReport()
         {
+            //TEMP
+            var test = await _piClient.SearchPiPoint("PP_electric_purch");
+            await _piClient.LoadInterpolatedValues(test, DateTime.Today.AddDays(-1), DateTime.Today.AddDays(-1));
+            //END TEMP
+
             Asset asset = await _piClient.GetByDirectLink<Asset>(_rootAssetLink);
             IEnumerable<Asset> childAssets = await _piClient.GetChildAssets(asset);
 

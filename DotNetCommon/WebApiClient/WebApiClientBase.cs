@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Security.Authentication;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace DotNetCommon.WebApiClient
 {
@@ -303,7 +304,7 @@ namespace DotNetCommon.WebApiClient
         {
             string newUri = uri;
             string baseAddress = Client.BaseAddress.ToString();
-            if (!newUri.StartsWith(baseAddress))
+            if (!newUri.StartsWith(baseAddress) && !newUri.Contains(Client.BaseAddress.Host, StringComparison.InvariantCultureIgnoreCase))
             {
                 if (!newUri.StartsWith('/'))
                 {

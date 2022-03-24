@@ -4,13 +4,16 @@ using System.Text.Json.Serialization;
 
 namespace PiModel
 {
-    public class AssetValue : ItemBase
+    public class AssetValue : ItemBase, IHaveTimeSeriesData
     {
         //This property is only available when loading the list of asset values. When diving into a specific asset value data will not be here
         public Value Value { get; set; }
 
         //See AssetValueLinks class for more info
         public AssetValueLinks Links { get; set; }
+
+        [JsonIgnore]
+        IHaveTimeSeriesDataLinks IHaveTimeSeriesData.TimeSeriesLinks => Links;
 
         //These properties are only available when diving into a specific asset value. Note the first 2 are commented out because they are a part of ItemBase
         //public string Id { get; set; }
