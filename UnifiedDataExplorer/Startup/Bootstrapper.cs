@@ -99,6 +99,7 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<PiJsonDisplayViewModel>();
             services.AddTransient<PiAssetValuesViewModel>();
             services.AddTransient<PiInterpolatedDataViewModel>();
+            services.AddTransient<PiSearchViewModel>();
 
             services.AddTransient<ExcelDataSetExporter>();
             services.AddSingleton<ReportProcessor>(x => new ReportProcessor(

@@ -14,13 +14,16 @@ namespace UnifiedDataExplorer.ViewModel
     {
         private readonly EiaDatasetFinderViewModel _eiaDatasetFinderViewModel;
         private readonly PiDatasetFinderViewModel _piDatasetFinderViewModel;
+        private readonly PiSearchViewModel _piSearchViewModel;
 
         public DataExplorerViewModel(EiaDatasetFinderViewModel datasetFinderViewModel,
             PiDatasetFinderViewModel piDatasetFinderViewModel,
+            PiSearchViewModel piSearchViewModel,
             RobustViewModelDependencies facade) : base(facade)
         {
             _eiaDatasetFinderViewModel = datasetFinderViewModel;
             _piDatasetFinderViewModel = piDatasetFinderViewModel;
+            _piSearchViewModel = piSearchViewModel;
 
             CurrentChild = datasetFinderViewModel;
             Children = new ObservableCollection<ViewModelBase>();
@@ -51,6 +54,8 @@ namespace UnifiedDataExplorer.ViewModel
 
             Children.Add(_eiaDatasetFinderViewModel);
             await _eiaDatasetFinderViewModel.LoadAsync();
+
+            Children.Add(_piSearchViewModel);
         }
 
         private void AddAndSwitchChild(ViewModelBase viewModel)
