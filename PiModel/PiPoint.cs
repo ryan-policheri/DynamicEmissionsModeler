@@ -1,9 +1,13 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Data;
+using System.Text.Json.Serialization;
+using DotNetCommon.Extensions;
 
 namespace PiModel
 {
     public class PiPoint : IHaveTimeSeriesData
     {
+        public const string PI_POINT_TYPE = "PI_POINT";
+
         public string WebId { get; set; }
         public int Id { get; set; }
         public string Name { get; set; }
@@ -24,5 +28,24 @@ namespace PiModel
         IHaveTimeSeriesDataLinks IHaveTimeSeriesData.TimeSeriesLinks => Links;
 
         public IEnumerable<InterpolatedDataPoint> InterpolatedDataPoints { get; set; }
+
+        [JsonIgnore]
+        public DateTimeKind InterpolatedDataTimestampTimeKind => InterpolatedDataPoints?.FirstOrDefault() == null ? DateTimeKind.Unspecified : InterpolatedDataPoints.First().Timestamp.Kind;
+
+        public DataTable RenderDataPointsAsTable()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add($"TimeStamp ({InterpolatedDataTimestampTimeKind.ToDescription()})", typeof(DateTime));
+            table.Columns.Add(EngineeringUnits, typeof(double));
+
+            foreach (var dataPoint in InterpolatedDataPoints)
+            {
+                DataRow row = table.NewRow();
+                row[$"TimeStamp ({InterpolatedDataTimestampTimeKind.ToDescription()})"] = dataPoint.Timestamp;
+                row[EngineeringUnits] = dataPoint.Value;
+                table.Rows.Add(row);
+            }
+            return table;
+        }
     }
 }

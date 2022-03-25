@@ -3,10 +3,10 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using DotNetCommon.MVVM;
+using DotNetCommon.PersistenceHelpers;
 using UnifiedDataExplorer.Constants;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ViewModel.Base;
-using DotNetCommon.PersistenceHelpers;
 
 namespace UnifiedDataExplorer.ViewModel
 {
@@ -52,10 +52,11 @@ namespace UnifiedDataExplorer.ViewModel
             CurrentChild = _piDatasetFinderViewModel;
             await _piDatasetFinderViewModel.LoadAsync();
 
+            Children.Add(_piSearchViewModel);
+            await _piSearchViewModel.LoadAsync();
+
             Children.Add(_eiaDatasetFinderViewModel);
             await _eiaDatasetFinderViewModel.LoadAsync();
-
-            Children.Add(_piSearchViewModel);
         }
 
         private void AddAndSwitchChild(ViewModelBase viewModel)
@@ -108,6 +109,21 @@ namespace UnifiedDataExplorer.ViewModel
                     await vm.LoadAsync(args);
                 }
                 if (args.Verb == PiAssetValuesViewModel.RENDER_INTERPOLATED_VALUES)
+                {
+                    PiInterpolatedDataViewModel vm = this.Resolve<PiInterpolatedDataViewModel>();
+                    AddAndSwitchChild(vm);
+                    await vm.LoadAsync(args);
+                }
+            }
+            if (args.SenderTypeName == nameof(PiSearchViewModel))
+            {
+                if (args.Verb == PiSearchViewModel.SHOW_JSON)
+                {
+                    PiJsonDisplayViewModel vm = this.Resolve<PiJsonDisplayViewModel>();
+                    AddAndSwitchChild(vm);
+                    await vm.LoadAsync(args);
+                }
+                if (args.Verb == PiSearchViewModel.RENDER_VALUES)
                 {
                     PiInterpolatedDataViewModel vm = this.Resolve<PiInterpolatedDataViewModel>();
                     AddAndSwitchChild(vm);

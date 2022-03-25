@@ -28,7 +28,7 @@ namespace UnifiedDataExplorer.ViewModel
             RenderValuesCommand = new DelegateCommand<LazyTreeItemViewModel>(OnRenderValues);
         }
 
-        public string Header => "PI AF Dataset Finder";
+        public string Header => "PI Asset Framework Finder";
         public string HeaderDetail => "Navigate to a PI AssetFramework (AF) dataset";
         public bool IsCloseable => false;
 
@@ -126,7 +126,7 @@ namespace UnifiedDataExplorer.ViewModel
                 Id = model.GetLinkToSelf(),
                 Name = model.GetItemName(),
                 Verb = verb,
-                Tag = model.GetTypeTag()
+                TypeTag = model.GetTypeTag()
             });
         }
     }

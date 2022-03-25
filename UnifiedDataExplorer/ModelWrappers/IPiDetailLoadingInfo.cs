@@ -6,6 +6,6 @@
 
         public string Verb { get; set; }
 
-        public string Tag { get; set; }
+        public string TypeTag { get; set; }
     }
 }

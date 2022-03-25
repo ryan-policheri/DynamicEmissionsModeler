@@ -45,7 +45,7 @@ namespace UnifiedDataExplorer.ViewModel
 
         public async Task LoadAsync(IPiDetailLoadingInfo loadingInfo) //Assume Id is a link, assume tag is a "type"
         {
-            if (loadingInfo.Tag == ServerDatabaseAssetWrapper.ASSET_TYPE)
+            if (loadingInfo.TypeTag == ServerDatabaseAssetWrapper.ASSET_TYPE)
             {
                 Asset asset = await _client.GetByDirectLink<Asset>(loadingInfo.Id);
                 await _client.LoadAssetValueList(asset);
@@ -65,7 +65,7 @@ namespace UnifiedDataExplorer.ViewModel
             else
             {
                 Header = "Error";
-                HeaderDetail = $"Did not know how to render value for a {loadingInfo.Tag}";
+                HeaderDetail = $"Did not know how to render value for a {loadingInfo.TypeTag}";
                 throw new ArgumentException(nameof(PiAssetValuesViewModel) + " can only render values of an asset");
             }
         }
@@ -90,7 +90,7 @@ namespace UnifiedDataExplorer.ViewModel
                 Id = model.Links.Source,
                 Name = model.Name,
                 Verb = verb,
-                Tag = nameof(AssetValue)
+                TypeTag = nameof(AssetValue)
             });
         }
     }

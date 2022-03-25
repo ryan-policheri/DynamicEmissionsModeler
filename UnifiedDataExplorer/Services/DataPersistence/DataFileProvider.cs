@@ -40,6 +40,11 @@ namespace UnifiedDataExplorer.Services.DataPersistence
             return BuildAppDataFile("DataViews");
         }
 
+        public AppDataFile BuildSearchHistoryDataFile()
+        {
+            return BuildAppDataFile("SearchHistory", "PiSearchWindowHistory");
+        }
+
         public EncryptedAppDataFile BuildCredentialsFile()
         {
             return BuildEncryptedAppDataFile(null, "Credentials");

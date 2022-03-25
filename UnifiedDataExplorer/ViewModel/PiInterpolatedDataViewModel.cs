@@ -49,7 +49,7 @@ namespace UnifiedDataExplorer.ViewModel
 
         public async Task LoadAsync(IPiDetailLoadingInfo loadingInfo)
         {
-            if (loadingInfo.Tag == nameof(AssetValue))
+            if (loadingInfo.TypeTag == nameof(AssetValue))
             {
                 CurrentLoadingInfo = loadingInfo;
                 AssetValue value = await this._client.GetByDirectLink<AssetValue>(loadingInfo.Id);
@@ -61,10 +61,22 @@ namespace UnifiedDataExplorer.ViewModel
                 await this._client.LoadInterpolatedValues(value, 30, false);
                 DataSet = value.RenderDataPointsAsTable();
             }
+            else if(loadingInfo.TypeTag == PiPoint.PI_POINT_TYPE)
+            {
+                CurrentLoadingInfo = loadingInfo;
+                PiPoint piPoint = await this._client.GetByDirectLink<PiPoint>(loadingInfo.Id);
+                await _client.LoadInterpolatedValues(piPoint, 30, false);
+                Header = piPoint.Name;
+                HeaderDetail = $"Interpolated {piPoint.Name} data for {piPoint.Name}";
+                AssetName = piPoint.Name;
+                ValueName = piPoint.Descriptor;
+                await this._client.LoadInterpolatedValues(piPoint, 30, false);
+                DataSet = piPoint.RenderDataPointsAsTable();
+            }
             else
             {
                 Header = "Error";
-                HeaderDetail = $"Did not know how to render value for a {loadingInfo.Tag}";
+                HeaderDetail = $"Did not know how to render value for a {loadingInfo.TypeTag}";
                 throw new ArgumentException(nameof(PiInterpolatedDataViewModel) + " can only render values of an asset");
             }
         }
