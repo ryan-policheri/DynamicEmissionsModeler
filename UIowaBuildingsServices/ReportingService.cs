@@ -80,7 +80,7 @@ namespace UIowaBuildingsServices
 
         private async Task<IEnumerable<HourSummary>> BuildHourlySources(HourlyEmissionsReportParameters parameters)
         {
-            int numberOfHours = 24;
+            int numberOfHours = ((parameters.EndDateInLocalTime - parameters.StartDateInLocalTime).Days + 1) * 24;
             IEnumerable<Source> sources = BuildSources();
 
             ICollection<Series> seriesBySource = new List<Series>();
