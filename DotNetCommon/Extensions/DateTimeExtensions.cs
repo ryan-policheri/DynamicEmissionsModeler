@@ -37,5 +37,48 @@
 
             return dateTime.ToString(format);
         }
+
+        public static string ToStringWithNoOffset(this DateTimeOffset dateTime, string format = "yyyy-MM-ddTHH:mm:ssZ")
+        {
+            dateTime = dateTime.ToUniversalTime();
+            return dateTime.ToString(format);
+        }
+
+        public static bool HourMatches(this DateTimeOffset dateTimeOffset1, DateTimeOffset dateTimeOffset2)
+        {
+            return (dateTimeOffset1.UtcDateTime.Date == dateTimeOffset2.UtcDateTime.Date &&
+                    dateTimeOffset1.UtcDateTime.Hour == dateTimeOffset2.UtcDateTime.Hour);
+        }
+
+        public static IEnumerable<DateTimeOffset> EnumerateHoursUntil(this DateTimeOffset startDateTime, DateTimeOffset endDateTime)
+        {
+            if (startDateTime > endDateTime) throw new ArgumentException("startDateTime must be less than or equal to endDateTime");
+            ICollection<DateTimeOffset> hours = new List<DateTimeOffset>();
+            DateTimeOffset dateIterator = startDateTime;
+            while (dateIterator <= endDateTime)
+            {
+                hours.Add(dateIterator);
+                dateIterator = dateIterator.AddHours(1);
+            }
+            return hours;
+        }
+
+        public static bool AllHoursMatch(this IEnumerable<DateTimeOffset> dataSet1, IEnumerable<DateTimeOffset> dataSet2)
+        {
+            if (dataSet1.Count() != dataSet2.Count()) return false;
+
+            var orderedSet1 = dataSet1.OrderBy(x => x);
+            var orderedSet2 = dataSet2.OrderBy(x => x);
+
+            for(int i = 0; i < orderedSet1.Count(); i++)
+            {
+                DateTimeOffset set1TimeStamp =  orderedSet1.ElementAt(i);
+                DateTimeOffset set2TimeStamp =  orderedSet2.ElementAt(i);
+
+                if(!set1TimeStamp.HourMatches(set2TimeStamp)) return false;
+            }
+
+            return true;
+        }
     }
 }

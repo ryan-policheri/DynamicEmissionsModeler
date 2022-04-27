@@ -50,5 +50,10 @@ namespace DotNetCommon.Extensions
             if (source.Length <= howMany) return source;
             return source.Substring(0, howMany) + "...";
         }
+
+        public static bool OneOf(this string source, string[] items)
+        {
+            return items.Contains(source);
+        }
     }
 }

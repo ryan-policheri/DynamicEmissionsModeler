@@ -6,7 +6,7 @@ namespace EIA.Domain.Model
     {
         public string RawTimestamp { get; set; }
 
-        public DateTime Timestamp { get; set; }
+        public DateTimeOffset Timestamp { get; set; }
 
         public double? Value { get; set; }
     }

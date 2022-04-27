@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.Linq;
 using System.Text.Json.Serialization;
+using DotNetCommon.Extensions;
 using EIA.Domain.Constants;
 using EIA.Domain.DataBind;
 using EIA.Domain.Extensions;
@@ -33,47 +35,38 @@ namespace EIA.Domain.Model
         [JsonConverter(typeof(ToSeriesDataPointConverter))]
         public ICollection<SeriesDataPoint> DataPoints { get; set; }
 
-        public void ParseAllDates()
-        {//Could also do this in the JsonConverter using regexes and such but it's convenient to know the Frequency
-            foreach (SeriesDataPoint dataPoint in DataPoints)
-            {
-                switch (this.Frequency)
-                {
-                    case Frequencies.MONTHLY:
-                        dataPoint.Timestamp = DateTime.ParseExact(dataPoint.RawTimestamp, "yyyyMM", CultureInfo.InvariantCulture);
-                        break;
-                    case Frequencies.ANNUALLY:
-                        dataPoint.Timestamp = DateTime.ParseExact(dataPoint.RawTimestamp, "yyyy", CultureInfo.InvariantCulture);
-                        break;
-                    case Frequencies.QUARTERLY:
-                        dataPoint.Timestamp = dataPoint.RawTimestamp.ParseQuarter();
-                        break;
-                    case Frequencies.HOURLY_LOCAL:
-                        dataPoint.Timestamp = DateTime.ParseExact(dataPoint.RawTimestamp, "yyyyMMddTHHzz", CultureInfo.InvariantCulture);
-                        break;
-                    case Frequencies.HOURLY_UTC:
-                        dataPoint.Timestamp = DateTime.ParseExact(dataPoint.RawTimestamp, "yyyyMMddTHHZ", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal).ToUniversalTime();
-                        break;
-                    default:
-                        throw new NotImplementedException($"Do not know how to parse date time for the given frequency: {this.Frequency}");
-                }
-            }
-        }
-
         public DataTable RenderDataPointsAsTable()
         {
             DataTable table = new DataTable();
-            table.Columns.Add("Timestamp", typeof(DateTime));
+            string timestampLabel = "Timestamp (" + GetFrequencyDisplay();
+            if (this.Frequency == Frequencies.HOURLY_LOCAL && DataPoints.FirstOrDefault() != null) timestampLabel += " " + DataPoints.First().Timestamp.Offset.ToHourString() + ")";
+            else timestampLabel += ")";
+
+            table.Columns.Add(timestampLabel, typeof(DateTime));
             table.Columns.Add(Units, typeof(double));
 
             foreach (var dataPoint in DataPoints)
             {
                 DataRow row = table.NewRow();
-                row["Timestamp"] = dataPoint.Timestamp;
+                if(this.Frequency == Frequencies.HOURLY_LOCAL) row[timestampLabel] = dataPoint.Timestamp.LocalDateTime;
+                else row[timestampLabel] = dataPoint.Timestamp.UtcDateTime;
                 row[Units] = dataPoint.Value.HasValue? dataPoint.Value : DBNull.Value;
                 table.Rows.Add(row);
             }
             return table;
+        }
+
+        private string GetFrequencyDisplay()
+        {
+            switch (this.Frequency)
+            {
+                case Frequencies.MONTHLY: return "Months";
+                case Frequencies.ANNUALLY: return "Years";
+                case Frequencies.QUARTERLY: return "Quarters";
+                case Frequencies.HOURLY_LOCAL: return "Local Hours";
+                case Frequencies.HOURLY_UTC: return "Utc Hours";
+                default: throw new NotImplementedException($"Do not know how to get frequency display for {this.Frequency}");
+            }
         }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using System;
 using DotNetCommon.Extensions;
+using DotNetCommon.Helpers;
 
 namespace EIA.Domain.Extensions
 {
     public static class DateTimeExtensions
     {
-        public static DateTime ParseQuarter(this string source)
+        public static DateTimeOffset ParseQuarter(this string source)
         {
             string year = source.Substring(0, 4);
             string quarter = source.Substring(4);
@@ -22,7 +23,7 @@ namespace EIA.Domain.Extensions
                 default: throw new ArgumentOutOfRangeException("Only four quarters in a year");
             }
 
-            return new DateTime(yearInt, quarterAsMonth, 1);
+            return new DateTimeOffset(new DateTime(yearInt, quarterAsMonth, 1), TimeZones.GetUtcOffset());
         }
     }
 }

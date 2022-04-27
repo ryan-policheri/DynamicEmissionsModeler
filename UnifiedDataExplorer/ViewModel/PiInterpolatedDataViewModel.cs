@@ -58,19 +58,19 @@ namespace UnifiedDataExplorer.ViewModel
                 HeaderDetail = $"Interpolated {value.Name} data for {asset.Name}";
                 AssetName = asset.Name;
                 ValueName = value.Name;
-                await this._client.LoadInterpolatedValues(value, 30, false);
+                await this._client.LoadInterpolatedValues(value, 30);
                 DataSet = value.RenderDataPointsAsTable();
             }
             else if(loadingInfo.TypeTag == PiPoint.PI_POINT_TYPE)
             {
                 CurrentLoadingInfo = loadingInfo;
                 PiPoint piPoint = await this._client.GetByDirectLink<PiPoint>(loadingInfo.Id);
-                await _client.LoadInterpolatedValues(piPoint, 30, false);
+                await _client.LoadInterpolatedValues(piPoint, 30);
                 Header = piPoint.Name;
                 HeaderDetail = $"Interpolated {piPoint.Name} data for {piPoint.Name}";
                 AssetName = piPoint.Name;
                 ValueName = piPoint.Descriptor;
-                await this._client.LoadInterpolatedValues(piPoint, 30, false);
+                await this._client.LoadInterpolatedValues(piPoint, 30);
                 DataSet = piPoint.RenderDataPointsAsTable();
             }
             else

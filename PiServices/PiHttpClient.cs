@@ -130,7 +130,7 @@ namespace PiServices
 
             if (searchResult.Errors.Count > 0) throw new Exception("Error with request: " + searchResult.Errors.Select(x => x.Message).ToDelimitedList(';'));
             if (searchResult.TotalHits < 1) return null;
-            PiSearchItem item = searchResult.Items.FirstOrDefault(x => x.Name.CapsAndTrim() == piPointName.CapsAndTrim() && x.ItemType.CapsAndTrim() == ItemTypes.PI_POINT.CapsAndTrim());
+            PiSearchItem item = searchResult.Items.FirstOrDefault(x => x.Name.CapsAndTrim() == piPointName.CapsAndTrim().Trim('\"') && x.ItemType.CapsAndTrim() == ItemTypes.PI_POINT.CapsAndTrim());
             if (item == null) return null;
 
             PiPoint piPoint = await this.GetByDirectLink<PiPoint>(item.Links.Self);
@@ -138,54 +138,26 @@ namespace PiServices
         }
 
         //LOAD TIME SERIES DATA
-        public async Task LoadInterpolatedValues(IHaveTimeSeriesData item, int daysBack, bool convertTimeStampsToLocalTime = false)
+        public async Task LoadInterpolatedValues(IHaveTimeSeriesData item, int daysBack)
         {
             string url = item.TimeSeriesLinks.InterpolatedData;
             url = url.WithParameter("startTime", $"*-{daysBack}d").WithParameter("interval", "1h");
             item.InterpolatedDataPoints = await this.GetAllAsync<InterpolatedDataPoint>(url, ITEMS_PROPERTY);
-
-            if (convertTimeStampsToLocalTime)
-            {
-                foreach (InterpolatedDataPoint point in item.InterpolatedDataPoints)
-                {
-                    point.Timestamp = point.Timestamp.ToLocalTime();
-                }
-            }
         }
 
-        public async Task LoadInterpolatedValues(IHaveTimeSeriesData item, DateTime startDate, DateTime endDate)
+        public async Task LoadInterpolatedValues(IHaveTimeSeriesData item, DateTimeOffset startDate, DateTimeOffset endDate, string filterExpression = null)
         {
-            if (startDate.Kind != DateTimeKind.Utc && startDate.Kind != DateTimeKind.Local) throw new ArgumentException("The incoming start date must have a DateTimeKind of Utc or Local. " +
-     "The DateTimeKind of loaded interpolated values will match that of the incoming date range");
-            if (endDate.Kind != DateTimeKind.Utc && endDate.Kind != DateTimeKind.Local) throw new ArgumentException("The incoming end date must have a DateTimeKind of Utc or Local. " +
-                "The DateTimeKind of loaded interpolated values will match that of the incoming date range");
-            if (startDate.Kind != endDate.Kind) throw new ArgumentException("The startDate and endDate must have the same DateTimeKind");
-
             string url = item.TimeSeriesLinks.InterpolatedData;
-
-            startDate = startDate.Date.AddMinutes(30); //30 minutes after the start of the start date
-            endDate = endDate.AddDays(1).Date.AddMinutes(-30); //30 minutes before the end of the end date
-            string startDateString;
-            string endDateString;
-
-            if (startDate.Kind == DateTimeKind.Utc) { startDateString = startDate.ToStringWithNoOffset(); endDateString = endDate.ToStringWithNoOffset(); }
-            else { startDateString = startDate.ToStringWithLocalOffset(); endDateString = endDate.ToStringWithLocalOffset(); }
+            string startDateString = startDate.ToStringWithNoOffset();
+            string endDateString = endDate.ToStringWithNoOffset();
 
             url = url.WithParameter("startTime", $"{startDateString}")
                 .WithParameter("endTime", $"{endDateString}")
                 .WithParameter("interval", "1h");
 
+            if(!String.IsNullOrWhiteSpace(filterExpression)) url = url.WithParameter("filterExpression", filterExpression);
+
             item.InterpolatedDataPoints = await this.GetAllAsync<InterpolatedDataPoint>(url, ITEMS_PROPERTY);
-
-            if (startDate.Kind == DateTimeKind.Local)
-            {
-                foreach (InterpolatedDataPoint point in item.InterpolatedDataPoints)
-                {
-                    point.Timestamp = point.Timestamp.ToLocalTime(); //Pi gives back all dates in UTC, so a call to ToLocalTime() should take care of it
-                }
-            }
-
-            item.InterpolatedDataPoints = item.InterpolatedDataPoints.Where(x => x.Timestamp.Date.Date >= startDate.Date && x.Timestamp.Date.Date <= endDate.Date).ToList();
         }
     }
 }

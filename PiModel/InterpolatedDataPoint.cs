@@ -1,8 +1,13 @@
-﻿namespace PiModel
+﻿using System.Text.Json.Serialization;
+using PiModel.DataBind;
+
+namespace PiModel
 {
-    public class InterpolatedDataPoint
+    public class InterpolatedDataPoint 
     {
-        public DateTime Timestamp { get; set; }
+        public DateTimeOffset Timestamp { get; set; }
+
+        [JsonConverter(typeof(InterpolatedDataPointValueConverter))]
         public double Value { get; set; }
         public string UnitsAbbreviation { get; set; }
         public bool Good { get; set; }

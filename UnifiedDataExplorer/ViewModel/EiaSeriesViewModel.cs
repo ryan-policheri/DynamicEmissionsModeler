@@ -17,9 +17,9 @@ namespace UnifiedDataExplorer.ViewModel
     {
         private readonly EiaClient _client;
         private readonly DataFileProvider _dataFileProvider;
-        private readonly ExcelDataSetExporter _exporter;
+        private readonly ExcelExportService _exporter;
 
-        public EiaSeriesViewModel(EiaClient client,  DataFileProvider dataFileProvider, ExcelDataSetExporter exporter, IMessageHub messageHub) : base(messageHub)
+        public EiaSeriesViewModel(EiaClient client,  DataFileProvider dataFileProvider, ExcelExportService exporter, IMessageHub messageHub) : base(messageHub)
         {
             _client = client;
             _dataFileProvider = dataFileProvider;
@@ -41,7 +41,12 @@ namespace UnifiedDataExplorer.ViewModel
 
         public string SeriesId { get; private set; }
 
-        public string ValueUnit { get; private set; }
+        private string _valueUnit;
+        public string ValueUnit
+        { 
+            get { return _valueUnit; } 
+            private set { SetField<string>(ref _valueUnit, value); }
+        }
 
         private DataTable _dataSet;
         public DataTable DataSet 

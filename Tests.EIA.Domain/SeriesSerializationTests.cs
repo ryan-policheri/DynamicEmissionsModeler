@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using EIA.Domain.Model;
+using DotNetCommon.Helpers;
 
 namespace Tests.EIA.Domain
 {
@@ -18,16 +19,14 @@ namespace Tests.EIA.Domain
             Assert.AreEqual("EBA.MISO-ALL.NG.H", series.Id);
             Assert.AreEqual("H", series.Frequency);
 
-            series.ParseAllDates();
-
             SeriesDataPoint firstDataPoint = series.DataPoints.OrderByDescending(x => x.Timestamp).First();
             SeriesDataPoint lastDataPoint = series.DataPoints.OrderBy(x => x.Timestamp).First();
 
             Assert.AreEqual(firstDataPoint.Value, 65189);
             Assert.AreEqual(lastDataPoint.Value, 71294);
 
-            Assert.AreEqual(new DateTime(2022, 3, 5, 5, 0, 0, DateTimeKind.Utc), firstDataPoint.Timestamp);
-            Assert.AreEqual(new DateTime(2022, 3, 4, 12, 0, 0, DateTimeKind.Utc), lastDataPoint.Timestamp);
+            Assert.AreEqual(new DateTimeOffset(2022, 3, 5, 5, 0, 0, TimeZones.GetUtcOffset()), firstDataPoint.Timestamp);
+            Assert.AreEqual(new DateTimeOffset(2022, 3, 4, 12, 0, 0, TimeZones.GetUtcOffset()), lastDataPoint.Timestamp);
         }
 
         [TestMethod]
@@ -38,8 +37,6 @@ namespace Tests.EIA.Domain
 
             Assert.AreEqual("EBA.MISO-ALL.NG.HL", series.Id);
             Assert.AreEqual("HL", series.Frequency);
-
-            series.ParseAllDates();
 
             SeriesDataPoint firstDataPoint = series.DataPoints.OrderByDescending(x => x.Timestamp).First();
             SeriesDataPoint lastDataPoint = series.DataPoints.OrderBy(x => x.Timestamp).First();
@@ -63,16 +60,14 @@ namespace Tests.EIA.Domain
             Assert.AreEqual("ELEC.GEN.ALL-AK-99.Q", series.Id);
             Assert.AreEqual("Q", series.Frequency);
 
-            series.ParseAllDates();
-
             SeriesDataPoint firstDataPoint = series.DataPoints.OrderByDescending(x => x.Timestamp).First();
             SeriesDataPoint lastDataPoint = series.DataPoints.OrderBy(x => x.Timestamp).First();
 
             Assert.AreEqual(firstDataPoint.Value, 1533.89421);
             Assert.AreEqual(lastDataPoint.Value, 1400.62491);
 
-            Assert.AreEqual(new DateTime(2021, 10, 1), firstDataPoint.Timestamp);
-            Assert.AreEqual(new DateTime(2014, 7, 1), lastDataPoint.Timestamp);
+            Assert.AreEqual(new DateTimeOffset(2021, 10, 1, 0, 0, 0, TimeZones.GetUtcOffset()), firstDataPoint.Timestamp);
+            Assert.AreEqual(new DateTimeOffset(2014, 7, 1, 0, 0, 0, TimeZones.GetUtcOffset()), lastDataPoint.Timestamp);
         }
 
         [TestMethod]
@@ -84,16 +79,14 @@ namespace Tests.EIA.Domain
             Assert.AreEqual("ELEC.GEN.ALL-AK-99.M", series.Id);
             Assert.AreEqual("M", series.Frequency);
 
-            series.ParseAllDates();
-
             SeriesDataPoint firstDataPoint = series.DataPoints.OrderByDescending(x => x.Timestamp).First();
             SeriesDataPoint lastDataPoint = series.DataPoints.OrderBy(x => x.Timestamp).First();
 
             Assert.AreEqual(firstDataPoint.Value, 554.21322);
             Assert.AreEqual(lastDataPoint.Value, 475.15574);
 
-            Assert.AreEqual(new DateTime(2021, 12, 1), firstDataPoint.Timestamp);
-            Assert.AreEqual(new DateTime(2017, 10, 1), lastDataPoint.Timestamp);
+            Assert.AreEqual(new DateTimeOffset(2021, 12, 1, 0, 0, 0, TimeZones.GetUtcOffset()), firstDataPoint.Timestamp);
+            Assert.AreEqual(new DateTimeOffset(2017, 10, 1, 0, 0, 0, TimeZones.GetUtcOffset()), lastDataPoint.Timestamp);
         }
 
         [TestMethod]
@@ -105,16 +98,14 @@ namespace Tests.EIA.Domain
             Assert.AreEqual("ELEC.GEN.ALL-AK-99.A", series.Id);
             Assert.AreEqual("A", series.Frequency);
 
-            series.ParseAllDates();
-
             SeriesDataPoint firstDataPoint = series.DataPoints.OrderByDescending(x => x.Timestamp).First();
             SeriesDataPoint lastDataPoint = series.DataPoints.OrderBy(x => x.Timestamp).First();
 
             Assert.AreEqual(firstDataPoint.Value, 5943.5271);
             Assert.AreEqual(lastDataPoint.Value, 6743.766);
 
-            Assert.AreEqual(new DateTime(2021, 1, 1), firstDataPoint.Timestamp);
-            Assert.AreEqual(new DateTime(2001, 1, 1), lastDataPoint.Timestamp);
+            Assert.AreEqual(new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeZones.GetUtcOffset()), firstDataPoint.Timestamp);
+            Assert.AreEqual(new DateTimeOffset(2001, 1, 1, 0, 0, 0, TimeZones.GetUtcOffset()), lastDataPoint.Timestamp);
         }
     }
 }

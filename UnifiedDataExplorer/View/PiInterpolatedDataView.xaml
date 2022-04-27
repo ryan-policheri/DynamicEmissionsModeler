@@ -24,8 +24,9 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <DockPanel Grid.Row="0" Grid.Column="0">
-                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding AssetName}" Margin="10" FontWeight="Bold"/>
+            <DockPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+                <TextBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding AssetName, Mode=OneWay}" Margin="10 5 10 10" FontWeight="Bold" 
+                         IsReadOnly="True" BorderThickness="0" Background="Transparent"/>
                 <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding ValueName}" Margin="10" FontWeight="Bold"/>
             </DockPanel>
             <Button Grid.Row="1" Grid.Column="1" Content="Close Interpolated Data View" Command="{Binding CloseExplorePointCommand}" Width="250" Height="50" Margin="0 0 0 5" Background="Transparent"/>

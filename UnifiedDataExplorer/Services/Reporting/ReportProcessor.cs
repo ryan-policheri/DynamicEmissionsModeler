@@ -14,12 +14,14 @@ using UnifiedDataExplorer.Services.DataPersistence;
 using UnifiedDataExplorer.Services.Window;
 using UnifiedDataExplorer.ViewModel;
 using UIowaBuildingsModel;
+using DotNetCommon.Helpers;
 
 namespace UnifiedDataExplorer.Services.Reporting
 {
     public class ReportProcessor
     {
         private readonly ReportingService _reportingService;
+        private readonly ExcelExportService _excelExportService;
         private readonly PiHttpClient _piClient;
         private readonly string _rootAssetLink;
         private readonly IMessageHub _messageHub;
@@ -27,10 +29,11 @@ namespace UnifiedDataExplorer.Services.Reporting
         private readonly IDialogService _dialogService;
         private readonly ILogger _logger;
 
-        public ReportProcessor(ReportingService reportingService, PiHttpClient piClient, string rootAssetLink,
+        public ReportProcessor(ReportingService reportingService, ExcelExportService excelExportService, PiHttpClient piClient, string rootAssetLink,
             IMessageHub messageHub, DataFileProvider dataFileProvider, IDialogService dialogService, ILogger<ReportProcessor> logger)
         {
             _reportingService = reportingService;
+            _excelExportService = excelExportService;
             _piClient = piClient;
             _rootAssetLink = rootAssetLink;
             _messageHub = messageHub;
@@ -60,11 +63,6 @@ namespace UnifiedDataExplorer.Services.Reporting
 
         public async Task RenderBuildingEmissionsReport()
         {
-            //TEMP
-            var test = await _piClient.SearchPiPoint("PP_electric_purch");
-            await _piClient.LoadInterpolatedValues(test, DateTime.Today.AddDays(-1), DateTime.Today.AddDays(-1));
-            //END TEMP
-
             Asset asset = await _piClient.GetByDirectLink<Asset>(_rootAssetLink);
             IEnumerable<Asset> childAssets = await _piClient.GetChildAssets(asset);
 
@@ -82,10 +80,12 @@ namespace UnifiedDataExplorer.Services.Reporting
             model = vm.ToModel();
             await savedParametersFile.SaveAsync<HourlyEmissionsReportParameters>(model);
 
+            CampusSnapshot snapshot = await _reportingService.GenerateCampusSnapshot(model);
+
             string reportDirectory = _dataFileProvider.GetReportsDirectory();
             string fileName = "temp" + DateTime.Now.Minute.ToString() + ".xlsx";
             string fullPath = SystemFunctions.CombineDirectoryComponents(reportDirectory, fileName);
-            await _reportingService.GenerateHourlyEmissionsReport(model, fullPath);
+            _excelExportService.ExportCampusSnapshot(fullPath, snapshot);
             SystemFunctions.OpenFile(fullPath);
         }
     }

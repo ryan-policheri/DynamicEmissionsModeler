@@ -83,24 +83,16 @@ namespace EIA.Services.Clients
             {
                 series = await this.GetFirstAsync<Series>(pathPreDayFilter, "series");
             }
-            series.ParseAllDates();
+            //series.ParseAllDates();
             return series;
         }
 
-        public async Task<Series> GetHourlySeriesByIdAsync(string seriesId, DateTime startDate, DateTime endDate, DateTimeKind dataSourceTimeKind)
-        {//This method assumes you know if your data is in utc or local time. It should be hourly data after all.
-            if (startDate.Kind == DateTimeKind.Unspecified || endDate.Kind == DateTimeKind.Unspecified) throw new ArgumentException("startDate and endDate cannot be unspecified");
-            if (startDate.Kind != endDate.Kind) throw new ArgumentException("startDate and endDate must have the same DateTimeKind");
-            if (dataSourceTimeKind == DateTimeKind.Unspecified) throw new ArgumentException("dataSourceTimeKind must be local or utc");
+        public async Task<Series> GetHourlySeriesByIdAsync(string seriesId, DateTimeOffset startDate, DateTimeOffset endDate, TimeSpan seriesDataOffset)
+        {//This method assumes you know the offset of your series data. It is hourly data after all.
+            if (seriesDataOffset.Hours != 0) throw new NotImplementedException("Have not implemented querying of non-utc data yet");
 
-            startDate = startDate.Date;
-            endDate = endDate.AddDays(1).Date.AddHours(-1); //last hour of the end date
-
-            string startDateString;
-            string endDateString;
-            if (dataSourceTimeKind == DateTimeKind.Utc) { startDateString = startDate.ToStringWithNoOffset("yyyyMMddTHHZ"); endDateString = endDate.ToStringWithNoOffset("yyyyMMddTHHZ"); }
-            else if (dataSourceTimeKind == DateTimeKind.Local) throw new NotImplementedException("Haven't implemented local date time query yet");
-            else throw new NotImplementedException($"Haven't implemented {dataSourceTimeKind} date time query yet");
+            string startDateString = startDate.ToStringWithNoOffset("yyyyMMddTHHZ");
+            string endDateString  = endDate.ToStringWithNoOffset("yyyyMMddTHHZ");
 
             string path = "series/".WithQueryString("api_key", SubscriptionKey).WithQueryString("series_id", seriesId);
             path = path.WithQueryString("start", startDateString);
@@ -108,16 +100,6 @@ namespace EIA.Services.Clients
             Series series = await this.GetFirstAsync<Series>(path, "series");
 
             if (!series.Frequency.IsHourlyFrequency()) throw new ArgumentException("This method is only for series that are hourly in nature");
-
-            series.ParseAllDates();
-
-            if (dataSourceTimeKind == DateTimeKind.Utc && startDate.Kind == DateTimeKind.Local)
-            {
-                foreach (SeriesDataPoint point in series.DataPoints)
-                {
-                    point.Timestamp = point.Timestamp.ToLocalTime();
-                }
-            }
 
             return series;
         }

@@ -101,9 +101,10 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<PiInterpolatedDataViewModel>();
             services.AddTransient<PiSearchViewModel>();
 
-            services.AddTransient<ExcelDataSetExporter>();
+            services.AddTransient<ExcelExportService>();
             services.AddSingleton<ReportProcessor>(x => new ReportProcessor(
                 x.GetRequiredService<ReportingService>(),
+                x.GetRequiredService<ExcelExportService>(),
                 x.GetRequiredService<PiHttpClient>(),
                 config.HourlyEmissionsReportRootAssetLink,
                 x.GetRequiredService<IMessageHub>(),
