@@ -29,6 +29,7 @@
             <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource MaterialDesignScrollBarMinimal}" x:Key="ScrollBar"/>
             <Style TargetType="{x:Type Thumb}" BasedOn="{StaticResource MaterialDesignScrollBarThumb}" x:Key="Thumb"/>
             <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource MaterialDesignMenuItem}" x:Key="MenuItem"/>
+            <!--<Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource MaterialDesignActionToggleButton}" x:Key="ToggleButton"/>-->
 
             
             <!--DYNAMIC DATAGRID-->
