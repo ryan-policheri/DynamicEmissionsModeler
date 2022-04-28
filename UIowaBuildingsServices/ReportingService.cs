@@ -96,7 +96,7 @@ namespace UIowaBuildingsServices
             buildingUsageMapper.ElectricUsageDataPoints = hourlyElectric.InterpolatedDataPoints;
 
             //Steam Usage
-            AssetValue hourlySteam = asset.ChildValues.Where(x => x.Name.CapsAndTrim() == "ST FLOW HOURLY AVG").FirstOrDefault();
+            AssetValue hourlySteam = asset.ChildValues.Where(x => x.Name.CapsAndTrim() == "ST FLOW HOURLY AVG").FirstOrDefault(); //TODO: Change ST Power Hourly Avg
             if (hourlySteam != null) //Not all buildings use steam heating (I.E. Buildings not connected to main system)
             {
                 asset.ChildValues.Remove(hourlySteam);

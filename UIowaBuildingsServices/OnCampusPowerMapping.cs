@@ -579,7 +579,7 @@ namespace UIowaBuildingsServices
                                 Tag = "NCP_04_FT_101",
                                 FilterExpression = "'NCP_04_NS_160'=\"On\""
                             }
-                            //new TaggedDataSet { Tag = "NCP_00_UI_202"  } //TODO: What is the gpm tag?
+                            //new TaggedDataSet { Tag = "NCP_00_UI_202"  } //TODO: Free cooling normally not used at this plant. Still need gpm tag
                         }
                     }
                 }
