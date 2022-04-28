@@ -96,14 +96,25 @@ namespace UIowaBuildingsServices
             buildingUsageMapper.ElectricUsageDataPoints = hourlyElectric.InterpolatedDataPoints;
 
             //Steam Usage
-            AssetValue hourlySteam = asset.ChildValues.Where(x => x.Name.CapsAndTrim() == "ST FLOW HOURLY AVG").FirstOrDefault(); //TODO: Change ST Power Hourly Avg
+            AssetValue hourlySteam = asset.ChildValues.Where(x => x.Name.CapsAndTrim() == "ST POWER HOURLY AVG").FirstOrDefault();
             if (hourlySteam != null) //Not all buildings use steam heating (I.E. Buildings not connected to main system)
             {
                 asset.ChildValues.Remove(hourlySteam);
                 hourlySteam = await _piClient.LoadAssetValueDetail(hourlySteam);
                 asset.ChildValues.Add(hourlySteam);
-                if (hourlySteam.DefaultUnitsName == "thousand pound per hour")
+                if (hourlySteam.DefaultUnitsName == "million British thermal unit per hour")
                 {
+                    buildingUsageMapper.DataPointToSteamUsageAsEnergyFunction = new Func<InterpolatedDataPoint, Energy>((dataPoint) => { return Energy.FromMegabritishThermalUnits(dataPoint.Value); });
+                    buildingUsageMapper.DataPointToSteamUsageAsMassFunction = new Func<InterpolatedDataPoint, Mass>((dataPoint) =>
+                    {
+                        double btusPerPoundOfSteam = 1192; //It depends on whether it’s 20 psi or 155 psi.  20 PSI – 1192 BTU/LB, 155 PSI – 1224 BTU/LB. TODO: Find the PSI
+                        double totalPounds = Energy.FromMegabritishThermalUnits(dataPoint.Value).BritishThermalUnits / btusPerPoundOfSteam;
+                        return Mass.FromPounds(dataPoint.Value); 
+                    });
+                }
+                else if (hourlySteam.DefaultUnitsName == "thousand pound per hour")
+                {
+                    throw new InvalidOperationException("Previous logic from when software was using ST FLOW HOURLY AVG");
                     buildingUsageMapper.DataPointToSteamUsageAsMassFunction = new Func<InterpolatedDataPoint, Mass>((dataPoint) => { return Mass.FromKilopounds(dataPoint.Value); });
                     buildingUsageMapper.DataPointToSteamUsageAsEnergyFunction = new Func<InterpolatedDataPoint, Energy>((dataPoint) =>
                     {
