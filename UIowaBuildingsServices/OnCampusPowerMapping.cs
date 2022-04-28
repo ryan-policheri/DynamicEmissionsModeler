@@ -106,10 +106,10 @@ namespace UIowaBuildingsServices
                     new BoilerInputMapper
                     {
                         InputName = "Boiler 10 Plastic Pellet And Agricultural Biproduct Input",
-                        InputTag = "PP_B10_STOKER_AIR",
+                        InputTag = "PP_CHS_B10WeighBelt_Weight_MvgAvg",
                         DataPointToCo2EmissionsFunction = new Func<InterpolatedDataPoint, Mass>((dataPoint) => { 
-                            //boiler 10 plastic pellet input is in kilo pounds per hour and it represents a mass of plastic pellets mixed with Agricultural bi product
-                            Mass plasticAndAgriculturalBiproduct = Mass.FromKilopounds(dataPoint.Value);
+                            //boiler 10 input is in pounds per hour and it represents a mass of plastic pellets mixed with Agricultural biproduct
+                            Mass plasticAndAgriculturalBiproduct = Mass.FromPounds(dataPoint.Value);
                             return PlasticAgriculturalBiproductMix.ToCo2Emissions(plasticAndAgriculturalBiproduct);
                         })
                     }
