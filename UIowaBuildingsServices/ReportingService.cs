@@ -62,6 +62,7 @@ namespace UIowaBuildingsServices
             {
                 Start = startDateTime,
                 End = endDateTime,
+                ElectricGridStrategy = parameters.GridStrategy.ToDescription(),
                 BuildingUsageSummaries = usageSummaries,
                 EnergyResources = energyResourceManager.EnumerateHoursDetails(),
                 CampusDataSources = powerPlantMapper

@@ -13,10 +13,12 @@ namespace UIowaBuildingsModel
 
         public DateTimeOffset End { get; set; }
 
+        public string ElectricGridStrategy { get; set; }
+
         public IEnumerable<BuildingUsageSummary> BuildingUsageSummaries { get; set; }
 
         public IEnumerable<HourDetails> EnergyResources { get; set; }
-        
+
         public PowerPlantDataMapper CampusDataSources { get; set; }
 
         public DataTable BuildEnergyResourcesTable()
@@ -48,6 +50,38 @@ namespace UIowaBuildingsModel
                 row["Chilled Water Emissions Factor (kg-co2/mmbtu)"] = details.ChilledWaterEmissionsFactorInKilogramsOfCo2PerChilledWaterGallon;
                 table.Rows.Add(row);
             }
+            return table;
+        }
+
+        public DataTable BuildGridElectricTable()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("Hour");
+
+            bool sourceHeadersAdded = false;
+
+            foreach (HourDetails hourDetails in EnergyResources.OrderBy(x => x.Hour))
+            {
+                IEnumerable<ElectricGridSource> gridSources = hourDetails.EnumerateElectricGridSources();
+                DataRow row = table.NewRow();
+
+                foreach (ElectricGridSource gridSource in gridSources)
+                {
+                    if (!sourceHeadersAdded)
+                    {
+                        table.Columns.Add("Megawatt hours from " + gridSource.SourceName);
+                        table.Columns.Add("CO2 from " + gridSource.SourceName + " (kg)");
+                    }
+
+                    row["Hour"] = hourDetails.Hour.LocalDateTime.ToString();
+                    row["Megawatt hours from " + gridSource.SourceName] = gridSource.ElectricEnergyFromSource.MegawattHours;
+                    row["CO2 from " + gridSource.SourceName + " (kg)"] = gridSource.Co2FromSource.Kilograms;
+                }
+
+                table.Rows.Add(row);
+                sourceHeadersAdded = true;
+            }
+
             return table;
         }
     }

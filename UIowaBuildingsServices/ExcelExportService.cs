@@ -46,6 +46,9 @@ namespace UIowaBuildingsServices
                     row = 1; CreateTable(sheet, mapper.Name, row, mapper.BuildDataTable(snapshot.Start, snapshot.End));
                 }
 
+                ExcelWorksheet gridSummary = package.Workbook.Worksheets.Add("Electric Grid Summary");
+                row = 1; CreateTable(gridSummary, $"{snapshot.ElectricGridStrategy}", row, snapshot.BuildGridElectricTable());
+
                 FileInfo file = new FileInfo(filePath);
                 package.SaveAs(file);
             }
