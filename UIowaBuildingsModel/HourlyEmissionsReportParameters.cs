@@ -31,4 +31,10 @@
 
         public ICollection<string> AssetLinks { get; set; }
     }
+
+    public enum ElectricGridStrategy
+    {
+        MisoHourly,
+        MidAmericanAverageFuelMix
+    }
 }

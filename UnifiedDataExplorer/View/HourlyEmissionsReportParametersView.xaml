@@ -36,18 +36,23 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             
-            <TextBlock Grid.Column="0" Text="Start Date" FontWeight="Bold" FontSize="16"/>
-            <DatePicker Grid.Column="1" SelectedDate="{Binding StartDate}" MaxWidth="200" Margin="5 0 0 0" Padding="0 0 0 5" FontSize="14"/>
-            <TextBlock Grid.Column="2" Text="End Date" FontWeight="Bold" Margin="20 0 0 0" FontSize="16"/>
-            <DatePicker Grid.Column="3" SelectedDate="{Binding EndDate}" MaxWidth="200" Margin="5 0 0 0" Padding="0 0 0 5" FontSize="14"/>
+            <TextBlock Grid.Column="0" Text="Start Date" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+            <DatePicker Grid.Column="1" SelectedDate="{Binding StartDate}" MaxWidth="200" Margin="10 0 0 0" Padding="0 0 0 5" FontSize="16"/>
+            <TextBlock Grid.Column="2" Text="End Date" FontWeight="Bold" Margin="40 0 0 0" FontSize="16" VerticalAlignment="Center"/>
+            <DatePicker Grid.Column="3" SelectedDate="{Binding EndDate}" MaxWidth="200" Margin="10 0 0 0" Padding="0 0 0 5" FontSize="16"/>
 
-            <materialDesign:Flipper Grid.Column="4" Style="{StaticResource MaterialDesignCardFlipper}" Width="300" HorizontalAlignment="Left" Margin="50 0 0 0">
+            <TextBlock Grid.Column="4" Text="Grid Strategy" FontWeight="Bold" Margin="100 0 0 0" Padding="0" FontSize="24" VerticalAlignment="Center" />
+            
+            <materialDesign:Flipper Grid.Column="5" Style="{StaticResource MaterialDesignCardFlipper}" Width="300" HorizontalAlignment="Left" Margin="5 0 0 0"
+                                    IsFlippedChanged="Flipper_IsFlippedChanged">
                 <materialDesign:Flipper.FrontContent>
                     <Button Style="{StaticResource MaterialDesignFlatButton}" Height="50" Width="250" Padding="0"
-                                Command="{x:Static materialDesign:Flipper.FlipCommand}">
+                            Command="{x:Static materialDesign:Flipper.FlipCommand}"
+                            ToolTip="Use hourly MISO data to determine electric grid fuel mix.">
                         <Button.Content>
                             <Image Source="/Resources/Images/MISO_Logo.png" Height="50" Width="250" />
                         </Button.Content>
@@ -56,7 +61,8 @@
 
                 <materialDesign:Flipper.BackContent>
                     <Button Style="{StaticResource MaterialDesignFlatButton}" Height="50" Width="250" Padding="0"
-                                Command="{x:Static materialDesign:Flipper.FlipCommand}">
+                            Command="{x:Static materialDesign:Flipper.FlipCommand}"
+                            ToolTip="Use MidAmerican Energy's average fuel mix values.">
                         <Button.Content>
                             <Image Source="/Resources/Images/MEC_Logo.png" Height="50" Width="250" Margin="0"/>
                         </Button.Content>

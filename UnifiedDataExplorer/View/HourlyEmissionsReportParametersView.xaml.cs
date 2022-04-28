@@ -1,28 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using UIowaBuildingsModel;
+using UnifiedDataExplorer.ViewModel;
 
 namespace UnifiedDataExplorer.View
 {
-    /// <summary>
-    /// Interaction logic for HourlyEmissionsReportParametersView.xaml
-    /// </summary>
     public partial class HourlyEmissionsReportParametersView : UserControl
     {
+        private HourlyEmissionsReportParametersViewModel ViewModel => ((HourlyEmissionsReportParametersViewModel)(this.DataContext));
+
         public HourlyEmissionsReportParametersView()
         {
             InitializeComponent();
+        }
+
+        private void Flipper_IsFlippedChanged(object sender, RoutedPropertyChangedEventArgs<bool> args)
+        {
+            ElectricGridStrategy strategy = ElectricGridStrategy.MisoHourly;
+            if (args.NewValue == true) strategy = ElectricGridStrategy.MidAmericanAverageFuelMix;
+            ViewModel.GridStrategy = strategy;            
         }
     }
 }

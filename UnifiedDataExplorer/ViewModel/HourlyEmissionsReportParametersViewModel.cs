@@ -63,6 +63,7 @@ namespace UnifiedDataExplorer.ViewModel
         }
 
         public ObservableCollection<SelectableAssetViewModel> AvailableAssets { get; }
+        public ElectricGridStrategy GridStrategy { get; set; } = ElectricGridStrategy.MisoHourly;
 
         public HourlyEmissionsReportParameters ToModel()
         {
