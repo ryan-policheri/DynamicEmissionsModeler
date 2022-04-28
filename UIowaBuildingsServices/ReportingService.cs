@@ -39,7 +39,7 @@ namespace UIowaBuildingsServices
             await AddCampusPurchasedToGeneratedRatioInformation(energyResourceManager);
 
             //Add the MISO data for every grid source for the given timeframe
-            await AddGridOperatorElectricSources(energyResourceManager);
+            await AddGridOperatorElectricSources(energyResourceManager, parameters.GridStrategy);
 
             //Get information about on campus power production
             PowerPlantDataMapper powerPlantMapper = await PopulatePowerPlantMapper(energyResourceManager.StartDateTime, energyResourceManager.EndDateTime);
@@ -257,60 +257,79 @@ namespace UIowaBuildingsServices
 
 
         //GRID
-        private async Task AddGridOperatorElectricSources(CampusEnergyResourceManager reporter)
+        private async Task AddGridOperatorElectricSources(CampusEnergyResourceManager manager, ElectricGridStrategy gridStrategy)
         {
-            IEnumerable<ElectricGridSourceMapper> gridSources = BuildElectricGridSourceMappers();
-            ICollection<Series> allSourceSeries = new List<Series>(); //Need to hold on to these locally to backtrack petro data.
-            bool backTrackMisoPetroData = false;
-
-            foreach (ElectricGridSourceMapper source in gridSources)
-            {//The sources are pulling everything in UTC time. There is an option to pull in local time but intentionally not using it
-             //because it is the local time of the grid operator not of this computing system. Note TimeZones.GetUtcOffset() gets an offset of 0.
-                Series sourceSeries = await _eiaClient.GetHourlySeriesByIdAsync(source.HourlySourceId, reporter.StartDateTime, reporter.EndDateTime, TimeZones.GetUtcOffset());
-
-                if (sourceSeries.DataPoints.Count != reporter.TotalHours)
-                {
-                    if (sourceSeries.DataPoints.Count < reporter.TotalHours && sourceSeries.Id == "EBA.MISO-ALL.NG.OIL.H") //Been seeing issues with missing petro data. If all the other sources come through can back track it.
-                    {
-                        backTrackMisoPetroData = true;
-                    }
-                    else throw new Exception("The series by source query did not pull exactly as many data points as expected. Please investigate");
-                }
-                else
-                {
-                    source.DataPoints = sourceSeries.DataPoints;
-                    reporter.AddGridOperatorElectricSource(source);
-                    allSourceSeries.Add(sourceSeries);
-                }
-            }
-
-            if (backTrackMisoPetroData)
+            if (gridStrategy == ElectricGridStrategy.MisoHourly)
             {
-                _logger.LogInformation("Petro data missing. Attempting backtrack...");
-                Series misoTotal = await _eiaClient.GetHourlySeriesByIdAsync("EBA.MISO-ALL.NG.H", reporter.StartDateTime, reporter.EndDateTime, TimeZones.GetUtcOffset());
-                if (misoTotal.DataPoints.Count != reporter.TotalHours) throw new Exception("The net generation series query did not pull exactly as many data points as expected. Please investigate");
+                IEnumerable<ElectricGridSourceMapper> gridSources = BuildMisoGridSourceMappers();
 
-                ICollection<SeriesDataPoint> petroPoints = new List<SeriesDataPoint>();
-                foreach (SeriesDataPoint totalPoint in misoTotal.DataPoints)
-                {
-                    double petroPointValue = totalPoint.Value.Value;
-                    foreach (Series sourceSeries in allSourceSeries)
+                ICollection<Series> allSourceSeries = new List<Series>(); //Need to hold on to these locally to backtrack petro data.
+                bool backTrackMisoPetroData = false;
+
+                foreach (ElectricGridSourceMapper source in gridSources)
+                {//The sources are pulling everything in UTC time. There is an option to pull in local time but intentionally not using it
+                 //because it is the local time of the grid operator not of this computing system. Note TimeZones.GetUtcOffset() gets an offset of 0.
+                    Series sourceSeries = await _eiaClient.GetHourlySeriesByIdAsync(source.HourlySourceId, manager.StartDateTime, manager.EndDateTime, TimeZones.GetUtcOffset());
+
+                    if (sourceSeries.DataPoints.Count != manager.TotalHours)
                     {
-                        SeriesDataPoint sourcePoint = sourceSeries.DataPoints.Where(x => x.Timestamp.HourMatches(totalPoint.Timestamp)).First();
-                        petroPointValue -= sourcePoint.Value.Value;
+                        if (sourceSeries.DataPoints.Count < manager.TotalHours && sourceSeries.Id == "EBA.MISO-ALL.NG.OIL.H") //Been seeing issues with missing petro data. If all the other sources come through can back track it.
+                        {
+                            backTrackMisoPetroData = true;
+                        }
+                        else throw new Exception("The series by source query did not pull exactly as many data points as expected. Please investigate");
                     }
-
-                    if (petroPointValue < 0) petroPointValue = 0;
-                    petroPoints.Add(new SeriesDataPoint { Timestamp = totalPoint.Timestamp, Value = petroPointValue });
+                    else
+                    {
+                        source.DataPoints = sourceSeries.DataPoints;
+                        manager.AddGridOperatorElectricSource(source);
+                        allSourceSeries.Add(sourceSeries);
+                    }
                 }
 
-                ElectricGridSourceMapper petroSource = gridSources.Where(x => x.HourlySourceId == "EBA.MISO-ALL.NG.OIL.H").First();
-                petroSource.DataPoints = petroPoints;
-                reporter.AddGridOperatorElectricSource(petroSource);
+                if (backTrackMisoPetroData)
+                {
+                    _logger.LogInformation("Petro data missing. Attempting backtrack...");
+                    Series misoTotal = await _eiaClient.GetHourlySeriesByIdAsync("EBA.MISO-ALL.NG.H", manager.StartDateTime, manager.EndDateTime, TimeZones.GetUtcOffset());
+                    if (misoTotal.DataPoints.Count != manager.TotalHours) throw new Exception("The net generation series query did not pull exactly as many data points as expected. Please investigate");
+
+                    ICollection<SeriesDataPoint> petroPoints = new List<SeriesDataPoint>();
+                    foreach (SeriesDataPoint totalPoint in misoTotal.DataPoints)
+                    {
+                        double petroPointValue = totalPoint.Value.Value;
+                        foreach (Series sourceSeries in allSourceSeries)
+                        {
+                            SeriesDataPoint sourcePoint = sourceSeries.DataPoints.Where(x => x.Timestamp.HourMatches(totalPoint.Timestamp)).First();
+                            petroPointValue -= sourcePoint.Value.Value;
+                        }
+
+                        if (petroPointValue < 0) petroPointValue = 0;
+                        petroPoints.Add(new SeriesDataPoint { Timestamp = totalPoint.Timestamp, Value = petroPointValue });
+                    }
+
+                    ElectricGridSourceMapper petroSource = gridSources.Where(x => x.HourlySourceId == "EBA.MISO-ALL.NG.OIL.H").First();
+                    petroSource.DataPoints = petroPoints;
+                    manager.AddGridOperatorElectricSource(petroSource);
+                }
             }
+            else if (gridStrategy == ElectricGridStrategy.MidAmericanAverageFuelMix)
+            {
+                IEnumerable<ElectricGridSourceMapper> mappers = BuildMidAmericanGridSourceMappers();
+                foreach(ElectricGridSourceMapper sourceMapper in mappers)
+                {
+                    ICollection<SeriesDataPoint> pseudoPoints = new List<SeriesDataPoint>();
+                    foreach(DateTimeOffset offset in manager.StartDateTime.EnumerateHoursUntil(manager.EndDateTime))
+                    {
+                        pseudoPoints.Add(new SeriesDataPoint { Timestamp = offset });
+                    }
+                    sourceMapper.DataPoints = pseudoPoints;
+                    manager.AddGridOperatorElectricSource(sourceMapper);
+                }
+            }
+            else throw new ArgumentException("Grid strategy not known");
         }
 
-        private IEnumerable<ElectricGridSourceMapper> BuildElectricGridSourceMappers()
+        private IEnumerable<ElectricGridSourceMapper> BuildMisoGridSourceMappers()
         {
             ICollection<ElectricGridSourceMapper> sources = new List<ElectricGridSourceMapper>();
 
@@ -377,6 +396,46 @@ namespace UIowaBuildingsServices
                 HourlySourceId = "EBA.MISO-ALL.NG.OTH.H",
                 DataPointToEnergyFunction = new Func<SeriesDataPoint, Energy>((dataPoint) => { return Energy.FromMegawattHours(dataPoint.Value.Value); }),
                 EnergyToCo2EmissionsFunction = new Func<Energy, Mass>((otherEnergy) => { return Other.ToCo2EmissionsFromElectricGenerated(otherEnergy); })
+            });
+
+            return sources;
+        }
+
+        private IEnumerable<ElectricGridSourceMapper> BuildMidAmericanGridSourceMappers()
+        {//Generate using these averages: https://www.midamericanenergy.com/energy-mix
+         //Base everything off of 10,000 mwh
+
+            ICollection<ElectricGridSourceMapper> sources = new List<ElectricGridSourceMapper>();
+
+            sources.Add(new ElectricGridSourceMapper
+            {
+                SourceName = "Wind",
+                HourlySourceId = "MEC_AVERAGE_WIND",
+                DataPointToEnergyFunction = new Func<SeriesDataPoint, Energy>((dataPoint) => { return Energy.FromMegawattHours(6200); }), //62%
+                EnergyToCo2EmissionsFunction = new Func<Energy, Mass>((windEnergy) => { return Mass.Zero; }) //Wind has no carbon emissions, return 0
+            });
+
+            sources.Add(new ElectricGridSourceMapper
+            {
+                SourceName = "Coal",
+                HourlySourceId = "MEC_AVERAGE_COAL",
+                DataPointToEnergyFunction = new Func<SeriesDataPoint, Energy>((dataPoint) => { return Energy.FromMegawattHours(2300); }), //23%
+                EnergyToCo2EmissionsFunction = new Func<Energy, Mass>((coalEnergy) => { return Coal.ToCo2EmissionsFromElectricGenerated(coalEnergy); })
+            });
+
+            sources.Add(new ElectricGridSourceMapper
+            {
+                SourceName = "Natural Gas",
+                HourlySourceId = "MEC_AVERAGE_NATURAL_GAS",
+                DataPointToEnergyFunction = new Func<SeriesDataPoint, Energy>((dataPoint) => { return Energy.FromMegawattHours(1100); }), //11%
+                EnergyToCo2EmissionsFunction = new Func<Energy, Mass>((naturalGasEnergy) => { return NaturalGas.ToCo2EmissionsFromElectricGenerated(naturalGasEnergy); })
+            });
+
+            sources.Add(new ElectricGridSourceMapper
+            {
+                SourceName = "MEC_AVERAGE_NUCLEAR_OR_OTHER",
+                DataPointToEnergyFunction = new Func<SeriesDataPoint, Energy>((dataPoint) => { return Energy.FromMegawattHours(400); }), //4%
+                EnergyToCo2EmissionsFunction = new Func<Energy, Mass>((other) => { return Other.ToCo2EmissionsFromElectricGenerated(other); })
             });
 
             return sources;

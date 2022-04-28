@@ -70,6 +70,7 @@ namespace UnifiedDataExplorer.ViewModel
             HourlyEmissionsReportParameters model = new HourlyEmissionsReportParameters();
             model.StartDateInLocalTime = this.StartDate;
             model.EndDateInLocalTime = this.EndDate;
+            model.GridStrategy = this.GridStrategy;
             foreach(var asset in this.AvailableAssets)
             {
                 if(asset.IsSelected)

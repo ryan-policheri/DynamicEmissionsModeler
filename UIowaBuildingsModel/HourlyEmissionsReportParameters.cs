@@ -30,6 +30,7 @@
         }
 
         public ICollection<string> AssetLinks { get; set; }
+        public ElectricGridStrategy GridStrategy { get; set; }
     }
 
     public enum ElectricGridStrategy
