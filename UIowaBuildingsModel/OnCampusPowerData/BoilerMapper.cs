@@ -1,4 +1,5 @@
-﻿using DotNetCommon.Extensions;
+﻿using System.Data;
+using DotNetCommon.Extensions;
 using PiModel;
 using UnitsNet;
 
@@ -55,6 +56,43 @@ namespace UIowaBuildingsModel
             }
 
             return steamSources;
+        }
+
+        public DataTable BuildDataTable()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("Hour");
+
+            foreach (BoilerInputMapper mapper in this.BoilerInputMappers) { table.Columns.Add(mapper.InputTag); }
+            table.Columns.Add("Input Total Co2 (kg)");
+            table.Columns.Add("Steam Output (pi)");
+            table.Columns.Add("Steam Energy Content (mmbtu)");
+
+            var steamSources = this.PackageDataIntoSteamSources();
+
+            foreach (DateTimeOffset hour in this.EnumerateDataHours())
+            {
+                DataRow row = table.NewRow();
+                row["Hour"] = hour.LocalDateTime.ToString();
+
+                foreach (BoilerInputMapper mapper in this.BoilerInputMappers) 
+                { 
+                    InterpolatedDataPoint inputPoint = mapper.InputDataPoints.FindMatchingHour(hour);
+                    row[mapper.InputTag] = inputPoint.Value;
+                }
+
+                SteamSource match = steamSources.First(x => x.Timestamp.HourMatches(hour));
+                row["Input Total Co2 (kg)"] = match.Co2FromInputs.Kilograms;
+
+                InterpolatedDataPoint outputPoint = OutputDataPoints.FindMatchingHour(hour);
+                row["Steam Output (pi)"] = outputPoint.Value;
+
+                row["Steam Energy Content (mmbtu)"] = match.SteamEnergyContent.MegabritishThermalUnits;
+
+                table.Rows.Add(row);
+            }
+
+            return table;
         }
     }
 }

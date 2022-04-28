@@ -40,7 +40,13 @@ namespace UIowaBuildingsServices
                 ExcelWorksheet campusEnergyData = package.Workbook.Worksheets.Add("Campus Energy Summary");
                 row = 1; CreateTable(campusEnergyData, "Campus Energy Resources Summary", row, snapshot.BuildEnergyResourcesTable());
 
-                foreach(var mapper in snapshot.CampusDataSources.ChilledWaterMapper.PlantMappers)
+                foreach (var mapper in snapshot.CampusDataSources.SteamProductionMapper.BoilerMappers)
+                {
+                    ExcelWorksheet sheet = package.Workbook.Worksheets.Add(mapper.BoilerName);
+                    row = 1; CreateTable(sheet, mapper.BoilerName, row, mapper.BuildDataTable());
+                }
+
+                foreach (var mapper in snapshot.CampusDataSources.ChilledWaterMapper.PlantMappers)
                 {
                     ExcelWorksheet sheet = package.Workbook.Worksheets.Add(mapper.Name);
                     row = 1; CreateTable(sheet, mapper.Name, row, mapper.BuildDataTable(snapshot.Start, snapshot.End));
