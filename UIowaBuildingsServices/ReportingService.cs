@@ -320,7 +320,7 @@ namespace UIowaBuildingsServices
                     ICollection<SeriesDataPoint> pseudoPoints = new List<SeriesDataPoint>();
                     foreach(DateTimeOffset offset in manager.StartDateTime.EnumerateHoursUntil(manager.EndDateTime))
                     {
-                        pseudoPoints.Add(new SeriesDataPoint { Timestamp = offset });
+                        pseudoPoints.Add(new SeriesDataPoint { Timestamp = offset }); //Fake data, the function is just going to return a constant
                     }
                     sourceMapper.DataPoints = pseudoPoints;
                     manager.AddGridOperatorElectricSource(sourceMapper);
@@ -433,7 +433,8 @@ namespace UIowaBuildingsServices
 
             sources.Add(new ElectricGridSourceMapper
             {
-                SourceName = "MEC_AVERAGE_NUCLEAR_OR_OTHER",
+                SourceName = "Nuclear/Other",
+                HourlySourceId = "MEC_AVERAGE_NUCLEAR_OR_OTHER",
                 DataPointToEnergyFunction = new Func<SeriesDataPoint, Energy>((dataPoint) => { return Energy.FromMegawattHours(400); }), //4%
                 EnergyToCo2EmissionsFunction = new Func<Energy, Mass>((other) => { return Other.ToCo2EmissionsFromElectricGenerated(other); })
             });
