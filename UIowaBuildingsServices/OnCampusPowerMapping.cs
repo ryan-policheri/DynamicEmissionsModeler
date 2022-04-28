@@ -108,9 +108,9 @@ namespace UIowaBuildingsServices
                         InputName = "Boiler 10 Plastic Pellet And Agricultural Biproduct Input",
                         InputTag = "PP_B10_STOKER_AIR",
                         DataPointToCo2EmissionsFunction = new Func<InterpolatedDataPoint, Mass>((dataPoint) => { 
-                            //boiler 10 plastic pellet input is in kilo pounds per hour and it represents a mass of plastic pellets
-                            Mass plastic = Mass.FromKilopounds(dataPoint.Value);
-                            return Plastic.ToCo2Emissions(plastic);
+                            //boiler 10 plastic pellet input is in kilo pounds per hour and it represents a mass of plastic pellets mixed with Agricultural bi product
+                            Mass plasticAndAgriculturalBiproduct = Mass.FromKilopounds(dataPoint.Value);
+                            return PlasticAgriculturalBiproductMix.ToCo2Emissions(plasticAndAgriculturalBiproduct);
                         })
                     }
                 },
