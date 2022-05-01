@@ -74,79 +74,96 @@ namespace UIowaBuildingsServices
         //CAMPUS BUILDING USAGE
         private async Task<BuildingUsageMapper> PopulateBuildingData(DateTimeOffset startDateTime, DateTimeOffset endDateTime, string buildingLink)
         {
-            Asset asset = await _piClient.GetByDirectLink<Asset>(buildingLink);
-            await _piClient.LoadAssetValueList(asset);
-
-            BuildingUsageMapper buildingUsageMapper = new BuildingUsageMapper();
-            buildingUsageMapper.BuildingName = asset.Name;
-
-            //Electric Usage
-            AssetValue hourlyElectric = asset.ChildValues.Where(x => x.Name.CapsAndTrim() == "EL POWER HOURLY AVG").First();
-            asset.ChildValues.Remove(hourlyElectric);
-            hourlyElectric = await _piClient.LoadAssetValueDetail(hourlyElectric);
-            asset.ChildValues.Add(hourlyElectric);
-            if (hourlyElectric.DefaultUnitsName == "kilowatt")
+            try
             {
-                //Same story about data being in kw but converting to kwh which is assuming that the power demand remained constant for the whole hour
-                buildingUsageMapper.DataPointToElectricUsageFunction = new Func<InterpolatedDataPoint, Energy>((dataPoint) => { return Energy.FromKilowattHours(dataPoint.Value); });
-            }
-            else throw new NotImplementedException($"Function to convert data points with units {hourlyElectric.DefaultUnitsName} to electric usage has not been implemented.");
+                Asset asset = await _piClient.GetByDirectLink<Asset>(buildingLink);
+                await _piClient.LoadAssetValueList(asset);
 
-            await _piClient.LoadInterpolatedValues(hourlyElectric, startDateTime, endDateTime);
-            buildingUsageMapper.ElectricUsageDataPoints = hourlyElectric.InterpolatedDataPoints;
+                BuildingUsageMapper buildingUsageMapper = new BuildingUsageMapper();
+                buildingUsageMapper.BuildingName = asset.Name;
 
-            //Steam Usage
-            AssetValue hourlySteam = asset.ChildValues.Where(x => x.Name.CapsAndTrim() == "ST POWER HOURLY AVG").FirstOrDefault();
-            if (hourlySteam != null) //Not all buildings use steam heating (I.E. Buildings not connected to main system)
-            {
-                asset.ChildValues.Remove(hourlySteam);
-                hourlySteam = await _piClient.LoadAssetValueDetail(hourlySteam);
-                asset.ChildValues.Add(hourlySteam);
-                if (hourlySteam.DefaultUnitsName == "million British thermal unit per hour")
+                //Electric Usage
+                AssetValue hourlyElectric = asset.ChildValues.Where(x => x.Name.CapsAndTrim() == "EL POWER HOURLY AVG").First();
+                asset.ChildValues.Remove(hourlyElectric);
+                hourlyElectric = await _piClient.LoadAssetValueDetail(hourlyElectric);
+                asset.ChildValues.Add(hourlyElectric);
+                if (hourlyElectric.DefaultUnitsName == "kilowatt")
                 {
-                    buildingUsageMapper.DataPointToSteamUsageAsEnergyFunction = new Func<InterpolatedDataPoint, Energy>((dataPoint) => { return Energy.FromMegabritishThermalUnits(dataPoint.Value); });
-                    buildingUsageMapper.DataPointToSteamUsageAsMassFunction = new Func<InterpolatedDataPoint, Mass>((dataPoint) =>
+                    //Same story about data being in kw but converting to kwh which is assuming that the power demand remained constant for the whole hour
+                    buildingUsageMapper.DataPointToElectricUsageFunction = new Func<InterpolatedDataPoint, Energy>((dataPoint) => { return Energy.FromKilowattHours(dataPoint.Value); });
+                }
+                else throw new NotImplementedException($"Function to convert data points with units {hourlyElectric.DefaultUnitsName} to electric usage has not been implemented.");
+
+                await _piClient.LoadInterpolatedValues(hourlyElectric, startDateTime, endDateTime);
+                buildingUsageMapper.ElectricUsageDataPoints = hourlyElectric.InterpolatedDataPoints;
+
+                //Steam Usage
+                AssetValue hourlySteam = asset.ChildValues.Where(x => x.Name.CapsAndTrim() == "ST POWER HOURLY AVG").FirstOrDefault();
+                if (hourlySteam != null) //Not all buildings use steam heating (I.E. Buildings not connected to main system)
+                {
+                    asset.ChildValues.Remove(hourlySteam);
+                    hourlySteam = await _piClient.LoadAssetValueDetail(hourlySteam);
+                    asset.ChildValues.Add(hourlySteam);
+                    if (hourlySteam.DefaultUnitsName == "million British thermal unit per hour")
                     {
-                        double btusPerPoundOfSteam = 1192; //It depends on whether it’s 20 psi or 155 psi.  20 PSI – 1192 BTU/LB, 155 PSI – 1224 BTU/LB. TODO: Find the PSI
-                        double totalPounds = Energy.FromMegabritishThermalUnits(dataPoint.Value).BritishThermalUnits / btusPerPoundOfSteam;
-                        return Mass.FromPounds(dataPoint.Value); 
-                    });
-                }
-                else if (hourlySteam.DefaultUnitsName == "thousand pound per hour")
-                {
-                    throw new InvalidOperationException("Previous logic from when software was using ST FLOW HOURLY AVG");
-                    buildingUsageMapper.DataPointToSteamUsageAsMassFunction = new Func<InterpolatedDataPoint, Mass>((dataPoint) => { return Mass.FromKilopounds(dataPoint.Value); });
-                    buildingUsageMapper.DataPointToSteamUsageAsEnergyFunction = new Func<InterpolatedDataPoint, Energy>((dataPoint) =>
+                        buildingUsageMapper.DataPointToSteamUsageAsEnergyFunction = new Func<InterpolatedDataPoint, Energy>((dataPoint) => { return Energy.FromMegabritishThermalUnits(dataPoint.Value); });
+                        buildingUsageMapper.DataPointToSteamUsageAsMassFunction = new Func<InterpolatedDataPoint, Mass>((dataPoint) =>
+                        {
+                            double btusPerPoundOfSteam = 1192; //It depends on whether it’s 20 psi or 155 psi.  20 PSI – 1192 BTU/LB, 155 PSI – 1224 BTU/LB. TODO: Find the PSI
+                            double totalPounds = Energy.FromMegabritishThermalUnits(dataPoint.Value).BritishThermalUnits / btusPerPoundOfSteam;
+                            return Mass.FromPounds(dataPoint.Value);
+                        });
+                    }
+                    else if (hourlySteam.DefaultUnitsName == "thousand pound per hour")
                     {
-                        double btusPerPoundOfSteam = 1192; //It depends on whether it’s 20 psi or 155 psi.  20 PSI – 1192 BTU/LB, 155 PSI – 1224 BTU/LB. TODO: Find the PSI
-                        double totalBtus = dataPoint.Value * 1000 * btusPerPoundOfSteam;
-                        return Energy.FromBritishThermalUnits(totalBtus);
-                    });
+                        throw new InvalidOperationException("Previous logic from when software was using ST FLOW HOURLY AVG");
+                        buildingUsageMapper.DataPointToSteamUsageAsMassFunction = new Func<InterpolatedDataPoint, Mass>((dataPoint) => { return Mass.FromKilopounds(dataPoint.Value); });
+                        buildingUsageMapper.DataPointToSteamUsageAsEnergyFunction = new Func<InterpolatedDataPoint, Energy>((dataPoint) =>
+                        {
+                            double btusPerPoundOfSteam = 1192; //It depends on whether it’s 20 psi or 155 psi.  20 PSI – 1192 BTU/LB, 155 PSI – 1224 BTU/LB. TODO: Find the PSI
+                            double totalBtus = dataPoint.Value * 1000 * btusPerPoundOfSteam;
+                            return Energy.FromBritishThermalUnits(totalBtus);
+                        });
+                    }
+                    else throw new NotImplementedException($"Function to convert data points with units {hourlySteam.DefaultUnitsName} to steam usage has not been implemented.");
+
+                    await _piClient.LoadInterpolatedValues(hourlySteam, startDateTime, endDateTime);
+                    buildingUsageMapper.SteamUsageDataPoints = hourlySteam.InterpolatedDataPoints;
                 }
-                else throw new NotImplementedException($"Function to convert data points with units {hourlySteam.DefaultUnitsName} to steam usage has not been implemented.");
 
-                await _piClient.LoadInterpolatedValues(hourlySteam, startDateTime, endDateTime);
-                buildingUsageMapper.SteamUsageDataPoints = hourlySteam.InterpolatedDataPoints;
-            }
-
-            //Chilled Water Usage
-            AssetValue hourlyChilledWater = asset.ChildValues.Where(x => x.Name.CapsAndTrim() == "CW FLOW HOURLY AVG").FirstOrDefault();
-            if (hourlyChilledWater != null) //Not all buildings use chilled water cooling (I.E. Buildings not connected to main system)
-            {
-                asset.ChildValues.Remove(hourlyChilledWater);
-                hourlyChilledWater = await _piClient.LoadAssetValueDetail(hourlyChilledWater);
-                asset.ChildValues.Add(hourlyChilledWater);
-                if (hourlyChilledWater.DefaultUnitsName == "US gallon per minute")
+                //Chilled Water Usage
+                AssetValue hourlyChilledWater = asset.ChildValues.Where(x => x.Name.CapsAndTrim() == "CW FLOW HOURLY AVG").FirstOrDefault();
+                if (hourlyChilledWater != null) //Not all buildings use chilled water cooling (I.E. Buildings not connected to main system)
                 {
-                    buildingUsageMapper.DataPointToChilledWaterVolumeFunction = new Func<InterpolatedDataPoint, Volume>((dataPoint) => { return Volume.FromUsGallons(dataPoint.Value * 60); }); //Multiply by 60 cuz data is per minute
+                    asset.ChildValues.Remove(hourlyChilledWater);
+                    hourlyChilledWater = await _piClient.LoadAssetValueDetail(hourlyChilledWater);
+                    asset.ChildValues.Add(hourlyChilledWater);
+                    if (hourlyChilledWater.DefaultUnitsName == "US gallon per minute")
+                    {
+                        buildingUsageMapper.DataPointToChilledWaterVolumeFunction = new Func<InterpolatedDataPoint, Volume>((dataPoint) => { return Volume.FromUsGallons(dataPoint.Value * 60); }); //Multiply by 60 cuz data is per minute
+                    }
+                    else throw new NotImplementedException($"Function to convert data points with units {hourlyChilledWater.DefaultUnitsName} to chilled water usage has not been implemented.");
+
+                    await _piClient.LoadInterpolatedValues(hourlyChilledWater, startDateTime, endDateTime);
+                    buildingUsageMapper.ChilledWaterUsageDataPoints = hourlyChilledWater.InterpolatedDataPoints;
                 }
-                else throw new NotImplementedException($"Function to convert data points with units {hourlyChilledWater.DefaultUnitsName} to chilled water usage has not been implemented.");
 
-                await _piClient.LoadInterpolatedValues(hourlyChilledWater, startDateTime, endDateTime);
-                buildingUsageMapper.ChilledWaterUsageDataPoints = hourlyChilledWater.InterpolatedDataPoints;
+                //SQUARE FOOTAGE
+                await _piClient.LoadAssetAttributeList(asset);
+                AssetAttribute squareFoot = asset.ChildAttributes.Where(x => x.Name.CapsAndTrim() == "GSF").FirstOrDefault();
+                if(squareFoot != null)
+                {
+                    await _piClient.LoadSquareFootValue(squareFoot, startDateTime, endDateTime);
+                    buildingUsageMapper.SquareFeet = squareFoot.InterpolatedDataPoints.First().Value;
+                }
+
+
+                return buildingUsageMapper;
             }
-
-            return buildingUsageMapper;
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         //ELECTRIC RATIO
@@ -327,10 +344,10 @@ namespace UIowaBuildingsServices
             else if (gridStrategy == ElectricGridStrategy.MidAmericanAverageFuelMix)
             {
                 IEnumerable<ElectricGridSourceMapper> mappers = BuildMidAmericanGridSourceMappers();
-                foreach(ElectricGridSourceMapper sourceMapper in mappers)
+                foreach (ElectricGridSourceMapper sourceMapper in mappers)
                 {
                     ICollection<SeriesDataPoint> pseudoPoints = new List<SeriesDataPoint>();
-                    foreach(DateTimeOffset offset in manager.StartDateTime.EnumerateHoursUntil(manager.EndDateTime))
+                    foreach (DateTimeOffset offset in manager.StartDateTime.EnumerateHoursUntil(manager.EndDateTime))
                     {
                         pseudoPoints.Add(new SeriesDataPoint { Timestamp = offset }); //Fake data, the function is just going to return a constant
                     }

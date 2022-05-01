@@ -10,7 +10,7 @@ namespace UIowaBuildingsModel
     public class BuildingUsageSummary
     {
         public string BuildingName { get; set; }
-
+        public double SquareFeet { get; set; }
         public IEnumerable<BuildingUsage> BuildingUsages { get; set; }
 
         public DataTable BuildDataTable()
@@ -25,6 +25,7 @@ namespace UIowaBuildingsModel
             table.Columns.Add("CO2 Emissions from Chilled Water (kg)");
             table.Columns.Add("Total CO2 Emissions (kg)");
             table.Columns.Add("Total CO2 Emissions (gasoline gallons)");
+            table.Columns.Add("CO2 Emissions per Square Foot (gasoline gallons / sq. ft)");
 
             foreach (BuildingUsage usage in BuildingUsages.OrderBy(x => x.Timestamp))
             {
@@ -38,6 +39,7 @@ namespace UIowaBuildingsModel
                 row["CO2 Emissions from Chilled Water (kg)"] = usage.Co2FromChilledWaterUsage.Kilograms;
                 row["Total CO2 Emissions (kg)"] = usage.TotalCo2.Kilograms;
                 row["Total CO2 Emissions (gasoline gallons)"] = usage.Co2InGallonsOfGasolineEquivelent.UsGallons;
+                row["CO2 Emissions per Square Foot (gasoline gallons / sq. ft)"] = usage.Co2InGallonsOfGasolineEquivelent.UsGallons / this.SquareFeet;
                 table.Rows.Add(row);
             }
             return table;

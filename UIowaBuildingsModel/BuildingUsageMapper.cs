@@ -7,6 +7,7 @@ namespace UIowaBuildingsModel
     public class BuildingUsageMapper
     {
         public string BuildingName { get; set; }
+        public double SquareFeet { get; set; }
         public Func<InterpolatedDataPoint, Energy> DataPointToElectricUsageFunction { get; set; }
         public IEnumerable<InterpolatedDataPoint> ElectricUsageDataPoints { get; set; }
 
@@ -26,6 +27,7 @@ namespace UIowaBuildingsModel
         {
             BuildingUsageSummary summary = new BuildingUsageSummary();
             summary.BuildingName = BuildingName;
+            summary.SquareFeet = this.SquareFeet;
 
             ICollection<BuildingUsage> buildingUsages = new List<BuildingUsage>();
 

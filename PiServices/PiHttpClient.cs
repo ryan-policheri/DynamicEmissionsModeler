@@ -2,6 +2,8 @@
 using DotNetCommon.WebApiClient;
 using PiModel;
 using PiModel.Search;
+using System.Dynamic;
+using System.Text.Json;
 
 namespace PiServices
 {
@@ -105,6 +107,12 @@ namespace PiServices
             return assetValue;
         }
 
+        public async Task LoadAssetAttributeList(Asset asset)
+        {
+            ICollection<AssetAttribute> attributes = (await this.GetAllAsync<AssetAttribute>(asset.Links.Attributes, ITEMS_PROPERTY)).ToList();
+            asset.ChildAttributes = attributes; 
+        }
+
         private async Task<List<Asset>> AssetSearchAllInternal(List<Asset> parents, List<Asset> assets, int depthLimit, int currentDepth)
         {
             if (currentDepth > depthLimit) return assets;
@@ -158,6 +166,45 @@ namespace PiServices
             if(!String.IsNullOrWhiteSpace(filterExpression)) url = url.WithParameter("filterExpression", filterExpression);
 
             item.InterpolatedDataPoints = await this.GetAllAsync<InterpolatedDataPoint>(url, ITEMS_PROPERTY);
+        }
+
+        public async Task LoadSquareFootValue(IHaveTimeSeriesData squareFoot, DateTimeOffset startDateTime, DateTimeOffset endDateTime)
+        {//TODO: Make more generic to work for all attributes
+            string url = squareFoot.TimeSeriesLinks.InterpolatedData;
+            string startDateString = startDateTime.ToStringWithNoOffset();
+            string endDateString = endDateTime.ToStringWithNoOffset();
+
+            url = url.WithParameter("startTime", $"{startDateString}")
+                .WithParameter("endTime", $"{endDateString}")
+                .WithParameter("interval", "1h");
+
+            try //TODO: Not this
+            {
+                string json = await this.GetAsync(url);
+                string[] split = json.Split("UOM for the value '");
+                string valueAsString = split[1].Split("'")[0];
+                double value = double.Parse(valueAsString);
+
+                squareFoot.InterpolatedDataPoints = new List<InterpolatedDataPoint>() {
+                    new InterpolatedDataPoint
+                    {
+                        Timestamp = startDateTime,
+                        Value = value,
+                        UnitsAbbreviation =  "square feet"
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+                squareFoot.InterpolatedDataPoints = new List<InterpolatedDataPoint>() {
+                    new InterpolatedDataPoint
+                    {
+                        Timestamp = startDateTime,
+                        Value = 1,
+                        UnitsAbbreviation =  "square feet"
+                    }
+                };
+            }         
         }
     }
 }

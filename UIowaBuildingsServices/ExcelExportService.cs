@@ -34,7 +34,10 @@ namespace UIowaBuildingsServices
                 int row = 1;
                 foreach (BuildingUsageSummary summary in snapshot.BuildingUsageSummaries)
                 {
-                    row = CreateTable(buildingEmissionsSheet, BuildHeaderString(summary.BuildingName + " Emissions", snapshot), row, summary.BuildDataTable()); 
+                    string headerString = summary.SquareFeet > 1
+                        ? BuildHeaderString(summary.BuildingName + $" ({summary.SquareFeet} sq. ft)" + " Emissions", snapshot)
+                        : BuildHeaderString(summary.BuildingName + " Emissions", snapshot);
+                    row = CreateTable(buildingEmissionsSheet, headerString, row, summary.BuildDataTable()); 
                 }
 
                 ExcelWorksheet campusEnergyData = package.Workbook.Worksheets.Add("Campus Energy Summary");
