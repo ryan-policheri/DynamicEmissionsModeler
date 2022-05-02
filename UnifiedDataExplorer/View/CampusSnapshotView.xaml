@@ -52,15 +52,17 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Total" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center"  FontSize="24" FontWeight="Black" />
+            <TextBlock Text="Total Emissions" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center"  FontSize="24" FontWeight="Black" />
             
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Image Grid.Row="0" Source="/Resources/Images/Gascan.png" />
-                <TextBlock Grid.Row="1" Text="{Binding TotalGallonsDisplay}" HorizontalAlignment="Center" FontSize="24" FontWeight="Bold"/>
+                <TextBlock Grid.Row="0" Text="CO2 from Total Energy Usage" HorizontalAlignment="Center" FontSize="24" FontWeight="Bold" Margin="0 0 0 10"/>
+                <Image Grid.Row="1" Source="/Resources/Images/Gascan.png" />
+                <TextBlock Grid.Row="2" Text="{Binding TotalGallonsDisplay}" HorizontalAlignment="Center" FontSize="24" FontWeight="Bold" Margin="0 10 0 0"/>
             </Grid>
         </Grid>
 
@@ -69,11 +71,12 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Emission Breakdown" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="24" FontWeight="Black"/>
+            <TextBlock Text="Emissions Breakdown" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="24" FontWeight="Black"/>
 
-            <Grid Grid.Row="1" Grid.Column="0">
+            <Grid Grid.Row="1" Grid.RowSpan="2" Grid.Column="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
@@ -85,20 +88,20 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Electric"  HorizontalAlignment="Center" FontSize="24" FontWeight="Bold"/>
-                <Image Grid.Row="1" Grid.Column="0" Source="/Resources/Images/Gascan.png" />
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="CO2 from Electric Usage" HorizontalAlignment="Center" FontSize="24" FontWeight="Bold"/>
+                <Image Grid.Row="1" Grid.Column="0" Source="/Resources/Images/Lightening-Bolt.png" />
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="{Binding ElectricGallonsDisplay}" HorizontalAlignment="Center" FontSize="24" FontWeight="Bold"/>
 
-                <TextBlock Grid.Row="0" Grid.Column="2" Text="Heating"  HorizontalAlignment="Center" FontSize="24" FontWeight="Bold"/>
-                <Image Grid.Row="1" Grid.Column="2" Source="/Resources/Images/Gascan.png" />
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="CO2 from Steam Usage"  HorizontalAlignment="Center" FontSize="24" FontWeight="Bold"/>
+                <Image Grid.Row="1" Grid.Column="2" Source="/Resources/Images/Flame.png" />
                 <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding HeatingGallonsDisplay}" HorizontalAlignment="Center" FontSize="24" FontWeight="Bold"/>
 
-                <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Text="Cooling" HorizontalAlignment="Center" FontSize="24" FontWeight="Bold"/>
-                <Image Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Source="/Resources/Images/Gascan.png" />
+                <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Text="CO2 from Chilled Water Usage" HorizontalAlignment="Center" FontSize="24" FontWeight="Bold"/>
+                <Image Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Source="/Resources/Images/Water.png" />
                 <TextBlock Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding CoolingGallonsDisplay}" HorizontalAlignment="Center" FontSize="24" FontWeight="Bold"/>
             </Grid>
         </Grid>
