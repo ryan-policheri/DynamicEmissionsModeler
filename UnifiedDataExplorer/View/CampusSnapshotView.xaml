@@ -89,13 +89,35 @@
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock Grid.Row="0" Text="CO2 from Total Energy Usage" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold" Margin="0 0 0 10"/>
+                                    <TextBlock Grid.Row="0" Text="More Energy Stats" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold" Margin="0 0 0 10"/>
                                     <Image Grid.Row="1" Source="/Resources/Images/Gascan.png" Opacity="0.3"/>
-                                    <ListBox Grid.Row="1">
-                                        <ListBoxItem>
-                                            <TextBlock Text=""/>
-                                        </ListBoxItem>
-                                    </ListBox>
+                                    <ScrollViewer Grid.Row="1" >
+                                        <StackPanel>
+                                            <ListBox ItemsSource="{Binding TotalEnergyStats}">
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding Title}" FontWeight="Bold"/>
+                                                            <TextBlock Text="{Binding Value}" Margin="5 0 0 0"/>
+                                                            <TextBlock Text="{Binding Units}" Margin="5 0 0 0"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
+                                            <TextBlock Grid.Row="0" Text="Campus Energy Stats" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold" Margin="0 0 0 10"/>
+                                            <ListBox ItemsSource="{Binding CampusEnergyStats}">
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding Title}" FontWeight="Bold"/>
+                                                            <TextBlock Text="{Binding Value}" Margin="5 0 0 0"/>
+                                                            <TextBlock Text="{Binding Units}" Margin="5 0 0 0"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
+                                        </StackPanel>
+                                    </ScrollViewer>
                                 </Grid>
                             </Button.Content>
                         </Button>
@@ -157,6 +179,17 @@
 
                                             <TextBlock Grid.Row="0" Text="CO2 from Electric Usage" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold"/>
                                             <Image Grid.Row="1" Source="/Resources/Images/Lightening-Bolt.png" Opacity="0.3"/>
+                                            <ListBox Grid.Row="1" ItemsSource="{Binding ElectricEnergyStats}">
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding Title}" FontWeight="Bold"/>
+                                                            <TextBlock Text="{Binding Value}" Margin="5 0 0 0"/>
+                                                            <TextBlock Text="{Binding Units}" Margin="5 0 0 0"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
                                         </Grid>
                                     </Grid>
                                 </Button.Content>
@@ -177,7 +210,7 @@
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
-                                        <TextBlock Grid.Row="0" Text="CO2 from Steam Usage"  HorizontalAlignment="Center" FontSize="22" FontWeight="Bold"/>
+                                        <TextBlock Grid.Row="0" Text="CO2 from Steam Usage" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold"/>
                                         <Image Grid.Row="1" Source="/Resources/Images/Flame.png" />
                                         <TextBlock Grid.Row="2" Text="{Binding HeatingGallonsDisplay}" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold"/>
                                     </Grid>
@@ -194,8 +227,19 @@
                                                 <RowDefinition Height="*"/>
                                             </Grid.RowDefinitions>
 
-                                            <TextBlock Grid.Row="0" Text="CO2 from Steam Usage" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold"/>
+                                            <TextBlock Grid.Row="0" Text="CO2 from Steam Usage"  HorizontalAlignment="Center" FontSize="22" FontWeight="Bold"/>
                                             <Image Grid.Row="1" Source="/Resources/Images/Flame.png" Opacity="0.3"/>
+                                            <ListBox Grid.Row="1" ItemsSource="{Binding HeatingEnergyStats}">
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding Title}" FontWeight="Bold"/>
+                                                            <TextBlock Text="{Binding Value}" Margin="5 0 0 0"/>
+                                                            <TextBlock Text="{Binding Units}" Margin="5 0 0 0"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
                                         </Grid>
                                     </Grid>
                                 </Button.Content>
@@ -235,6 +279,17 @@
 
                                             <TextBlock Grid.Row="0" Text="CO2 from Chilled Water Usage" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold"/>
                                             <Image Grid.Row="1" Source="/Resources/Images/Water.png" Opacity="0.3"/>
+                                            <ListBox Grid.Row="1" ItemsSource="{Binding CoolingEnergyStats}">
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding Title}" FontWeight="Bold"/>
+                                                            <TextBlock Text="{Binding Value}" Margin="5 0 0 0"/>
+                                                            <TextBlock Text="{Binding Units}" Margin="5 0 0 0"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
                                         </Grid>
                                     </Grid>
                                 </Button.Content>

@@ -26,8 +26,14 @@ namespace UnifiedDataExplorer.ViewModel
             {
                 Buildings.Add(summary);
             }
-            SelectedBuilding = Buildings.FirstOrDefault();
 
+            CampusEnergyStats = new ObservableCollection<StatViewModel>();
+            TotalEnergyStats = new ObservableCollection<StatViewModel>();
+            ElectricEnergyStats = new ObservableCollection<StatViewModel>();
+            HeatingEnergyStats = new ObservableCollection<StatViewModel>();
+            CoolingEnergyStats = new ObservableCollection<StatViewModel>();
+
+            SelectedBuilding = Buildings.FirstOrDefault();
             SelectedTime = _snapshot.End;
 
             StepBack = new DelegateCommand(OnStepBack);
@@ -103,6 +109,12 @@ namespace UnifiedDataExplorer.ViewModel
             }
         }
 
+        public ObservableCollection<StatViewModel> CampusEnergyStats { get; }
+        public ObservableCollection<StatViewModel> TotalEnergyStats { get; }
+        public ObservableCollection<StatViewModel> ElectricEnergyStats { get; }
+        public ObservableCollection<StatViewModel> HeatingEnergyStats { get; }
+        public ObservableCollection<StatViewModel> CoolingEnergyStats { get; }
+
         public string TotalGallonsDisplay => String.Format("{0:n0}", SelectedBuildingUsage.TotalCo2InGasolineVolumeEquivelent.UsGallons) + " Gasoline Gallons";
         public string ElectricGallonsDisplay => String.Format("{0:n0}", SelectedBuildingUsage.ElectricCo2InGasolineVolumeEquivelent.UsGallons) + " Gasoline Gallons";
         public string HeatingGallonsDisplay => String.Format("{0:n0}", SelectedBuildingUsage.HeatingCo2InGasolineVolumeEquivelent.UsGallons) + " Gasoline Gallons";
@@ -112,6 +124,39 @@ namespace UnifiedDataExplorer.ViewModel
         {
             if (this.SelectedBuilding == null || this.SelectedTime == null || this.SelectedTime == default(DateTimeOffset)) return;
             SelectedBuildingUsage = this.SelectedBuilding.BuildingUsages.First(x => x.Timestamp == this.SelectedTime);
+
+            HourDetails hourDetails = _snapshot.EnergyResources.First(x => x.Hour == this.SelectedTime);
+
+            CampusEnergyStats.Clear();
+            CampusEnergyStats.Add(new StatViewModel("Electric Purchased:", hourDetails.ElectricPurchased.MegawattHours, "mwh"));
+            CampusEnergyStats.Add(new StatViewModel("Electric Generated:", hourDetails.CampusElectricGeneration.MegawattHours, "mwh"));
+            CampusEnergyStats.Add(new StatViewModel("Steam Produced:", hourDetails.SteamProduced.MegabritishThermalUnits, "mmbtu"));
+            CampusEnergyStats.Add(new StatViewModel("Chilled Water Produced:", hourDetails.ChilledWaterProduced.UsGallons, "gallons"));
+            CampusEnergyStats.Add(new StatViewModel("Power Plant Electric Overhead:", hourDetails.PowerPlantElectricOverhead.MegawattHours, "mwh"));;
+            CampusEnergyStats.Add(new StatViewModel("Power Plant Steam Overhead:", hourDetails.PowerPlantSteamOverhead.MegabritishThermalUnits, "mmbtu"));
+
+            TotalEnergyStats.Clear();
+            TotalEnergyStats.Add(new StatViewModel("CO2 from Energy Use", SelectedBuildingUsage.TotalCo2.Kilograms, "kg"));
+            TotalEnergyStats.Add(new StatViewModel("CO2 per Square Foot", SelectedBuildingUsage.TotalCo2.Kilograms / this.SelectedBuilding.SquareFeet, "co2-kg per Sq. Ft"));
+            TotalEnergyStats.Add(new StatViewModel("CO2 per Square Foot", SelectedBuildingUsage.TotalCo2InGasolineVolumeEquivelent.UsGallons / this.SelectedBuilding.SquareFeet, "gas-gallons per Sq. Ft"));
+
+            ElectricEnergyStats.Clear();
+            ElectricEnergyStats.Add(new StatViewModel("Electric Used:", SelectedBuildingUsage.ElectricUsage.KilowattHours, "kwh"));
+            ElectricEnergyStats.Add(new StatViewModel("CO2 From Electric:", SelectedBuildingUsage.Co2FromElectricUsage.Kilograms, "kg"));
+            ElectricEnergyStats.Add(new StatViewModel("Electric Emissions Factor", hourDetails.ElectricEmissionsFactorInKilogramsOfCo2PerMegawattHour, "kg-co2 per mwh"));
+            ElectricEnergyStats.Add(new StatViewModel("Electric Purchased:", hourDetails.ElectricPurchased.MegawattHours, "mwh"));
+            ElectricEnergyStats.Add(new StatViewModel("Electric Generated:", hourDetails.CampusElectricGeneration.MegawattHours, "mwh"));
+
+            HeatingEnergyStats.Clear();
+            HeatingEnergyStats.Add(new StatViewModel("Steam Used (energy):", SelectedBuildingUsage.SteamUsageAsEnergy.MegabritishThermalUnits, "mmbtu"));
+            HeatingEnergyStats.Add(new StatViewModel("Steam Used (mass):", SelectedBuildingUsage.SteamUsageAsMass.Kilograms, "kg"));
+            HeatingEnergyStats.Add(new StatViewModel("CO2 From Steam:", SelectedBuildingUsage.Co2FromSteamUsage.Kilograms, "kg"));
+            HeatingEnergyStats.Add(new StatViewModel("Steam Emissions Factor", hourDetails.SteamEmissionsFactorInKilogramsOfCo2PerMmbtu, "kg-co2 per mmbtu"));
+
+            CoolingEnergyStats.Clear();
+            CoolingEnergyStats.Add(new StatViewModel("Chilled Water Used:", SelectedBuildingUsage.ChilledWaterUsage.UsGallons, "gallons"));
+            CoolingEnergyStats.Add(new StatViewModel("CO2 From Chilled Water:", SelectedBuildingUsage.Co2FromChilledWaterUsage.Kilograms, "kg"));
+            CoolingEnergyStats.Add(new StatViewModel("Chilled Water Emissions Factor", hourDetails.ChilledWaterEmissionsFactorInKilogramsOfCo2PerChilledWaterGallon, "kg-co2 per gallon"));
         }
 
         private void OnStepBack()
