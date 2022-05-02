@@ -23,11 +23,13 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" Text="Hourly Emissions Report - Parameter Entry" FontWeight="Bold" FontSize="22"/>
+        <TextBlock Grid.Row="0" Text="Hourly Emissions Report - Parameter Entry" FontWeight="Bold" FontSize="26"/>
 
-        <Grid Grid.Row="1" Margin="0 15 0 10">
+        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0 15 0 10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
@@ -39,13 +41,13 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            
-            <TextBlock Grid.Column="0" Text="Start Date" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
-            <DatePicker Grid.Column="1" SelectedDate="{Binding StartDate}" MaxWidth="200" Margin="10 0 0 0" Padding="0 0 0 5" FontSize="16"/>
-            <TextBlock Grid.Column="2" Text="End Date" FontWeight="Bold" Margin="40 0 0 0" FontSize="16" VerticalAlignment="Center"/>
-            <DatePicker Grid.Column="3" SelectedDate="{Binding EndDate}" MaxWidth="200" Margin="10 0 0 0" Padding="0 0 0 5" FontSize="16"/>
 
-            <TextBlock Grid.Column="4" Text="Grid Strategy" FontWeight="Bold" Margin="100 0 0 0" Padding="0" FontSize="24" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="0" Text="Start Date" FontWeight="Bold" FontSize="22" VerticalAlignment="Center"/>
+            <DatePicker Grid.Column="1" SelectedDate="{Binding StartDate}" MaxWidth="200" Margin="10 0 0 0" Padding="0 0 0 5" FontSize="22"/>
+            <TextBlock Grid.Column="2" Text="End Date" FontWeight="Bold" Margin="40 0 0 0" FontSize="22" VerticalAlignment="Center"/>
+            <DatePicker Grid.Column="3" SelectedDate="{Binding EndDate}" MaxWidth="200" Margin="10 0 0 0" Padding="0 0 0 5" FontSize="22"/>
+
+            <TextBlock Grid.Column="4" Text="Grid Strategy" FontWeight="Bold" Margin="100 0 0 0" Padding="0" FontSize="22" VerticalAlignment="Center" />
             
             <materialDesign:Flipper Grid.Column="5" Style="{StaticResource MaterialDesignCardFlipper}" Width="300" HorizontalAlignment="Left" Margin="5 0 0 0"
                                     IsFlippedChanged="Flipper_IsFlippedChanged">
@@ -72,22 +74,29 @@
             
         </Grid>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="2" >
-            <TextBlock Text="Select Buildings" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Margin="0 10 0 10">
+            <TextBlock Text="Select Buildings" FontWeight="Bold" FontSize="22" VerticalAlignment="Center"/>
             <Button Background="Transparent" Content="{Binding SelectAllText}" Command="{Binding SelectAllCommand}" 
-                    Margin="10 0 0 0" FontSize="12" VerticalAlignment="Center"/>
+                    Margin="10 0 0 0" FontSize="16" VerticalAlignment="Center"/>
         </StackPanel>
 
-        <ListBox Grid.Row="3" ItemsSource="{Binding AvailableAssets}">
+        <StackPanel Orientation="Horizontal"  Grid.Row="2" Grid.Column="1">
+            <CheckBox Content="Generate Excel" FontWeight="Bold" FontSize="18" IsChecked="{Binding GenerateExcel}"/>
+            <CheckBox Content="Generate Dashoard" FontWeight="Bold" FontSize="18" IsChecked="{Binding GenerateDashboard}" Margin="10 0 0 0"/>
+            <Button Background="Transparent" Content="Execute!" FontWeight="Bold" FontSize="18" Margin="50 0 0 0" Click="Button_Click"/>
+        </StackPanel>
+
+        <ListBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding AvailableAssets}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <DockPanel>
                         <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}">
-                            <TextBlock Text="{Binding Name, Mode=OneTime}"/>
+                            <TextBlock Text="{Binding Name, Mode=OneTime}" FontSize="16"/>
                         </CheckBox>
                     </DockPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        
     </Grid>
 </UserControl>

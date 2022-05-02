@@ -20,5 +20,12 @@ namespace UnifiedDataExplorer.View
             if (args.NewValue == true) strategy = ElectricGridStrategy.MidAmericanAverageFuelMix;
             ViewModel.GridStrategy = strategy;            
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.DoExecute = true;
+            Window modalWindow = Window.GetWindow(this);
+            modalWindow.Close();
+        }
     }
 }

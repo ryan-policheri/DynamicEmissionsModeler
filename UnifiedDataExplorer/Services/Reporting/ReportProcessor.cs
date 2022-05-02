@@ -77,16 +77,31 @@ namespace UnifiedDataExplorer.Services.Reporting
             HourlyEmissionsReportParametersViewModel vm = new HourlyEmissionsReportParametersViewModel(model, childAssets);
             _dialogService.ShowModalWindow(vm);
 
+            if (!vm.DoExecute) return;
+            Guid loadingId = Guid.NewGuid();
+            _messageHub.Publish<LoadingEvent>(new LoadingEvent { Id = loadingId, Description = "Generating an Hourly Emissions Snapshot...", IsLoading = true });
+
             model = vm.ToModel();
             await savedParametersFile.SaveAsync<HourlyEmissionsReportParameters>(model);
 
             CampusSnapshot snapshot = await _reportingService.GenerateCampusSnapshot(model);
 
-            string reportDirectory = _dataFileProvider.GetReportsDirectory();
-            string fileName = "temp" + DateTime.Now.Minute.ToString() + ".xlsx";
-            string fullPath = SystemFunctions.CombineDirectoryComponents(reportDirectory, fileName);
-            _excelExportService.ExportCampusSnapshot(fullPath, snapshot);
-            SystemFunctions.OpenFile(fullPath);
+            _messageHub.Publish<LoadingEvent>(new LoadingEvent { Id = loadingId, Description = "Done generating an Hourly Emissions Snapshot...", IsLoading = false });
+
+            if (vm.GenerateExcel)
+            {
+                string reportDirectory = _dataFileProvider.GetReportsDirectory();
+                string fileName = "temp" + DateTime.Now.Minute.ToString() + ".xlsx";
+                string fullPath = SystemFunctions.CombineDirectoryComponents(reportDirectory, fileName);
+                _excelExportService.ExportCampusSnapshot(fullPath, snapshot);
+                SystemFunctions.OpenFile(fullPath);
+            }
+
+            if (vm.GenerateDashboard)
+            {
+                CampusSnapshotViewModel campusSnapshotViewModel = new CampusSnapshotViewModel(snapshot);
+                _dialogService.ShowModalWindow(campusSnapshotViewModel);
+            }
         }
     }
 }

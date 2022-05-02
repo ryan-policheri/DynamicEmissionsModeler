@@ -5,17 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UnifiedDataExplorer.View.MainMenu"
              xmlns:vm="clr-namespace:UnifiedDataExplorer.ViewModel.MainMenu"
+             xmlns:gif="http://wpfanimatedgif.codeplex.com" 
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             DataContextChanged="UserControl_DataContextChanged">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <Menu IsMainMenu="True" ItemsSource="{Binding MenuItems}">
+        <Menu IsMainMenu="True" ItemsSource="{Binding MenuItems}" Margin="0">
             <Menu.Resources>
                 <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource MenuItem}">
                     <Setter Property="Header" Value="{Binding Header}"/>
@@ -26,5 +29,9 @@
                 </HierarchicalDataTemplate>
             </Menu.Resources>
         </Menu>
+
+        <StackPanel Grid.Column="1" Background="#FFFAFAFA" VerticalAlignment="Center" Margin="0">
+            <Image x:Name="LoadingIcon" gif:ImageBehavior.AnimatedSource="/Resources/Images/Loading.gif" Height="48" Margin="0 0 10 0" ToolTip="Loading..."  Visibility="Hidden"/>
+        </StackPanel>
     </Grid>
 </UserControl>

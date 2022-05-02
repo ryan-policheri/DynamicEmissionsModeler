@@ -16,9 +16,17 @@ namespace UnifiedDataExplorer.ViewModel.MainMenu
         {
             MenuItems = new ObservableCollection<MenuItemViewModel>();
             BuildMenuItems();
+            MessageHub.Subscribe<LoadingEvent>(OnLoadingEvent);
         }
 
         public ObservableCollection<MenuItemViewModel> MenuItems { get; }
+
+        private bool _isLoading;
+        public bool IsLoading 
+        { 
+            get { return _isLoading; }
+            set { SetField<bool>(ref _isLoading, value); }
+        }
 
         private void BuildMenuItems()
         {
@@ -88,6 +96,11 @@ namespace UnifiedDataExplorer.ViewModel.MainMenu
                 MenuItemHeader = MenuItemHeaders.RENDER_BUILDING_REPORT,
                 Action = MenuItemHeaders.RENDER_BUILDING_REPORT
             });
+        }
+
+        private void OnLoadingEvent(LoadingEvent args)
+        {
+            IsLoading = args.IsLoading;
         }
     }
 }
