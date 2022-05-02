@@ -31,6 +31,7 @@ namespace UIowaBuildingsServices
             //but if we were looking at buildings in multiple time zones obviously this would need to be changed
             DateTimeOffset startDateTime = new DateTimeOffset(parameters.StartDateInLocalTime.Date, TimeZones.GetCentralTimeOffset(parameters.StartDateInLocalTime.Date)); //Report convention, start at 12AM (first hour) of the given startDate
             DateTimeOffset endDateTime = new DateTimeOffset(parameters.EndDateInLocalTime.AddDays(1).AddHours(-1), TimeZones.GetCentralTimeOffset(parameters.StartDateInLocalTime.Date)); //Report convention, end at 11PM (last hour) of the given endDate
+            if(endDateTime.LocalDateTime > DateTime.Now) endDateTime = new DateTimeOffset(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, 0, 0, DateTimeKind.Local), TimeZones.GetCentralTimeOffset(parameters.StartDateInLocalTime.Date));
 
             //CAMPUS RESOURCE INFORMATION
             CampusEnergyResourceManager energyResourceManager = new CampusEnergyResourceManager(startDateTime, endDateTime);
