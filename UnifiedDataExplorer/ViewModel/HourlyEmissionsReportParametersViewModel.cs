@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
+using DotNetCommon.Extensions;
 using DotNetCommon.MVVM;
 using PiModel;
 using UIowaBuildingsModel;
@@ -14,18 +15,28 @@ namespace UnifiedDataExplorer.ViewModel
         private const string SELECT_ALL = "Select All";
         private const string UNSELECT_ALL = "Unselect All";
 
+        private string[] exludeBuildings = { "College of Medicine Administration Building", "Dey House", "Distribution", "Engineering Research Facility",
+                                             "Hydraulics Laboratory Wind Tunnel", "Hydraulics Model Annex", "Landscape Services Complex",
+                                             "North Campus Parking and Chilled Water Facility", "Presidents Residence", "Quadrangle Hall",
+                                             "Stanley Museum of Art", "State Historical Society Building", "West Campus Steam Plant" };
+
         public HourlyEmissionsReportParametersViewModel(HourlyEmissionsReportParameters model, IEnumerable<Asset> availableAssets)
         {
             StartDate = model.StartDateInLocalTime;
             EndDate = model.EndDateInLocalTime;
+            GenerateExcel = true;
+            GenerateDashboard = true;
             SelectAllCommand = new DelegateCommand(OnSelectAll);
             SelectAllText = SELECT_ALL;
             AvailableAssets = new ObservableCollection<SelectableAssetViewModel>();
             foreach(var asset in availableAssets)
             {
-                SelectableAssetViewModel vm = new SelectableAssetViewModel(asset);
-                if(model.AssetLinks.Contains(asset.Links.Self)) vm.IsSelected = true;
-                AvailableAssets.Add(vm);
+                if(!asset.Name.OneOf(exludeBuildings))
+                {
+                    SelectableAssetViewModel vm = new SelectableAssetViewModel(asset);
+                    if (model.AssetLinks.Contains(asset.Links.Self)) vm.IsSelected = true;
+                    AvailableAssets.Add(vm);
+                }
             }
         }
 

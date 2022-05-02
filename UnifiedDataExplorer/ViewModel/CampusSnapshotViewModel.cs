@@ -80,8 +80,10 @@ namespace UnifiedDataExplorer.ViewModel
                 else day = _selectedTime.LocalDateTime.ToLongDateString();
 
                 string time = _selectedTime.LocalDateTime.ToString("h tt", CultureInfo.InvariantCulture);
+                time = time.TrimEnd("AM").TrimEnd("PM").TrimEnd();
+                string amPm = _selectedTime.LocalDateTime.ToString("tt", CultureInfo.InvariantCulture);
 
-                string value = day + " at " + time;
+                string value = day + " from " + time + " " + amPm + " to " + time + ":59 " + amPm;
                 return value;
             }
         }
