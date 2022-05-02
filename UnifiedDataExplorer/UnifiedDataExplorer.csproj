@@ -7,10 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Images\Gascan.png" />
     <None Remove="Resources\Images\Leaf.png" />
     <None Remove="Resources\Images\Loading.gif" />
     <None Remove="Resources\Images\MEC_Logo.png" />
     <None Remove="Resources\Images\MISO_Logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Images\Gascan.png" />
   </ItemGroup>
 
   <ItemGroup>

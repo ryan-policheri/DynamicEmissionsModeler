@@ -18,7 +18,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <TreeView Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Categories}" TreeViewItem.Expanded="LazyLoadedTree_Expanded" >
+        <TreeView Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Categories}" TreeViewItem.Expanded="LazyLoadedTree_Expanded">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource TreeViewItem}">
                     <Setter Property="IsExpanded" Value="{Binding IsExpanded}"/>

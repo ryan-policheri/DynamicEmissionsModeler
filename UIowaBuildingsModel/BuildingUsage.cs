@@ -23,6 +23,9 @@ namespace UIowaBuildingsModel
 
         public Mass TotalCo2 => Co2FromElectricUsage + Co2FromSteamUsage + Co2FromChilledWaterUsage;
 
-        public Volume Co2InGallonsOfGasolineEquivelent => Gasoline.CalculateGasolineEquivelent(TotalCo2);   
+        public Volume TotalCo2InGasolineVolumeEquivelent => Gasoline.CalculateGasolineEquivelent(TotalCo2);
+        public Volume ElectricCo2InGasolineVolumeEquivelent => Gasoline.CalculateGasolineEquivelent(Co2FromElectricUsage);
+        public Volume HeatingCo2InGasolineVolumeEquivelent => Gasoline.CalculateGasolineEquivelent(Co2FromSteamUsage);
+        public Volume CoolingCo2InGasolineVolumeEquivelent => Gasoline.CalculateGasolineEquivelent(Co2FromChilledWaterUsage);
     }
 }

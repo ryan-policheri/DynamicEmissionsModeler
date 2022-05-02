@@ -38,8 +38,8 @@ namespace UIowaBuildingsModel
                 row["CO2 Emissions from Steam (kg)"] = usage.Co2FromSteamUsage.Kilograms;
                 row["CO2 Emissions from Chilled Water (kg)"] = usage.Co2FromChilledWaterUsage.Kilograms;
                 row["Total CO2 Emissions (kg)"] = usage.TotalCo2.Kilograms;
-                row["Total CO2 Emissions (gasoline gallons)"] = usage.Co2InGallonsOfGasolineEquivelent.UsGallons;
-                row["CO2 Emissions per Square Foot (gasoline gallons / sq. ft)"] = usage.Co2InGallonsOfGasolineEquivelent.UsGallons / this.SquareFeet;
+                row["Total CO2 Emissions (gasoline gallons)"] = usage.TotalCo2InGasolineVolumeEquivelent.UsGallons;
+                row["CO2 Emissions per Square Foot (gasoline gallons / sq. ft)"] = usage.TotalCo2InGasolineVolumeEquivelent.UsGallons / this.SquareFeet;
                 table.Rows.Add(row);
             }
             return table;
