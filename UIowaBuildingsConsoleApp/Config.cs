@@ -22,21 +22,17 @@ namespace UIowaBuildingsModelConsoleApp
             {
                 string rawValue = _rawConfig[prop.Name];
                 prop.SetValueWithTypeRespect(this, rawValue);
-            }       
+            }
         }
 
         public string AppDataDirectory { get; set; }
 
         public string PiWebApiBaseAddress { get; set; }
 
-        public string PiUserName { get; set; }
-
-        public string PiPassword { get; set; }
-
         public string PiAssestServerName { get; set; }
 
         public string EiaWebApiBaseAddress { get; set; }
 
-        public string CredentialsFile { get; set; }
+        public string HourlyEmissionsReportRootAssetLink { get; set; }
     }
 }
