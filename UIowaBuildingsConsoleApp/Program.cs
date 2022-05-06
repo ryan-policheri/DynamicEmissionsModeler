@@ -1,20 +1,55 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using DotNetCommon.Extensions;
 using Microsoft.Extensions.DependencyInjection;
-using PiModel;
 using PiServices;
+using UIowaBuildingsConsoleApp;
 using UIowaBuildingsConsoleApp.Startup;
+using UIowaBuildingsModel;
 using UIowaBuildingsModelConsoleApp;
+using UIowaBuildingsServices;
+using UnitsNet;
 
-IConfiguration rawConfig = Bootstrapper.LoadConfiguration();
-Config config = new Config(rawConfig);
+Config config = Bootstrapper.LoadConfiguration();
 IServiceProvider serviceProvider = Bootstrapper.BuildServiceProvider(config);
 
-PiHttpClient piClient = serviceProvider.GetService<PiHttpClient>();
+ReportingService reportingService =  serviceProvider.GetService<ReportingService>();
 
-await piClient.DoSomething();
+CampusSnapshot postDaylightChange = await reportingService.GenerateCampusSnapshot(new HourlyEmissionsReportParameters
+{
+    AssetLinks = { },
+    StartDateInLocalTime = new DateTime(2022, 3, 14, 0, 0, 0, DateTimeKind.Local),
+    EndDateInLocalTime = new DateTime(2022, 5, 5, 0, 0, 0, DateTimeKind.Local),
+    GridStrategy = ElectricGridStrategy.MidAmericanAverageFuelMix
+});
 
-Database database = await piClient.DatabaseSearch("ITSNT2259", "UI-Energy");
-Console.WriteLine("Database");
+CampusSnapshot preDaylightChange = await reportingService.GenerateCampusSnapshot(new HourlyEmissionsReportParameters
+{
+    AssetLinks = { },
+    StartDateInLocalTime = new DateTime(2021, 12, 16, 0, 0, 0, DateTimeKind.Local),
+    EndDateInLocalTime = new DateTime(2022, 3, 12, 0, 0, 0, DateTimeKind.Local),
+    GridStrategy = ElectricGridStrategy.MidAmericanAverageFuelMix
+});
 
-IEnumerable<Asset> assets = await piClient.AssetSearchAll("ITSNT2259", "UI-Energy", 3);
-Console.WriteLine("Database");
+List<HourDetails> details = postDaylightChange.EnergyResources.ToList();
+details.AddRange(preDaylightChange.EnergyResources.ToList());
+
+BuildingUsage usage = new BuildingUsage();
+usage.ElectricUsage = Energy.FromKilowattHours(100);
+usage.SteamUsageAsEnergy = Energy.FromMegabritishThermalUnits(1);
+usage.ChilledWaterUsage = Volume.FromUsGallons(500);
+
+List<UsageTime> usageTimes = new List<UsageTime>();
+foreach(HourDetails detail in details)
+{
+    BuildingUsage copiedUsage = usage.Copy();
+    detail.PopulateCo2Emissions(copiedUsage);
+    usageTimes.Add(new UsageTime
+    {
+        Co2Mass = copiedUsage.TotalCo2,
+        Time = detail.Hour
+    });    
+}
+
+foreach(var item in usageTimes.OrderBy(x => x.Time))
+{
+    Console.WriteLine(item.Time.ToLocalTime().ToString() + ", " + item.Co2Mass.Kilograms);
+}
