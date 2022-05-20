@@ -15,7 +15,7 @@ ReportingService reportingService =  serviceProvider.GetService<ReportingService
 
 CampusSnapshot postDaylightChange = await reportingService.GenerateCampusSnapshot(new HourlyEmissionsReportParameters
 {
-    AssetLinks = { },
+    AssetLinks = { "https://pi.facilities.uiowa.edu/piwebapi/elements/F1EmAVYciAZHVU6DzQbJjxTxWwcE7mI49J6RGuHFS_ZKR9xgSVRTTlQyMjU5XFVJLUVORVJHWVxNQUlOIENBTVBVU1xNQUNMRUFOIEhBTEw" },
     StartDateInLocalTime = new DateTime(2022, 3, 14, 0, 0, 0, DateTimeKind.Local),
     EndDateInLocalTime = new DateTime(2022, 5, 5, 0, 0, 0, DateTimeKind.Local),
     GridStrategy = ElectricGridStrategy.MidAmericanAverageFuelMix
@@ -23,7 +23,7 @@ CampusSnapshot postDaylightChange = await reportingService.GenerateCampusSnapsho
 
 CampusSnapshot preDaylightChange = await reportingService.GenerateCampusSnapshot(new HourlyEmissionsReportParameters
 {
-    AssetLinks = { },
+    AssetLinks = { "https://pi.facilities.uiowa.edu/piwebapi/elements/F1EmAVYciAZHVU6DzQbJjxTxWwcE7mI49J6RGuHFS_ZKR9xgSVRTTlQyMjU5XFVJLUVORVJHWVxNQUlOIENBTVBVU1xNQUNMRUFOIEhBTEw" },
     StartDateInLocalTime = new DateTime(2021, 12, 16, 0, 0, 0, DateTimeKind.Local),
     EndDateInLocalTime = new DateTime(2022, 3, 12, 0, 0, 0, DateTimeKind.Local),
     GridStrategy = ElectricGridStrategy.MidAmericanAverageFuelMix
@@ -32,19 +32,24 @@ CampusSnapshot preDaylightChange = await reportingService.GenerateCampusSnapshot
 List<HourDetails> details = postDaylightChange.EnergyResources.ToList();
 details.AddRange(preDaylightChange.EnergyResources.ToList());
 
-BuildingUsage usage = new BuildingUsage();
-usage.ElectricUsage = Energy.FromKilowattHours(100);
-usage.SteamUsageAsEnergy = Energy.FromMegabritishThermalUnits(1);
-usage.ChilledWaterUsage = Volume.FromUsGallons(500);
+//BuildingUsage usage = new BuildingUsage();
+//usage.ElectricUsage = Energy.FromKilowattHours(100);
+//usage.SteamUsageAsEnergy = Energy.FromMegabritishThermalUnits(1);
+//usage.ChilledWaterUsage = Volume.FromUsGallons(500);
+
+List<BuildingUsage> buildingUsages = preDaylightChange.BuildingUsageSummaries.First().BuildingUsages.ToList();
+buildingUsages.AddRange(postDaylightChange.BuildingUsageSummaries.First().BuildingUsages.ToList());
 
 List<UsageTime> usageTimes = new List<UsageTime>();
+
+
 foreach(HourDetails detail in details)
 {
-    BuildingUsage copiedUsage = usage.Copy();
-    detail.PopulateCo2Emissions(copiedUsage);
+    var matchingUsage = buildingUsages.First(x => x.Timestamp.HourMatches(detail.Hour));
+    detail.PopulateCo2Emissions(matchingUsage);
     usageTimes.Add(new UsageTime
     {
-        Co2Mass = copiedUsage.TotalCo2,
+        Co2Mass = matchingUsage.TotalCo2,
         Time = detail.Hour
     });    
 }
