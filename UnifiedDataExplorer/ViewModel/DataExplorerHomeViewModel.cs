@@ -26,7 +26,7 @@ namespace UnifiedDataExplorer.ViewModel
         private void OnAddDataSource()
         {
             DataSourceManagerViewModel viewModel = this.Resolve<DataSourceManagerViewModel>();
-            this.DialogService.ShowModalWindow(viewModel);
+            this.DialogService.ShowModalWindow<DataSourceManagerViewModel>(viewModel);
         }
     }
 }
