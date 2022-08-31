@@ -19,8 +19,8 @@
     <ProjectReference Include="..\DotNetCommon\DotNetCommon.csproj" />
     <ProjectReference Include="..\EIA.Services\EIA.Services.csproj" />
     <ProjectReference Include="..\PiServices\PiServices.csproj" />
-    <ProjectReference Include="..\UIowaBuildingsModel\UIowaBuildingsModel.csproj" />
-    <ProjectReference Include="..\UIowaBuildingsServices\UIowaBuildingsServices.csproj" />
+    <ProjectReference Include="..\UIowaBuildingsModel\EmissionsMonitorModel.csproj" />
+    <ProjectReference Include="..\UIowaBuildingsServices\EmissionsMonitorServices.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiModel", "PiModel\PiModel.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiServices", "PiServices\PiServices.csproj", "{DFA01381-8900-4AB2-BE58-C45C62E84BCD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIowaBuildingsModel", "UIowaBuildingsModel\UIowaBuildingsModel.csproj", "{2804193E-BD57-486D-8140-65CB1249AA17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmissionsMonitorModel", "UIowaBuildingsModel\EmissionsMonitorModel.csproj", "{2804193E-BD57-486D-8140-65CB1249AA17}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EIA.Domain", "EIA.Domain\EIA.Domain.csproj", "{6BA05503-99BD-4E4C-BCAA-6CCC2BE5DFCD}"
 EndProject
@@ -21,11 +21,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnifiedDataExplorer", "Unif
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.DotNetCommon", "Tests.DotNetCommon\Tests.DotNetCommon.csproj", "{D309B640-C9CD-4ED0-A97A-6CC5FAFEB8EF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIowaBuildingsServices", "UIowaBuildingsServices\UIowaBuildingsServices.csproj", "{1A6CA0BD-0532-453A-8C7E-5D81E5715BEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmissionsMonitorServices", "UIowaBuildingsServices\EmissionsMonitorServices.csproj", "{1A6CA0BD-0532-453A-8C7E-5D81E5715BEB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.EIA.Domain", "Tests.EIA.Domain\Tests.EIA.Domain.csproj", "{4D549F20-D701-4D28-BC73-796E0C347F44}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.UIowaBuildingsModel", "Tests.UIowaBuildingsModel\Tests.UIowaBuildingsModel.csproj", "{FA70657B-5B9B-46DA-AC17-C1650FB0F1C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.EmissionsMonitorModel", "Tests.UIowaBuildingsModel\Tests.EmissionsMonitorModel.csproj", "{FA70657B-5B9B-46DA-AC17-C1650FB0F1C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

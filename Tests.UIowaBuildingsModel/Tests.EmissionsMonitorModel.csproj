@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UIowaBuildingsModel\UIowaBuildingsModel.csproj" />
+    <ProjectReference Include="..\UIowaBuildingsModel\EmissionsMonitorModel.csproj" />
   </ItemGroup>
 
 </Project>

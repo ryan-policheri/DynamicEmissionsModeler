@@ -16,7 +16,7 @@
     <ProjectReference Include="..\EIA.Services\EIA.Services.csproj" />
     <ProjectReference Include="..\PiModel\PiModel.csproj" />
     <ProjectReference Include="..\PiServices\PiServices.csproj" />
-    <ProjectReference Include="..\UIowaBuildingsModel\UIowaBuildingsModel.csproj" />
+    <ProjectReference Include="..\UIowaBuildingsModel\EmissionsMonitorModel.csproj" />
   </ItemGroup>
 
 </Project>
