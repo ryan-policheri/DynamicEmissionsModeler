@@ -12,21 +12,11 @@ namespace UnifiedDataExplorer.ViewModel
 {
     public class DataExplorerViewModel : RobustViewModelBase
     {
-        private readonly EiaDatasetFinderViewModel _eiaDatasetFinderViewModel;
-        private readonly PiDatasetFinderViewModel _piDatasetFinderViewModel;
-        private readonly PiSearchViewModel _piSearchViewModel;
-
-        public DataExplorerViewModel(EiaDatasetFinderViewModel datasetFinderViewModel,
-            PiDatasetFinderViewModel piDatasetFinderViewModel,
-            PiSearchViewModel piSearchViewModel,
-            RobustViewModelDependencies facade) : base(facade)
+        public DataExplorerViewModel(DataExplorerHomeViewModel homeViewModel, RobustViewModelDependencies facade) : base(facade)
         {
-            _eiaDatasetFinderViewModel = datasetFinderViewModel;
-            _piDatasetFinderViewModel = piDatasetFinderViewModel;
-            _piSearchViewModel = piSearchViewModel;
-
-            CurrentChild = datasetFinderViewModel;
             Children = new ObservableCollection<ViewModelBase>();
+            Children.Add(homeViewModel);
+            CurrentChild = homeViewModel;
 
             MessageHub.Subscribe<OpenViewModelEvent>(OnOpenViewModel);
             MessageHub.Subscribe<CloseViewModelEvent>(OnCloseViewModel);
@@ -46,17 +36,10 @@ namespace UnifiedDataExplorer.ViewModel
 
         public ObservableCollection<ViewModelBase> Children { get; }
 
+
         public async Task LoadAsync()
         {
-            Children.Add(_piDatasetFinderViewModel);
-            CurrentChild = _piDatasetFinderViewModel;
-            await _piDatasetFinderViewModel.LoadAsync();
 
-            Children.Add(_piSearchViewModel);
-            await _piSearchViewModel.LoadAsync();
-
-            Children.Add(_eiaDatasetFinderViewModel);
-            await _eiaDatasetFinderViewModel.LoadAsync();
         }
 
         private void AddAndSwitchChild(ViewModelBase viewModel)

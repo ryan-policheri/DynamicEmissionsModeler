@@ -90,16 +90,17 @@ namespace UnifiedDataExplorer.Startup
 
             //DATA EXPLORATION
             services.AddTransient<DataExplorerViewModel>();
-
+            services.AddTransient<DataExplorerHomeViewModel>();
             services.AddTransient<EiaDatasetFinderViewModel>();
             services.AddTransient<PiDatasetFinderViewModel>();
-            
+            services.AddTransient<PiSearchViewModel>();
+
             //DATASET RENDERING
             services.AddTransient<EiaSeriesViewModel>();
             services.AddTransient<PiJsonDisplayViewModel>();
             services.AddTransient<PiAssetValuesViewModel>();
             services.AddTransient<PiInterpolatedDataViewModel>();
-            services.AddTransient<PiSearchViewModel>();
+
 
             services.AddTransient<ExcelExportService>();
             services.AddSingleton<ReportProcessor>(x => new ReportProcessor(
