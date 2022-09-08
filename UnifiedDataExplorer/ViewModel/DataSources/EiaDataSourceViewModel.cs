@@ -15,6 +15,7 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
 
         public EiaDataSourceViewModel(RobustViewModelDependencies facade) : base(facade)
         {
+            Save = new DelegateCommand(OnSave);
             TestConnection = new DelegateCommand(OnTestConnection);
             Cancel = new DelegateCommand(OnCancel);
         }
@@ -47,9 +48,21 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
             }
         }
 
+        public ICommand Save { get; }
+
         public ICommand TestConnection { get; }
 
         public ICommand Cancel { get; }
+
+        private void OnSave()
+        {
+            //TODO: SAVE
+            this.MessageHub.Publish(new SaveViewModelEvent
+            {
+                Sender = this,
+                SenderTypeName = nameof(EiaDataSourceViewModel)
+            });
+        }
 
         private async void OnTestConnection()
         {

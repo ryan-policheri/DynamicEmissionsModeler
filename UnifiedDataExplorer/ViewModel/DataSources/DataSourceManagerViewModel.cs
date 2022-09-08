@@ -13,17 +13,16 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
 {
     public class DataSourceManagerViewModel : RobustViewModelBase
     {
-        private ICollection<DataSourceBase> _dataSources;
-
         public DataSourceManagerViewModel(RobustViewModelDependencies facade) : base(facade)
         {
-            _dataSources = new List<DataSourceBase>();
+            DataSources = new ObservableCollection<DataSourceBase>();
             AddDataSource = new DelegateCommand<DataSourceType?>(OnAddDataSource);
             this.MessageHub.Subscribe<CloseViewModelEvent>(OnCloseViewModelEvent);
+            this.MessageHub.Subscribe<SaveViewModelEvent>(OnSaveViewModelEvent);
         }
 
-        public ObservableCollection<DataSourceBase> DataSources { get; }
 
+        public ObservableCollection<DataSourceBase> DataSources { get; }
 
         public bool ShowDataSource => SelectedDataSource != null;
 
@@ -37,10 +36,6 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
         public bool CanAddDataSource => SelectedDataSource == null;
 
         public ICommand AddDataSource { get; }
-
-        public ICommand ConfirmAddDataSource { get; }
-
-        public ICommand CancelAddDataSource { get; }
 
         private async void OnAddDataSource(DataSourceType? sourceType)
         {
@@ -60,6 +55,21 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
                     throw new NotImplementedException();
             }
         }
+
+        private void OnSaveViewModelEvent(SaveViewModelEvent args)
+        {
+            if (args.SenderTypeName == nameof(EiaDataSourceViewModel))
+            {
+                DataSources.Add(new DataSourceBase
+                {
+                    SourceName = "EIA.gov",
+                    SourceType = DataSourceType.Eia
+                });
+                this.SelectedDataSource = null;
+            }
+
+        }
+
 
         private void OnCloseViewModelEvent(CloseViewModelEvent args)
         {
