@@ -7,6 +7,7 @@ using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ViewModel.Base;
+using UnifiedDataExplorer.ViewModel.DataSources;
 
 namespace UnifiedDataExplorer.ViewModel
 {

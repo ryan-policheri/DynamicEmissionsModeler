@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="UnifiedDataExplorer.View.DataSourceManagerView"
+﻿<UserControl x:Class="UnifiedDataExplorer.View.DataSources.DataSourceManagerView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -11,6 +11,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -19,27 +20,17 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
-            <Button Content="Add EIA" Command="{Binding AddDataSource}" CommandParameter="{x:Static dataSourceModel:DataSourceType.Eia}"/>
-            <Button Content="Add PI API Data Source" Command="{Binding AddDataSource}" CommandParameter="{x:Static dataSourceModel:DataSourceType.Pi}"/>
+            <Button Content="Add EIA" Command="{Binding AddDataSource}" CommandParameter="{x:Static dataSourceModel:DataSourceType.Eia}" Background="Transparent"/>
+            <Button Content="Add PI API Data Source" Margin="5 0 0 0" Command="{Binding AddDataSource}" CommandParameter="{x:Static dataSourceModel:DataSourceType.Pi}" Background="Transparent"/>
         </StackPanel>
 
-        <ListBox Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" ItemsSource="{Binding DataSources}">
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Data Sources" FontWeight="Bold" FontSize="20" Margin="0 10 0 0 "/>
+        <ListBox Grid.Row="2" Grid.RowSpan="2" Grid.Column="0" ItemsSource="{Binding DataSources}">
 
         </ListBox>
 
-        <ContentControl Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Content="{Binding SelectedDataSource}"
+        <ContentControl Grid.Row="1" Grid.RowSpan="3" Grid.Column="1" Content="{Binding SelectedDataSource}"
                         Visibility="{Binding ShowDataSource, Converter={StaticResource BoolToVisibility}}">
-            <ContentControl.ContentTemplate>
-                <DataTemplate DataType="{x:Type dataSourceModel:EiaDataSource}">
-                    <StackPanel>
-                        <TextBlock Text="EIA Data Source"/>
-                        <DockPanel>
-                            <TextBlock Text="Name"/>
-                            <TextBox Text="{Binding SourceName}"/>
-                        </DockPanel>
-                    </StackPanel>
-                </DataTemplate>
-            </ContentControl.ContentTemplate>
         </ContentControl>
     </Grid>
 </UserControl>

@@ -62,7 +62,12 @@ namespace UIowaBuildingsConsoleApp.Startup
 
             services.AddSingleton<ICredentialProvider>(credProvider);
 
-            services.AddTransient<EiaClient>(x => new EiaClient(config.EiaWebApiBaseAddress, credProvider.DecryptValue(credConfig.EncryptedEiaWebApiKey)));
+            services.AddTransient<EiaClient>(x =>
+            {
+                var client = new EiaClient();
+                client.Initialize(config.EiaWebApiBaseAddress, credProvider.DecryptValue(credConfig.EncryptedEiaWebApiKey));
+                return client;
+            });
             services.AddTransient<PiHttpClient>(x => new PiHttpClient(config.PiWebApiBaseAddress,
                 credProvider.DecryptValue(credConfig.EncryptedPiUserName),
                 credProvider.DecryptValue(credConfig.EncryptedPiPassword),

@@ -9,6 +9,7 @@ using PiServices;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ModelWrappers;
 using UnifiedDataExplorer.ViewModel.Base;
+using UnifiedDataExplorer.ViewModel.DataSources;
 
 namespace UnifiedDataExplorer.ViewModel
 {
@@ -50,7 +51,7 @@ namespace UnifiedDataExplorer.ViewModel
         {
             while (!_client.HasAuthorization)
             {
-                PiSettingsViewModel viewModel = new PiSettingsViewModel { PiWebApiUrl = _client.BaseAddress };
+                PiDataSourceViewModel viewModel = new PiDataSourceViewModel { PiWebApiUrl = _client.BaseAddress };
                 this.DialogService.ShowModalWindow(viewModel);
                 _client.UserName = viewModel.PiUserName;
                 _client.Password = viewModel.PiPassword;

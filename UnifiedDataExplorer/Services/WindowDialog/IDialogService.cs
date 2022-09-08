@@ -1,9 +1,9 @@
-﻿using DotNetCommon.MVVM;
-
-namespace UnifiedDataExplorer.Services.Window
+﻿namespace UnifiedDataExplorer.Services.Window
 {
     public interface IDialogService
     {
         T ShowModalWindow<T>(T dataContext);
+        void ShowErrorMessage(string message);
+        void ShowInfoMessage(string message);
     }
 }

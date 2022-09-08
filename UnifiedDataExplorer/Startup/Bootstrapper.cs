@@ -17,6 +17,7 @@ using UnifiedDataExplorer.ViewModel.MainMenu;
 using UnifiedDataExplorer.Services.Window;
 using UnifiedDataExplorer.Services.DataPersistence;
 using UnifiedDataExplorer.Services.Reporting;
+using UnifiedDataExplorer.ViewModel.DataSources;
 
 namespace UnifiedDataExplorer.Startup
 {
@@ -72,7 +73,7 @@ namespace UnifiedDataExplorer.Startup
             services.AddSingleton<ICredentialProvider>(credProvider);
             services.AddSingleton<DataFileProvider>(dataFileProvider);
 
-            services.AddTransient<EiaClient>(x => new EiaClient(config.EiaWebApiBaseAddress, credProvider.DecryptValue(credConfig.EncryptedEiaWebApiKey)));
+            services.AddTransient<EiaClient>();
             services.AddTransient<PiHttpClient>(x => new PiHttpClient(config.PiWebApiBaseAddress,
                 credProvider.DecryptValue(credConfig.EncryptedPiUserName),
                 credProvider.DecryptValue(credConfig.EncryptedPiPassword),
@@ -87,6 +88,9 @@ namespace UnifiedDataExplorer.Startup
             //MAIN
             services.AddTransient<MainViewModel>();
             services.AddTransient<MainMenuViewModel>();
+
+            //DATA SOURCES
+            services.AddTransient<EiaDataSourceViewModel>();
 
             //DATA EXPLORATION
             services.AddTransient<DataExplorerViewModel>();

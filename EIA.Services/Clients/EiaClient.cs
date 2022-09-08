@@ -13,9 +13,13 @@ namespace EIA.Services.Clients
 {
     public class EiaClient : WebApiClientBase
     {
-        public EiaClient(string baseAddress, string subscriptionKey) : base()
+        public EiaClient() : base()
         {
             this.Client = new HttpClient();
+        }
+
+        public void Initialize(string baseAddress, string subscriptionKey)
+        {
             this.Client.BaseAddress = new Uri(baseAddress);
             SubscriptionKey = subscriptionKey;
             AddAuthorizationHeader();
@@ -33,6 +37,11 @@ namespace EIA.Services.Clients
             {
                 this.Client.DefaultRequestHeaders.Add("Subscription-Key", SubscriptionKey);
             }
+        }
+
+        public async Task TestAsync()
+        {
+            await this.GetAsync("".WithQueryString("api_key", SubscriptionKey));
         }
 
         public async Task<Category> GetCategoryTreeAsync(int rootCategoryId)

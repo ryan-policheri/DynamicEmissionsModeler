@@ -7,6 +7,7 @@ using EIA.Services.Clients;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ModelWrappers;
 using UnifiedDataExplorer.ViewModel.Base;
+using UnifiedDataExplorer.ViewModel.DataSources;
 
 namespace UnifiedDataExplorer.ViewModel
 {
@@ -39,11 +40,11 @@ namespace UnifiedDataExplorer.ViewModel
         {
             while (!_client.HasAuthorization)
             {
-                EiaSettingsViewModel viewModel = new EiaSettingsViewModel { EiaBaseUrl = _client.BaseAddress };
-                this.DialogService.ShowModalWindow(viewModel);
-                _client.SubscriptionKey = viewModel.EiaApiKey;
-                _client.AddAuthorizationHeader();
-                DataFileProvider.BuildCredentialsFile().Update<CredentialConfig>(x => x.EncryptedEiaWebApiKey = viewModel.EiaApiKey);
+                //EiaDataSourceViewModel viewModel = new EiaDataSourceViewModel { EiaBaseUrl = _client.BaseAddress };
+                //this.DialogService.ShowModalWindow(viewModel);
+                //_client.SubscriptionKey = viewModel.EiaApiKey;
+                //_client.AddAuthorizationHeader();
+                //DataFileProvider.BuildCredentialsFile().Update<CredentialConfig>(x => x.EncryptedEiaWebApiKey = viewModel.EiaApiKey);
             }
             Category root = await _client.GetCategoryByIdAsync(EiaCategories.ABSOLUTE_ROOT);
             CategorySeriesWrapper wrapper = new CategorySeriesWrapper(root);

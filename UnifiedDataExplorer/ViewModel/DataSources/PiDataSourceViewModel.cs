@@ -1,6 +1,8 @@
-﻿namespace UnifiedDataExplorer.ViewModel
+﻿using DotNetCommon.MVVM;
+
+namespace UnifiedDataExplorer.ViewModel.DataSources
 {
-    public class PiSettingsViewModel
+    public class PiDataSourceViewModel : ViewModelBase
     {
         public string PiWebApiUrl { get; set; }
 

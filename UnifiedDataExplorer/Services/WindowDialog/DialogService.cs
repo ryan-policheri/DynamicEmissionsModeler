@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace UnifiedDataExplorer.Services.Window
 {
@@ -29,6 +30,16 @@ namespace UnifiedDataExplorer.Services.Window
             modalWindow.ShowDialog();
 
             return dataContext;
+        }
+
+        public void ShowErrorMessage(string message)
+        {
+            MessageBox.Show(message); //TODO: Use own window
+        }
+
+        public void ShowInfoMessage(string message)
+        {
+            MessageBox.Show(message); //TODO: Use own window
         }
     }
 }
