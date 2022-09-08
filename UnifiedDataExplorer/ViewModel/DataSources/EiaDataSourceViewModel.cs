@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
@@ -27,6 +28,7 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
             EiaBaseUrl = _model.SuggestedBaseUrl;
         }
 
+        [Required]
         public string EiaBaseUrl
         {
             get { return _model.BaseUrl; }
@@ -34,10 +36,11 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
             {
                 _model.BaseUrl = value;
                 OnPropertyChanged(nameof(EiaBaseUrl));
+                Validate();
             }
         }
 
-
+        [Required]
         public string EiaApiKey
         {
             get { return _model.SubscriptionKey; }
@@ -45,6 +48,7 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
             {
                 _model.SubscriptionKey = value;
                 OnPropertyChanged(nameof(EiaApiKey));
+                Validate();
             }
         }
 
@@ -54,14 +58,17 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
 
         public ICommand Cancel { get; }
 
+
         private void OnSave()
         {
-            //TODO: SAVE
-            this.MessageHub.Publish(new SaveViewModelEvent
+            if (this.IsValid())
             {
-                Sender = this,
-                SenderTypeName = nameof(EiaDataSourceViewModel)
-            });
+                this.MessageHub.Publish(new SaveViewModelEvent
+                {
+                    Sender = this,
+                    SenderTypeName = nameof(EiaDataSourceViewModel)
+                });
+            }
         }
 
         private async void OnTestConnection()

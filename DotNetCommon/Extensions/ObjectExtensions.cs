@@ -108,6 +108,12 @@ namespace DotNetCommon.Extensions
             return JsonSerializer.Serialize(source, CommonJsonSerializerOptions.CaseInsensitiveBeautiful);
         }
 
+        public static object GetValue(this object source, string propertyName)
+        {
+            var prop = source.GetType().GetProperties().First(x => x.Name == propertyName);
+            return prop.GetValue(source);
+        }
+
         public static bool TrySetValueWithTypeRespect(this PropertyInfo property, object instance, string rawValue)
         {
             try
