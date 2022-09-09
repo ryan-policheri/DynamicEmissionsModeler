@@ -14,9 +14,10 @@ namespace EmissionsMonitorServices.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<EiaDataSource>()
-                .HasKey(x => x.SubscriptionKey);
-            modelBuilder.Entity<EiaDataSource>().ToTable("DATA_SOURCE_EIA");
+            var spec = modelBuilder.Entity<EiaDataSource>();
+            spec.HasKey(x => x.SubscriptionKey);
+            spec.Property(x => x.BaseUrl);
+            spec.ToTable("DATA_SOURCE_EIA");
         }
     }
 }

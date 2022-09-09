@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EmissionsMonitorModel.DataSources
 {
@@ -9,6 +10,7 @@ namespace EmissionsMonitorModel.DataSources
             SourceType = DataSourceType.Eia;
         }
 
+        [NotMapped]
         public string SuggestedBaseUrl { get; set; } = "https://api.eia.gov";
 
         [Required]
