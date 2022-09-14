@@ -85,7 +85,7 @@ namespace Tests.EmissionsMonitorModel
             dataPoints.Add(new DataPoint() { SeriesName = "B1 Steam output tag", Value = 20});
             
             ProductCostConverter converter = node.RenderProductAndCosts(dataPoints);
-            ICollection<Cost> costs = converter.CalculateCostOfProductAmount(Energy.FromKilowattHours(2));
+            ICollection<Cost> costs = converter.CalculateCostOfProductAmount(Energy.FromMegabritishThermalUnits(2));
             Money money = (Money)costs.First(x => x.Name == "Fuel Cost").Value;
             money.Amount.Should().Be(5m);
             Mass co2 = (Mass)costs.First(x => x.Name == "CO2 Emissions Cost").Value;
