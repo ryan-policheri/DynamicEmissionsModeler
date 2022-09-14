@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FluentAssertions;
 using DotNetCommon.Helpers;
-using UnitsNet;
+using FluentAssertions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PiModel;
 using UIowaBuildingsModel;
+using UnitsNet;
 
-namespace Tests.UIowaBuildingsModel
+namespace Tests.EmissionsMonitorModel
 {
     [TestClass]
     public class UIowaEmissionFactorsReporterTests

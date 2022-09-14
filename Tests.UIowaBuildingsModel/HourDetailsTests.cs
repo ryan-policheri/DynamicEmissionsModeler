@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using DotNetCommon.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UnitsNet;
 using FluentAssertions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UIowaBuildingsModel;
+using UnitsNet;
 
-namespace Tests.UIowaBuildingsModel
+namespace Tests.EmissionsMonitorModel
 {
     [TestClass]
     public class HourDetailsTests

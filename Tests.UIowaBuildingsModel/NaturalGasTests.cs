@@ -1,10 +1,10 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
 using FluentAssertions;
-using UnitsNet;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UIowaBuildingsModel.ConversionMethods;
-using System;
+using UnitsNet;
 
-namespace Tests.UIowaBuildingsModel
+namespace Tests.EmissionsMonitorModel
 {
     [TestClass]
     public class NaturalGasTests
