@@ -10,6 +10,6 @@ namespace EmissionsMonitorModel.ProcessModeling
     {
         public string Name { get; set; }
 
-        public object Value { get; set; }
+        public double Value { get; set; }
     }
 }

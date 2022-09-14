@@ -15,30 +15,27 @@ namespace EmissionsMonitorModel.ProcessModeling
         {
         }
 
-        public ICollection<ExchangeCostBase> Costs { get; set; }
-        public ExchangeCostBase Product { get; set; }
+        public ICollection<DataFunction> Costs { get; set; }
+        public DataFunction Product { get; set; }
 
-        public ProductCostConverter RenderProductAndCosts(ICollection<DataPoint> dataPoints)
+        public ProductCostResults RenderProductAndCosts(ICollection<DataPoint> dataPoints)
         {
-            ICollection<Cost> acutalCosts = new List<Cost>();
+            ICollection<DataFunctionResult> costs = new List<DataFunctionResult>();
 
-            foreach (ExchangeCostBase cost in Costs)
+            foreach (DataFunction cost in Costs)
             {
-                Cost acutalCost = new Cost();
-                acutalCost.Name = cost.CostName;
-                var input = dataPoints.Where(x => cost.CostFactors.Any(y => y.FactorUri == x.SeriesName));
-                acutalCost.Value = cost.FactorsToCostFunction.Execute(input.First());
-                acutalCosts.Add(acutalCost);
+                var input = dataPoints.Where(x => cost.FunctionFactors.Any(y => y.FactorUri == x.SeriesName));
+                DataFunctionResult result = cost.ExecuteFunction(input);
+                costs.Add(result);
             }
 
-            Product actualProduct = new Product();
-            var input2 = dataPoints.Where(x => Product.CostFactors.Any(y => y.FactorUri == x.SeriesName));
-            actualProduct.Value = Product.FactorsToCostFunction.Execute(input2.First());
+            var input2 = dataPoints.Where(x => Product.FunctionFactors.Any(y => y.FactorUri == x.SeriesName));
+            DataFunctionResult product = Product.ExecuteFunction(input2);
 
-            return new ProductCostConverter
+            return new ProductCostResults
             {
-                Costs = acutalCosts,
-                Product = actualProduct
+                Costs = costs,
+                Product = product
             };
         }
     }
