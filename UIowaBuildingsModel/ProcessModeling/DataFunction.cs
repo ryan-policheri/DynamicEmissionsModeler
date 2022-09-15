@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection;
 using EmissionsMonitorModel.TimeSeries;
 using EmissionsMonitorModel.Units;
 using UnitsNet;
@@ -22,7 +23,20 @@ namespace EmissionsMonitorModel.ProcessModeling
 
         public DataFunctionResult ExecuteFunction(IEnumerable<DataPoint> functionFactorValues)
         {
-            object obj = FunctionHostObject.Execute(functionFactorValues.First());
+            Type type = this.FunctionHostObject.GetType();
+            string methodName = this.FunctionName.Replace(" ", "");
+
+            MethodInfo executeMethod = type.GetMethod(methodName);
+            ParameterInfo[] parameters = executeMethod.GetParameters();
+            ICollection<object> orderedArgs = new List<object>();
+            foreach (ParameterInfo param in parameters.OrderBy(x => x.Position))
+            {
+                DataPoint correspondingDataPoint = functionFactorValues.First(x => x.SeriesName == param.Name);
+                orderedArgs.Add(correspondingDataPoint);
+            }
+
+            object obj = executeMethod.Invoke(this.FunctionHostObject, orderedArgs.ToArray());
+
             double value = ToDefaultValueRendering(obj);
             return new DataFunctionResult()
             {
