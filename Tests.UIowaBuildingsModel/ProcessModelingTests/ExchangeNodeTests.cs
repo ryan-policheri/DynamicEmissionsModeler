@@ -20,8 +20,13 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
 
             //DATA
             ICollection<DataPoint> dataPoints = new List<DataPoint>();
-            dataPoints.Add(new DataPoint() { SeriesName = "B1 NG Flow Tag", Value = 5000 });
-            dataPoints.Add(new DataPoint() { SeriesName = "B1 Steam Output Tag", Value = 20 });
+            dataPoints.Add(new DataPoint() { SeriesName = "B1 NG Flow Tag", Value = 5000 }); //$50 dollars of natural gas, 275.5 kgs of CO2
+            dataPoints.Add(new DataPoint() { SeriesName = "B1 Steam Output Tag", Value = 20 }); //20 MMBTU
+
+            //TOTAL COST: $50
+            //TOTAL CO2: 275.5 KG
+            //COST OF 2 MMBTU: 0.1 * $50 = $5
+            //CO2 OF 2 MMBTU: 0.1 * 275.5 = 27.55
 
             ProductCostResults results = boiler1ExchangeNode.RenderProductAndCosts(dataPoints);
             ICollection<Cost> costs = results.CalculateCostOfProductAmount(Energy.FromMegabritishThermalUnits(2));

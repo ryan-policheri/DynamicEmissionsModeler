@@ -152,5 +152,18 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
 
             return node;
         }
+
+        public static LikeTermsAggregatorNode BuildBoiler_1_2_TermAggregator()
+        {
+            LikeTermsAggregatorNode node = new LikeTermsAggregatorNode();
+
+            node.PrecedingNodes = new List<ExchangeNode>()
+            {
+                BuildBoiler1ExchangeNode(),
+                BuildBoiler2ExchangeNode()
+            };
+
+            return node;
+        }
     }
 }

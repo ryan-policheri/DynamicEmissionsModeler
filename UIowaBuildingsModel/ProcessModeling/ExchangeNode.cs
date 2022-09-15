@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EmissionsMonitorModel.TimeSeries;
-using EmissionsMonitorModel.Units;
-using UnitsNet;
+﻿using EmissionsMonitorModel.TimeSeries;
 
 namespace EmissionsMonitorModel.ProcessModeling
 {
