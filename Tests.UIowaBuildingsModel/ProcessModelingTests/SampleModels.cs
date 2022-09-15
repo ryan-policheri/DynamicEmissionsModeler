@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
+﻿using System.Collections.Generic;
 using EmissionsMonitorModel.ProcessModeling;
 using EmissionsMonitorModel.TimeSeries;
 using EmissionsMonitorModel.Units;
 using UIowaBuildingsModel.ConversionMethods;
 using UnitsNet;
 
-namespace Tests.EmissionsMonitorModel
+namespace Tests.EmissionsMonitorModel.ProcessModelingTests
 {
 
     public static class SampleModels
