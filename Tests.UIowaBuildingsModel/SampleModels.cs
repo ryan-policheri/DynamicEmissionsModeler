@@ -12,27 +12,27 @@ namespace Tests.EmissionsMonitorModel
 
     public static class SampleModels
     {
-        private class Boiler1
+        public class Boiler1
         {
-            public Func<DataPoint, Money> FuelCost => new Func<DataPoint, Money>((DataPoint fuelPoint) =>
+            public Money FuelCost(DataPoint NaturalGasUsagePoint)
             {
-                Volume gasVolume = Volume.FromCubicFeet(fuelPoint.Value);
+                Volume gasVolume = Volume.FromCubicFeet(NaturalGasUsagePoint.Value);
                 decimal cost = (decimal)(gasVolume.KilocubicFeet * 10.00); //$10 per 1,000 cubic feet 
                 return Money.FromUsDollars(cost);
-            });
+            }
 
-            public Func<DataPoint, Mass> EmissionsCost => new Func<DataPoint, Mass>((DataPoint fuelPoint) =>
+            public Mass CO2EmissionsCost(DataPoint NaturalGasUsagePoint)
             {
-                Volume gasVolume = Volume.FromCubicFeet(fuelPoint.Value);
+                Volume gasVolume = Volume.FromCubicFeet(NaturalGasUsagePoint.Value);
                 Mass co2Emissions = NaturalGas.ToCo2Emissions(gasVolume);
                 return co2Emissions;
-            });
+            }
 
-            public Func<DataPoint, Energy> SteamOutput => new Func<DataPoint, Energy>((DataPoint steamPoint) =>
+            public Energy SteamEnergyOutput(DataPoint SteamOutputPoint)
             {
-                Energy steamEnergy = Energy.FromMegabritishThermalUnits(steamPoint.Value);
+                Energy steamEnergy = Energy.FromMegabritishThermalUnits(SteamOutputPoint.Value);
                 return steamEnergy;
-            });
+            }
         }
 
 
@@ -50,7 +50,7 @@ namespace Tests.EmissionsMonitorModel
                         FunctionName = "Fuel Cost",
                         FunctionFactors = new List<FunctionFactor>()
                         {
-                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = "B1 NG flow tag" }
+                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = "B1 NG Flow Tag" }
                         },
                         FunctionCode = "Foo",
                         FunctionHostObject = computeObject
@@ -60,7 +60,7 @@ namespace Tests.EmissionsMonitorModel
                         FunctionName = "CO2 Emissions Cost",
                         FunctionFactors = new List<FunctionFactor>()
                         {
-                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = "B1 NG flow tag"}
+                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = "B1 NG Flow Tag"}
                         },
                         FunctionCode = "bar",
                         FunctionHostObject = computeObject
@@ -68,10 +68,10 @@ namespace Tests.EmissionsMonitorModel
                 },
                 Product = new SteamEnergyFunction()
                 {
-                    FunctionName = "Steam energy output",
+                    FunctionName = "Steam Energy Output",
                     FunctionFactors = new List<FunctionFactor>()
                     {
-                        new FunctionFactor() { FactorName = "Steam output", FactorUri = "B1 Steam output tag" }
+                        new FunctionFactor() { FactorName = "Steam Output", FactorUri = "B1 Steam Output Tag" }
                     },
                     FunctionCode = "Foobar",
                     FunctionHostObject = computeObject
@@ -81,34 +81,36 @@ namespace Tests.EmissionsMonitorModel
             return node;
         }
 
-        public static ExchangeNode BuildBoiler2ExchangeNode()
+        public class Boiler2
         {
-            dynamic computeObject1 = new ExpandoObject();
-            computeObject1.Execute = new Func<DataPoint, DataPoint, Money>((DataPoint coalPoint, DataPoint naturalGasPoint) =>
+            public Money FuelCost(DataPoint CoalUsagePoint, DataPoint NaturalGasUsagePoint)
             {
-                Mass coalMass = Mass.FromPounds(coalPoint.Value);
-                Volume gasVolume = Volume.FromCubicFeet(naturalGasPoint.Value);
+                Mass coalMass = Mass.FromPounds(CoalUsagePoint.Value);
+                Volume gasVolume = Volume.FromCubicFeet(NaturalGasUsagePoint.Value);
                 decimal coalCost = (decimal)(coalMass.Kilograms * 0.34); //34 cents per kg
                 decimal gasCost = (decimal)(gasVolume.KilocubicFeet * 10.00); //$10 per 1,000 cubic feet 
                 return Money.FromUsDollars(coalCost + gasCost);
-            });
+            }
 
-            dynamic computeObject2 = new ExpandoObject();
-            computeObject2.Execute = new Func<DataPoint, DataPoint, Mass>((DataPoint coalPoint, DataPoint naturalGasPoint) =>
+            public Mass CO2EmissionsCost(DataPoint CoalUsagePoint, DataPoint NaturalGasUsagePoint)
             {
-                Mass coalMass = Mass.FromPounds(coalPoint.Value);
-                Volume gasVolume = Volume.FromCubicFeet(naturalGasPoint.Value);
+                Mass coalMass = Mass.FromPounds(CoalUsagePoint.Value);
+                Volume gasVolume = Volume.FromCubicFeet(NaturalGasUsagePoint.Value);
                 Mass coalCo2Emissions = Coal.ToCo2Emissions(coalMass);
                 Mass naturalGasCo2Emissions = NaturalGas.ToCo2Emissions(gasVolume);
                 return coalCo2Emissions + naturalGasCo2Emissions;
-            });
+            }
 
-            dynamic computeObject3 = new ExpandoObject();
-            computeObject3.Execute = new Func<DataPoint, Energy>((DataPoint fuelPoint) =>
+            public Energy SteamEnergyOutput(DataPoint SteamOutputPoint)
             {
-                Energy steamEnergy = Energy.FromMegabritishThermalUnits(fuelPoint.Value);
+                Energy steamEnergy = Energy.FromMegabritishThermalUnits(SteamOutputPoint.Value);
                 return steamEnergy;
-            });
+            }
+        }
+
+        public static ExchangeNode BuildBoiler2ExchangeNode()
+        {
+            Boiler2 boiler2Compute = new Boiler2();
 
             ExchangeNode node = new ExchangeNode
             {
@@ -120,33 +122,33 @@ namespace Tests.EmissionsMonitorModel
                         FunctionName = "Fuel Cost",
                         FunctionFactors = new List<FunctionFactor>()
                         {
-                            new FunctionFactor() { FactorName = "Coal Usage", FactorUri = "B2 Coal flow tag" },
-                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = "B2 NG flow tag" }
+                            new FunctionFactor() { FactorName = "Coal Usage", FactorUri = "B2 Coal Flow Tag" },
+                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = "B2 NG Flow Tag" }
                         },
                         FunctionCode = "Foo",
-                        FunctionHostObject = computeObject1
+                        FunctionHostObject = boiler2Compute
                     },
                     new Co2MassFunction()
                     {
                         FunctionName = "CO2 Emissions Cost",
                         FunctionFactors = new List<FunctionFactor>()
                         {
-                            new FunctionFactor() { FactorName = "Coal Usage", FactorUri = "B2 Coal flow tag" },
-                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = "B2 NG flow tag" }
+                            new FunctionFactor() { FactorName = "Coal Usage", FactorUri = "B2 Coal Flow Tag" },
+                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = "B2 NG Flow Tag" }
                         },
                         FunctionCode = "bar",
-                        FunctionHostObject = computeObject2
+                        FunctionHostObject = boiler2Compute
                     }
                 },
                 Product = new SteamEnergyFunction()
                 {
-                    FunctionName = "Steam energy output",
+                    FunctionName = "Steam Energy Output",
                     FunctionFactors = new List<FunctionFactor>()
                     {
-                        new FunctionFactor() { FactorName = "Steam output", FactorUri = "B2 Steam output tag" }
+                        new FunctionFactor() { FactorName = "Steam Output", FactorUri = "B2 Steam Output Tag" }
                     },
                     FunctionCode = "Foobar",
-                    FunctionHostObject = computeObject3
+                    FunctionHostObject = boiler2Compute
                 }
             };
 

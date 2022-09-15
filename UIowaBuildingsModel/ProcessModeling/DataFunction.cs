@@ -25,19 +25,30 @@ namespace EmissionsMonitorModel.ProcessModeling
         {
             Type type = this.FunctionHostObject.GetType();
             string methodName = this.FunctionName.Replace(" ", "");
-
             MethodInfo executeMethod = type.GetMethod(methodName);
+            if (executeMethod == null) throw new InvalidOperationException($"Method {methodName} not found");
+
+            var paramMap = functionFactorValues.Join(this.FunctionFactors, dp => dp.SeriesName, factor => factor.FactorUri,
+                (dp, factor) => new
+                {
+                    SeriesName = dp.SeriesName,
+                    FactorUri = factor.FactorUri,
+                    ParameterName = factor.FactorName.Replace(" ", "") + "Point",
+                    ParameterValue = dp,
+                });
+            if (paramMap.Count() != functionFactorValues.Count() || paramMap.Count() != this.FunctionFactors.Count()) throw new InvalidOperationException("The parameters are ill-formed");
+
             ParameterInfo[] parameters = executeMethod.GetParameters();
             ICollection<object> orderedArgs = new List<object>();
             foreach (ParameterInfo param in parameters.OrderBy(x => x.Position))
             {
-                DataPoint correspondingDataPoint = functionFactorValues.First(x => x.SeriesName == param.Name);
+                DataPoint correspondingDataPoint = paramMap.First(x => x.ParameterName == param.Name).ParameterValue;
                 orderedArgs.Add(correspondingDataPoint);
             }
 
             object obj = executeMethod.Invoke(this.FunctionHostObject, orderedArgs.ToArray());
-
             double value = ToDefaultValueRendering(obj);
+
             return new DataFunctionResult()
             {
                 Unit = FunctionUnit,
