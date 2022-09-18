@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EmissionsMonitorModel.TimeSeries;
+﻿using EmissionsMonitorModel.TimeSeries;
 
 namespace EmissionsMonitorModel.ProcessModeling
 {
-    public class LikeTermsAggregatorNode
+    public class LikeTermsAggregatorNode : ProcessNode
     {
         public List<ExchangeNode> PrecedingNodes { get; set; }
 
