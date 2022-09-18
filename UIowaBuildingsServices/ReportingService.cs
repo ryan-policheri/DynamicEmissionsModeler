@@ -7,8 +7,8 @@ using EIA.Domain.Model;
 using PiServices;
 using PiModel;
 using UnitsNet;
-using UIowaBuildingsModel;
-using UIowaBuildingsModel.ConversionMethods;
+using EmissionsMonitorModel;
+using EmissionsMonitorModel.ConversionMethods;
 
 namespace UIowaBuildingsServices
 {

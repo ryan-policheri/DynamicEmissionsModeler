@@ -1,6 +1,6 @@
 ﻿using UnitsNet;
 
-namespace UIowaBuildingsModel.ConversionMethods
+namespace EmissionsMonitorModel.ConversionMethods
 {
     public static class Plastic
     {

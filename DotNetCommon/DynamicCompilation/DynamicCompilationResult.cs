@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using DotNetCommon.DynamicCompilation;
+using DotNetCommon.Extensions;
 
 namespace DotNetCommon
 {
@@ -12,6 +13,8 @@ namespace DotNetCommon
         public bool IsValid => LoadedAssembly != null && CompilationErrors.Count() == 0;
 
         public ICollection<string> CompilationErrors { get; set; } = new List<string>();
+
+        public string CompilationErrorString => CompilationErrors.ToDelimitedList(Environment.NewLine);
 
         public Assembly LoadedAssembly { get; set; }
 

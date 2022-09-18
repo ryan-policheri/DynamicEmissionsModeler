@@ -40,5 +40,11 @@ namespace EmissionsMonitorModel.ProcessModeling
 
             return results;
         }
+
+
+        public override ICollection<DataFunction> GetUserDefinedFunctions()
+        {
+            return new List<DataFunction>();
+        }
     }
 }

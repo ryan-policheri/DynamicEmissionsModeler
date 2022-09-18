@@ -2,7 +2,7 @@
 using EmissionsMonitorModel.ProcessModeling;
 using EmissionsMonitorModel.TimeSeries;
 using EmissionsMonitorModel.Units;
-using UIowaBuildingsModel.ConversionMethods;
+using EmissionsMonitorModel.ConversionMethods;
 using UnitsNet;
 
 namespace Tests.EmissionsMonitorModel.ProcessModelingTests

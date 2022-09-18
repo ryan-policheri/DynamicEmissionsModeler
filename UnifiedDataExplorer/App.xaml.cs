@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using UnifiedDataExplorer.Common;
 using UnifiedDataExplorer.ViewModel;
 using UnifiedDataExplorer.Startup;
-using UIowaBuildingsModel;
+using EmissionsMonitorModel;
 
 namespace UnifiedDataExplorer
 {

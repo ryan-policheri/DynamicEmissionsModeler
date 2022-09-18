@@ -3,7 +3,7 @@ using PiModel;
 using System.Data;
 using UnitsNet;
 
-namespace UIowaBuildingsModel
+namespace EmissionsMonitorModel
 {
     public class ChilledWaterProductionMapper
     {

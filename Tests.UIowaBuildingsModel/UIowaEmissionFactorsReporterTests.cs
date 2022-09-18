@@ -5,7 +5,7 @@ using DotNetCommon.Helpers;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PiModel;
-using UIowaBuildingsModel;
+using EmissionsMonitorModel;
 using UnitsNet;
 
 namespace Tests.EmissionsMonitorModel

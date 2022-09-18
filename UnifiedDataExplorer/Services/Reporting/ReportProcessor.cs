@@ -13,7 +13,7 @@ using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.Services.DataPersistence;
 using UnifiedDataExplorer.Services.Window;
 using UnifiedDataExplorer.ViewModel;
-using UIowaBuildingsModel;
+using EmissionsMonitorModel;
 using DotNetCommon.Helpers;
 
 namespace UnifiedDataExplorer.Services.Reporting

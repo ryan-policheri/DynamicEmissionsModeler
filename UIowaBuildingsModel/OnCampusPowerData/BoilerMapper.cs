@@ -3,7 +3,7 @@ using DotNetCommon.Extensions;
 using PiModel;
 using UnitsNet;
 
-namespace UIowaBuildingsModel
+namespace EmissionsMonitorModel
 {
     public class BoilerMapper
     {

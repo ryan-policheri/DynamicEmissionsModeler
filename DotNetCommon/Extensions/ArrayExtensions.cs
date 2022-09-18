@@ -30,6 +30,21 @@
 
             return delimitedList;
         }
+
+        public static string ToDelimitedList(this IEnumerable<string> list, string delimiter = ",")
+        {
+            string delimitedList = string.Empty;
+            foreach (string s in list)
+            {
+                delimitedList = delimitedList + s + delimiter;
+            }
+            if (delimitedList.Length > 0)
+            {
+                delimitedList = delimitedList.TrimEnd(delimiter);
+            }
+
+            return delimitedList;
+        }
     }
 
     internal class ArrayTraverse

@@ -6,7 +6,7 @@ using DotNetCommon.DelegateCommand;
 using DotNetCommon.Extensions;
 using DotNetCommon.MVVM;
 using PiModel;
-using UIowaBuildingsModel;
+using EmissionsMonitorModel;
 
 namespace UnifiedDataExplorer.ViewModel
 {

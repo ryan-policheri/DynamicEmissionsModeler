@@ -1,7 +1,7 @@
 ﻿using System;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UIowaBuildingsModel.ConversionMethods;
+using EmissionsMonitorModel.ConversionMethods;
 using UnitsNet;
 
 namespace Tests.EmissionsMonitorModel

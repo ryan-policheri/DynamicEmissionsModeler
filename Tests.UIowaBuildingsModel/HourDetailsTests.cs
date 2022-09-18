@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using DotNetCommon.Helpers;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UIowaBuildingsModel;
+using EmissionsMonitorModel;
 using UnitsNet;
 
 namespace Tests.EmissionsMonitorModel

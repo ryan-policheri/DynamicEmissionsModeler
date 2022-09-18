@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PiServices;
 using UIowaBuildingsConsoleApp;
 using UIowaBuildingsConsoleApp.Startup;
-using UIowaBuildingsModel;
+using EmissionsMonitorModel;
 using UIowaBuildingsModelConsoleApp;
 using UIowaBuildingsServices;
 using UnitsNet;

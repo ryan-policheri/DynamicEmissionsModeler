@@ -9,5 +9,7 @@ namespace EmissionsMonitorModel.ProcessModeling
     public abstract class ProcessNode
     {
         public string Name { get; set; }
+
+        public abstract ICollection<DataFunction> GetUserDefinedFunctions();
     }
 }

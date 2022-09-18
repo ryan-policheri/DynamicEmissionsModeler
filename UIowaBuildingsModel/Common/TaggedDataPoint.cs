@@ -1,6 +1,6 @@
 ﻿using PiModel;
 
-namespace UIowaBuildingsModel
+namespace EmissionsMonitorModel
 {
     public class TaggedDataPoint
     {

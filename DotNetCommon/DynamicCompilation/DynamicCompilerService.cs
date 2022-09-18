@@ -50,6 +50,11 @@ namespace DotNetCommon
             return compilationResult;
         }
 
+        public async Task<DynamicCompilationResult> CompileCSharpAsync(CSharpAssemblyBuilder codeBuilder, IEnumerable<Assembly> referencedAssemblies)
+        {
+            return await Task.Run(() => CompileCSharp(codeBuilder, referencedAssemblies));
+        }
+
         private IEnumerable<MetadataReference> ConvertAssembliesToMetadataReferences(IEnumerable<Assembly> assemblies)
         {
             ICollection<MetadataReference> references = new List<MetadataReference>();

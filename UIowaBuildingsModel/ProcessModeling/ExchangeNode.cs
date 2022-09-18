@@ -31,6 +31,14 @@ namespace EmissionsMonitorModel.ProcessModeling
                 Product = product
             };
         }
+
+        public override ICollection<DataFunction> GetUserDefinedFunctions()
+        {
+            List<DataFunction> functions = new List<DataFunction>();
+            functions.Add(Product);
+            foreach(DataFunction cost in Costs) functions.Add(cost);
+            return functions;
+        }
     }
 
 

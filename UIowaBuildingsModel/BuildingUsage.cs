@@ -1,7 +1,7 @@
-﻿using UIowaBuildingsModel.ConversionMethods;
+﻿using EmissionsMonitorModel.ConversionMethods;
 using UnitsNet;
 
-namespace UIowaBuildingsModel
+namespace EmissionsMonitorModel
 {
     public class BuildingUsage
     {

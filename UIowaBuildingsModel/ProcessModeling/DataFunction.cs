@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
+using DotNetCommon.DynamicCompilation;
 using EmissionsMonitorModel.TimeSeries;
 using EmissionsMonitorModel.Units;
 using UnitsNet;
@@ -15,7 +16,7 @@ namespace EmissionsMonitorModel.ProcessModeling
         public ICollection<FunctionFactor> FunctionFactors { get; set; }
 
         [NotMapped]
-        public dynamic FunctionHostObject { get; set; }
+        public object FunctionHostObject { get; set; }
 
         public string FunctionUnit { get; set; }
 
@@ -24,7 +25,7 @@ namespace EmissionsMonitorModel.ProcessModeling
         public DataFunctionResult ExecuteFunction(IEnumerable<DataPoint> functionFactorValues)
         {
             Type type = this.FunctionHostObject.GetType();
-            string methodName = this.FunctionName.Replace(" ", "");
+            string methodName = this.FunctionName.ToValidMethodName();
             MethodInfo executeMethod = type.GetMethod(methodName);
             if (executeMethod == null) throw new InvalidOperationException($"Method {methodName} not found");
 
@@ -33,7 +34,7 @@ namespace EmissionsMonitorModel.ProcessModeling
                 {
                     SeriesName = dp.SeriesName,
                     FactorUri = factor.FactorUri,
-                    ParameterName = factor.FactorName.Replace(" ", "") + "Point",
+                    ParameterName = factor.FactorName.ToValidVariableName() + "Point",
                     ParameterValue = dp,
                 });
             if (paramMap.Count() != functionFactorValues.Count() || paramMap.Count() != this.FunctionFactors.Count()) throw new InvalidOperationException("The parameters are ill-formed");
@@ -58,6 +59,8 @@ namespace EmissionsMonitorModel.ProcessModeling
             };
         }
 
+        public abstract Type GetReturnType();
+
         public abstract double ToDefaultValueRendering(object value);
     }
 
@@ -67,6 +70,8 @@ namespace EmissionsMonitorModel.ProcessModeling
         {
             FunctionUnit = "Energy";
         }
+
+        public override Type GetReturnType() => typeof(Energy);
     }
 
     public class SteamEnergyFunction : EnergyFunction
@@ -89,6 +94,8 @@ namespace EmissionsMonitorModel.ProcessModeling
         {
             FunctionUnit = "Mass";
         }
+
+        public override Type GetReturnType() => typeof(Mass);
     }
 
     public class Co2MassFunction : MassFunction
@@ -113,6 +120,8 @@ namespace EmissionsMonitorModel.ProcessModeling
             FunctionUnitForm = "Money";
         }
 
+        public override Type GetReturnType() => typeof(Money);
+
         public override double ToDefaultValueRendering(object value)
         {
             Money money = (Money)value;
@@ -125,5 +134,8 @@ namespace EmissionsMonitorModel.ProcessModeling
         public string FactorName { get; set; }
 
         public string FactorUri { get; set; }
+
+        [NotMapped] 
+        public string ParameterName => FactorName + "Point";
     }
 }
