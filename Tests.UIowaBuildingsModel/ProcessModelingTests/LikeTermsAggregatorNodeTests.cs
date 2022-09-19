@@ -15,7 +15,7 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
         [TestMethod]
         public void WhenAggregatingTwoExchangeNodes_ProportionallyCombinesLikeTerms()
         {
-            LikeTermsAggregatorNode node = SampleModels.BuildBoiler_1_2_TermAggregator();
+            LikeTermsAggregatorNode node = SampleNodes.BuildBoiler_1_2_TermAggregator();
 
             ICollection<DataPoint> dataPoints = new List<DataPoint>();
             dataPoints.Add(new DataPoint() { SeriesName = "B1 NG Flow Tag", Value = 5000 }); //$50 dollars of natural gas, 275.5 kgs of CO2

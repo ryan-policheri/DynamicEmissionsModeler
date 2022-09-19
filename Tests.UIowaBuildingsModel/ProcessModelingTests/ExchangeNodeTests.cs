@@ -16,7 +16,7 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
         public void WhenSettingUpBasicExchangeNode_ShouldCorrectlyCalculateProductCosts()
         {
             //MODEL
-            ExchangeNode boiler1ExchangeNode = SampleModels.BuildBoiler1ExchangeNode();
+            ExchangeNode boiler1ExchangeNode = SampleNodes.BuildBoiler1ExchangeNode();
 
             //DATA
             ICollection<DataPoint> dataPoints = new List<DataPoint>();
@@ -40,7 +40,7 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
         public void WhenSettingUpExchangeNodeWithMultiFactorFunction_ShouldCorrectlyCalculateProductCosts()
         {
             //MODEL
-            ExchangeNode boiler2ExchangeNode = SampleModels.BuildBoiler2ExchangeNode();
+            ExchangeNode boiler2ExchangeNode = SampleNodes.BuildBoiler2ExchangeNode();
 
             //DATA
             ICollection<DataPoint> dataPoints = new List<DataPoint>();
@@ -65,7 +65,7 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
         public void WhenProvidingParametersOutOfOrder_ShouldStillWork()
         {
             //MODEL
-            ExchangeNode boiler2ExchangeNode = SampleModels.BuildBoiler2ExchangeNode();
+            ExchangeNode boiler2ExchangeNode = SampleNodes.BuildBoiler2ExchangeNode();
 
             //DATA
             ICollection<DataPoint> dataPoints = new List<DataPoint>();

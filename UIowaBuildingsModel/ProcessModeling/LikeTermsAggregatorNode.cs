@@ -6,7 +6,7 @@ namespace EmissionsMonitorModel.ProcessModeling
     {
         public List<ExchangeNode> PrecedingNodes { get; set; }
 
-        public ProductCostResults RenderProductAndCosts(ICollection<DataPoint> dataPoints)
+        public override ProductCostResults RenderProductAndCosts(ICollection<DataPoint> dataPoints)
         {
             ProductCostResults results = new ProductCostResults();
 

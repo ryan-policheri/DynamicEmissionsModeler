@@ -50,6 +50,19 @@
                     dateTimeOffset1.UtcDateTime.Hour == dateTimeOffset2.UtcDateTime.Hour);
         }
 
+        public static IEnumerable<DateTimeOffset> EnumerateSecondsUntil(this DateTimeOffset startDateTime, DateTimeOffset endDateTime)
+        {
+            if (startDateTime > endDateTime) throw new ArgumentException("startDateTime must be less than or equal to endDateTime");
+            ICollection<DateTimeOffset> seconds = new List<DateTimeOffset>();
+            DateTimeOffset dateIterator = startDateTime;
+            while (dateIterator <= endDateTime)
+            {
+                seconds.Add(dateIterator);
+                dateIterator = dateIterator.AddSeconds(1);
+            }
+            return seconds;
+        }
+
         public static IEnumerable<DateTimeOffset> EnumerateHoursUntil(this DateTimeOffset startDateTime, DateTimeOffset endDateTime)
         {
             if (startDateTime > endDateTime) throw new ArgumentException("startDateTime must be less than or equal to endDateTime");

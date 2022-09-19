@@ -11,7 +11,7 @@ namespace EmissionsMonitorModel.ProcessModeling
         public ICollection<DataFunction> Costs { get; set; }
         public DataFunction Product { get; set; }
 
-        public ProductCostResults RenderProductAndCosts(ICollection<DataPoint> dataPoints)
+        public override ProductCostResults RenderProductAndCosts(ICollection<DataPoint> dataPoints)
         {
             ICollection<DataFunctionResult> costs = new List<DataFunctionResult>();
 

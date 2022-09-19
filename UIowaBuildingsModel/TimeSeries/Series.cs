@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EmissionsMonitorModel.TimeSeries
+﻿namespace EmissionsMonitorModel.TimeSeries
 {
     public class Series
     {
+        public string SeriesName { get; set; }
         public IEnumerable<DataPoint> DataPoints { get; set; }
     }
 }

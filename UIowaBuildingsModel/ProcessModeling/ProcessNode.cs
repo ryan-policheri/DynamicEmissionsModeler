@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmissionsMonitorModel.TimeSeries;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,7 @@ namespace EmissionsMonitorModel.ProcessModeling
         public string Name { get; set; }
 
         public abstract ICollection<DataFunction> GetUserDefinedFunctions();
+
+        public abstract ProductCostResults RenderProductAndCosts(ICollection<DataPoint> dataPoints);
     }
 }

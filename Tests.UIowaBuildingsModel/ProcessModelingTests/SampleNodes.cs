@@ -8,7 +8,7 @@ using UnitsNet;
 namespace Tests.EmissionsMonitorModel.ProcessModelingTests
 {
 
-    public static class SampleModels
+    public static class SampleNodes
     {
         public class Boiler1
         {
