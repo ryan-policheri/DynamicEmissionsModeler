@@ -4,10 +4,10 @@ using EmissionsMonitorModel.TimeSeries;
 using EmissionsMonitorModel.Units;
 using EmissionsMonitorModel.ConversionMethods;
 using UnitsNet;
+using EmissionsMonitorModel.DataSources;
 
 namespace Tests.EmissionsMonitorModel.ProcessModelingTests
 {
-
     public static class SampleNodes
     {
         public class Boiler1
@@ -48,7 +48,7 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
                         FunctionName = "Fuel Cost",
                         FunctionFactors = new List<FunctionFactor>()
                         {
-                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = "B1 NG Flow Tag" }
+                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = new DataSourceSeriesUri { Uri = "B1 NG Flow Tag" }}
                         },
                         FunctionCode = "Foo",
                         FunctionHostObject = computeObject
@@ -58,7 +58,7 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
                         FunctionName = "CO2 Emissions Cost",
                         FunctionFactors = new List<FunctionFactor>()
                         {
-                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = "B1 NG Flow Tag"}
+                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = new DataSourceSeriesUri { Uri = "B1 NG Flow Tag" } }
                         },
                         FunctionCode = "bar",
                         FunctionHostObject = computeObject
@@ -69,7 +69,7 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
                     FunctionName = "Steam Energy Output",
                     FunctionFactors = new List<FunctionFactor>()
                     {
-                        new FunctionFactor() { FactorName = "Steam Output", FactorUri = "B1 Steam Output Tag" }
+                        new FunctionFactor() { FactorName = "Steam Output", FactorUri =  new DataSourceSeriesUri { Uri = "B1 Steam Output Tag" } }
                     },
                     FunctionCode = "Foobar",
                     FunctionHostObject = computeObject
@@ -120,8 +120,8 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
                         FunctionName = "Fuel Cost",
                         FunctionFactors = new List<FunctionFactor>()
                         {
-                            new FunctionFactor() { FactorName = "Coal Usage", FactorUri = "B2 Coal Flow Tag" },
-                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = "B2 NG Flow Tag" }
+                            new FunctionFactor() { FactorName = "Coal Usage", FactorUri = new DataSourceSeriesUri { Uri = "B2 Coal Flow Tag" } },
+                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = new DataSourceSeriesUri { Uri = "B2 NG Flow Tag" } }
                         },
                         FunctionCode = "Foo",
                         FunctionHostObject = boiler2Compute
@@ -131,8 +131,8 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
                         FunctionName = "CO2 Emissions Cost",
                         FunctionFactors = new List<FunctionFactor>()
                         {
-                            new FunctionFactor() { FactorName = "Coal Usage", FactorUri = "B2 Coal Flow Tag" },
-                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = "B2 NG Flow Tag" }
+                            new FunctionFactor() { FactorName = "Coal Usage", FactorUri = new DataSourceSeriesUri { Uri = "B2 Coal Flow Tag" } },
+                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = new DataSourceSeriesUri { Uri = "B2 NG Flow Tag" } }
                         },
                         FunctionCode = "bar",
                         FunctionHostObject = boiler2Compute
@@ -143,7 +143,7 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
                     FunctionName = "Steam Energy Output",
                     FunctionFactors = new List<FunctionFactor>()
                     {
-                        new FunctionFactor() { FactorName = "Steam Output", FactorUri = "B2 Steam Output Tag" }
+                        new FunctionFactor() { FactorName = "Steam Output", FactorUri = new DataSourceSeriesUri { Uri = "B2 Steam Output Tag" } }
                     },
                     FunctionCode = "Foobar",
                     FunctionHostObject = boiler2Compute

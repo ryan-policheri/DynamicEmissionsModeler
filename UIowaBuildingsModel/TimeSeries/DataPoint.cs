@@ -8,7 +8,7 @@ namespace EmissionsMonitorModel.TimeSeries
 {
     public class DataPoint
     {
-        public string SeriesName { get; set; }
+        public Series Series { get; set; }
 
         public DateTimeOffset Timestamp { get; set; }
 

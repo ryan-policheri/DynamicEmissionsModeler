@@ -1,9 +1,9 @@
 using DotNetCommon;
+using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorModel.ProcessModeling;
 using EmissionsMonitorModel.TimeSeries;
 using EmissionsMonitorServices;
 using FluentAssertions;
-using FluentAssertions.Equivalency;
 using UnitsNet;
 
 namespace Tests.EmissionsMonitorServices
@@ -23,7 +23,7 @@ namespace Tests.EmissionsMonitorServices
                     FunctionName = "Steam Energy Output",
                     FunctionFactors = new List<FunctionFactor>()
                     {
-                        new FunctionFactor() { FactorName = "Steam Output", FactorUri = "B1 Steam Output Tag" }
+                        new FunctionFactor() { FactorName = "Steam Output", FactorUri = new DataSourceSeriesUri { Uri = "B1 Steam Output Tag" }  }
                     },
                     FunctionCode = $"Energy steamEnergy = Energy.FromMegabritishThermalUnits(SteamOutputPoint.Value);{Environment.NewLine}return steamEnergy;",
                     FunctionHostObject = null
@@ -38,10 +38,16 @@ namespace Tests.EmissionsMonitorServices
             ExchangeNode initializedNode = (ExchangeNode)model.ProcessNodes.First();
 
             dynamic hostObj = initializedNode.Product.FunctionHostObject;
-            Energy output = hostObj.SteamEnergyOutput(new DataPoint() { SeriesName = "B1 Steam Output Tag", Value = 20 });
+            DataPoint dataPoint = new DataPoint()
+            {
+                Series = new Series { SeriesUri = new DataSourceSeriesUri { Uri = "B1 Steam Output Tag" } },
+                Value = 20 //20 MMBTU
+            };
+
+            Energy output = hostObj.SteamEnergyOutput(dataPoint);
             output.MegabritishThermalUnits.Should().Be(20);
 
-            DataFunctionResult output2 = initializedNode.Product.ExecuteFunction(new List<DataPoint>() { new DataPoint() { SeriesName = "B1 Steam Output Tag", Value = 20 } });
+            DataFunctionResult output2 = initializedNode.Product.ExecuteFunction(new List<DataPoint>() { dataPoint });
             output2.TotalValue.Should().Be(20);
         }
 
@@ -63,7 +69,7 @@ namespace Tests.EmissionsMonitorServices
                         FunctionName = "Fuel Cost",
                         FunctionFactors = new List<FunctionFactor>()
                         {
-                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = "B1 NG Flow Tag" }
+                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = new DataSourceSeriesUri { Uri = "B1 NG Flow Tag" } }
                         },
                         FunctionCode = $"Volume gasVolume = Volume.FromCubicFeet(NaturalGasUsagePoint.Value);{Environment.NewLine}decimal cost = (decimal)(gasVolume.KilocubicFeet * 10.00); //$10 per 1,000 cubic feet{Environment.NewLine}return Money.FromUsDollars(cost);",
                         FunctionHostObject = null
@@ -73,7 +79,7 @@ namespace Tests.EmissionsMonitorServices
                         FunctionName = "CO2 Emissions Cost",
                         FunctionFactors = new List<FunctionFactor>()
                         {
-                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = "B1 NG Flow Tag"}
+                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = new DataSourceSeriesUri { Uri = "B1 NG Flow Tag" } }
                         },
                         FunctionCode = $"Volume gasVolume = Volume.FromCubicFeet(NaturalGasUsagePoint.Value);{Environment.NewLine}Mass co2Emissions = NaturalGas.ToCo2Emissions(gasVolume);{Environment.NewLine}return co2Emissions;",
                         FunctionHostObject = null
@@ -84,7 +90,7 @@ namespace Tests.EmissionsMonitorServices
                     FunctionName = "Steam Energy Output",
                     FunctionFactors = new List<FunctionFactor>()
                     {
-                        new FunctionFactor() { FactorName = "Steam Output", FactorUri = "B1 Steam Output Tag" }
+                        new FunctionFactor() { FactorName = "Steam Output", FactorUri = new DataSourceSeriesUri { Uri = "B1 Steam Output Tag" } }
                     },
                     FunctionCode = $"Energy steamEnergy = Energy.FromMegabritishThermalUnits(SteamOutputPoint.Value);{Environment.NewLine}return steamEnergy;",
                     FunctionHostObject = null
@@ -98,8 +104,16 @@ namespace Tests.EmissionsMonitorServices
 
             //DATA
             ICollection<DataPoint> dataPoints = new List<DataPoint>();
-            dataPoints.Add(new DataPoint() { SeriesName = "B1 NG Flow Tag", Value = 5000 }); //$50 dollars of natural gas, 275.5 kgs of CO2
-            dataPoints.Add(new DataPoint() { SeriesName = "B1 Steam Output Tag", Value = 20 }); //20 MMBTU
+            dataPoints.Add(new DataPoint()
+            {
+                Series = new Series { SeriesUri = new DataSourceSeriesUri { Uri = "B1 NG Flow Tag" } },
+                Value = 5000 //$50 dollars of natural gas, 275.5 kgs of CO2
+            });
+            dataPoints.Add(new DataPoint()
+            {
+                Series = new Series { SeriesUri = new DataSourceSeriesUri { Uri = "B1 Steam Output Tag" } },
+                Value = 20 //20 MMBTU
+            });
 
             ModelInitializationService modelInitService = new ModelInitializationService(new DynamicCompilerService());
             await modelInitService.InitializeModel(model);
@@ -134,7 +148,7 @@ namespace Tests.EmissionsMonitorServices
                         FunctionName = "Fuel Cost",
                         FunctionFactors = new List<FunctionFactor>()
                         {
-                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = "B1 NG Flow Tag" }
+                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = new DataSourceSeriesUri { Uri = "B1 NG Flow Tag" } }
                         },
                         FunctionCode = $"Volume gasVolume = Volume.FromCubicFeet(NaturalGasUsagePoint.Value);{Environment.NewLine}decimal cost = (decimal)(gasVolume.KilocubicFeet * 10.00); //$10 per 1,000 cubic feet{Environment.NewLine}return Money.FromUsDollars(cost);",
                         FunctionHostObject = null
@@ -144,7 +158,7 @@ namespace Tests.EmissionsMonitorServices
                         FunctionName = "CO2 Emissions Cost",
                         FunctionFactors = new List<FunctionFactor>()
                         {
-                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = "B1 NG Flow Tag"}
+                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = new DataSourceSeriesUri { Uri = "B1 NG Flow Tag" } }
                         },
                         FunctionCode = $"Volume gasVolume = Volume.FromCubicFeet(NaturalGasUsagePoint.Value);{Environment.NewLine}Mass co2Emissions = NaturalGas.ToCo2Emissions(gasVolume);{Environment.NewLine}return co2Emissions;",
                         FunctionHostObject = null
@@ -155,7 +169,7 @@ namespace Tests.EmissionsMonitorServices
                     FunctionName = "Steam Energy Output",
                     FunctionFactors = new List<FunctionFactor>()
                     {
-                        new FunctionFactor() { FactorName = "Steam Output", FactorUri = "B1 Steam Output Tag" }
+                        new FunctionFactor() { FactorName = "Steam Output", FactorUri =  new DataSourceSeriesUri { Uri = "B1 Steam Output Tag" }  }
                     },
                     FunctionCode = $"Energy steamEnergy = Energy.FromMegabritishThermalUnits(SteamOutputPoint.Value);{Environment.NewLine}return steamEnergy;",
                     FunctionHostObject = null
@@ -172,8 +186,8 @@ namespace Tests.EmissionsMonitorServices
                         FunctionName = "Fuel Cost",
                         FunctionFactors = new List<FunctionFactor>()
                         {
-                            new FunctionFactor() { FactorName = "Coal Usage", FactorUri = "B2 Coal Flow Tag" },
-                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = "B2 NG Flow Tag" }
+                            new FunctionFactor() { FactorName = "Coal Usage", FactorUri = new DataSourceSeriesUri { Uri = "B2 Coal Flow Tag" } },
+                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = new DataSourceSeriesUri { Uri = "B2 NG Flow Tag" }  }
                         },
                         FunctionCode = $"Mass coalMass = Mass.FromPounds(CoalUsagePoint.Value);{Environment.NewLine}Volume gasVolume = Volume.FromCubicFeet(NaturalGasUsagePoint.Value);{Environment.NewLine}decimal coalCost = (decimal)(coalMass.Kilograms * 0.34); //34 cents per kg{Environment.NewLine}decimal gasCost = (decimal)(gasVolume.KilocubicFeet * 10.00); //$10 per 1,000 cubic feet{Environment.NewLine}return Money.FromUsDollars(coalCost + gasCost);",
                         FunctionHostObject = null
@@ -183,8 +197,8 @@ namespace Tests.EmissionsMonitorServices
                         FunctionName = "CO2 Emissions Cost",
                         FunctionFactors = new List<FunctionFactor>()
                         {
-                            new FunctionFactor() { FactorName = "Coal Usage", FactorUri = "B2 Coal Flow Tag" },
-                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = "B2 NG Flow Tag" }
+                            new FunctionFactor() { FactorName = "Coal Usage", FactorUri = new DataSourceSeriesUri { Uri = "B2 Coal Flow Tag" } },
+                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = new DataSourceSeriesUri { Uri = "B2 NG Flow Tag" } }
                         },
                         FunctionCode = $"Mass coalMass = Mass.FromPounds(CoalUsagePoint.Value);{Environment.NewLine}Volume gasVolume = Volume.FromCubicFeet(NaturalGasUsagePoint.Value);{Environment.NewLine}Mass coalCo2Emissions = Coal.ToCo2Emissions(coalMass);{Environment.NewLine}Mass naturalGasCo2Emissions = NaturalGas.ToCo2Emissions(gasVolume);{Environment.NewLine}return coalCo2Emissions + naturalGasCo2Emissions;",
                         FunctionHostObject = null
@@ -195,7 +209,7 @@ namespace Tests.EmissionsMonitorServices
                     FunctionName = "Steam Energy Output",
                     FunctionFactors = new List<FunctionFactor>()
                     {
-                        new FunctionFactor() { FactorName = "Steam Output", FactorUri = "B2 Steam Output Tag" }
+                        new FunctionFactor() { FactorName = "Steam Output", FactorUri = new DataSourceSeriesUri { Uri = "B2 Steam Output Tag" } }
                     },
                     FunctionCode = $"Energy steamEnergy = Energy.FromMegabritishThermalUnits(SteamOutputPoint.Value);{Environment.NewLine}return steamEnergy;",
                     FunctionHostObject = null
@@ -221,11 +235,31 @@ namespace Tests.EmissionsMonitorServices
 
             //DATA
             ICollection<DataPoint> dataPoints = new List<DataPoint>();
-            dataPoints.Add(new DataPoint() { SeriesName = "B1 NG Flow Tag", Value = 5000 }); //$50 dollars of natural gas, 275.5 kgs of CO2
-            dataPoints.Add(new DataPoint() { SeriesName = "B1 Steam Output Tag", Value = 20 }); //20 MMBTU
-            dataPoints.Add(new DataPoint() { SeriesName = "B2 Coal Flow Tag", Value = 500 }); //$77.11064 of coal, 1035 pounds of CO2
-            dataPoints.Add(new DataPoint() { SeriesName = "B2 NG Flow Tag", Value = 2500 }); //$25 of NG, 137.75 Kgs of CO2
-            dataPoints.Add(new DataPoint() { SeriesName = "B2 Steam Output Tag", Value = 25 }); //25 MMBTU
+            dataPoints.Add(new DataPoint()
+            {
+                Series = new Series { SeriesUri = new DataSourceSeriesUri { Uri = "B1 NG Flow Tag" } },
+                Value = 5000 //$50 dollars of natural gas, 275.5 kgs of CO2
+            });
+            dataPoints.Add(new DataPoint()
+            {
+                Series = new Series { SeriesUri = new DataSourceSeriesUri { Uri = "B1 Steam Output Tag" } },
+                Value = 20 //20 MMBTU
+            });
+            dataPoints.Add(new DataPoint()
+            {
+                Series = new Series { SeriesUri = new DataSourceSeriesUri { Uri = "B2 Coal Flow Tag" } },
+                Value = 500 //$77.11064 of coal, 1035 pounds of CO2
+            });
+            dataPoints.Add(new DataPoint()
+            {
+                Series = new Series { SeriesUri = new DataSourceSeriesUri { Uri = "B2 NG Flow Tag" } },
+                Value = 2500 //$25 of NG, 137.75 Kgs of CO2
+            });
+            dataPoints.Add(new DataPoint()
+            {
+                Series = new Series { SeriesUri = new DataSourceSeriesUri { Uri = "B2 Steam Output Tag" } },
+                Value = 25 //25 MMBTU
+            });
 
             ProductCostResults results = node3.RenderProductAndCosts(dataPoints);
             ICollection<Cost> costs = results.CalculateCostOfProductAmount(Energy.FromMegabritishThermalUnits(5));

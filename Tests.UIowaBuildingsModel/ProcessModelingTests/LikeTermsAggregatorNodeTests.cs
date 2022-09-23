@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorModel.ProcessModeling;
 using EmissionsMonitorModel.TimeSeries;
 using FluentAssertions;
@@ -18,11 +19,31 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
             LikeTermsAggregatorNode node = SampleNodes.BuildBoiler_1_2_TermAggregator();
 
             ICollection<DataPoint> dataPoints = new List<DataPoint>();
-            dataPoints.Add(new DataPoint() { SeriesName = "B1 NG Flow Tag", Value = 5000 }); //$50 dollars of natural gas, 275.5 kgs of CO2
-            dataPoints.Add(new DataPoint() { SeriesName = "B1 Steam Output Tag", Value = 20 }); //20 MMBTU
-            dataPoints.Add(new DataPoint() { SeriesName = "B2 Coal Flow Tag", Value = 500 }); //$77.11064 of coal, 1035 pounds of CO2
-            dataPoints.Add(new DataPoint() { SeriesName = "B2 NG Flow Tag", Value = 2500 }); //$25 of NG, 137.75 Kgs of CO2
-            dataPoints.Add(new DataPoint() { SeriesName = "B2 Steam Output Tag", Value = 25 }); //25 MMBTU
+            dataPoints.Add(new DataPoint()
+            {
+                Series = new Series { SeriesUri = new DataSourceSeriesUri { Uri = "B1 NG Flow Tag" } },
+                Value = 5000 //$50 dollars of natural gas, 275.5 kgs of CO2
+            });
+            dataPoints.Add(new DataPoint()
+            {
+                Series = new Series { SeriesUri = new DataSourceSeriesUri { Uri = "B1 Steam Output Tag" } },
+                Value = 20 //20 MMBTU
+            });
+            dataPoints.Add(new DataPoint()
+            {
+                Series = new Series { SeriesUri = new DataSourceSeriesUri { Uri = "B2 Coal Flow Tag" } },
+                Value = 500 //$77.11064 of coal, 1035 pounds of CO2
+            });
+            dataPoints.Add(new DataPoint()
+            {
+                Series = new Series { SeriesUri = new DataSourceSeriesUri { Uri = "B2 NG Flow Tag" } },
+                Value = 2500 //$25 of NG, 137.75 Kgs of CO2
+            });
+            dataPoints.Add(new DataPoint()
+            {
+                Series = new Series { SeriesUri = new DataSourceSeriesUri { Uri = "B2 Steam Output Tag" } },
+                Value = 25 //25 MMBTU
+            });
 
             ProductCostResults results = node.RenderProductAndCosts(dataPoints);
             ICollection<Cost> costs = results.CalculateCostOfProductAmount(Energy.FromMegabritishThermalUnits(5));

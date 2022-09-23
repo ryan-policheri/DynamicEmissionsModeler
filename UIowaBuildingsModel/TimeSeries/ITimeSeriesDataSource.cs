@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EmissionsMonitorModel.DataSources;
 
 namespace EmissionsMonitorModel.TimeSeries
 {
     public interface ITimeSeriesDataSource
     {
-        public Task<Series> GetTimeSeriesAsync(string uri, DateTimeOffset startTime, DateTimeOffset endTime);
+        public Task<Series> GetTimeSeriesAsync(DataSourceSeriesUri uri, DateTimeOffset startTime, DateTimeOffset endTime);
     }
 }

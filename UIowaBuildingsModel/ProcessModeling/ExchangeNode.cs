@@ -17,12 +17,12 @@ namespace EmissionsMonitorModel.ProcessModeling
 
             foreach (DataFunction cost in Costs)
             {
-                var input = dataPoints.Where(x => cost.FunctionFactors.Any(y => y.FactorUri == x.SeriesName));
+                var input = dataPoints.Where(x => cost.FunctionFactors.Any(y => y.FactorUri.Uri == x.Series.SeriesUri.Uri));
                 DataFunctionResult result = cost.ExecuteFunction(input);
                 costs.Add(result);
             }
 
-            var input2 = dataPoints.Where(x => Product.FunctionFactors.Any(y => y.FactorUri == x.SeriesName));
+            var input2 = dataPoints.Where(x => Product.FunctionFactors.Any(y => y.FactorUri.Uri == x.Series.SeriesUri.Uri));
             DataFunctionResult product = Product.ExecuteFunction(input2);
 
             return new ProductCostResults

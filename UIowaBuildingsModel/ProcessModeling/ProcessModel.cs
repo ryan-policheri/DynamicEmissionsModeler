@@ -1,4 +1,5 @@
-﻿using EmissionsMonitorModel.TimeSeries;
+﻿using EmissionsMonitorModel.DataSources;
+using EmissionsMonitorModel.TimeSeries;
 
 namespace EmissionsMonitorModel.ProcessModeling
 {
@@ -24,9 +25,9 @@ namespace EmissionsMonitorModel.ProcessModeling
             return ProcessNodes;
         }
 
-        public ICollection<string> GetAllSeriesIds()
+        public ICollection<DataSourceSeriesUri> GetAllSeriesUris()
         {
-            ICollection<string> seriesIds = new List<string>();
+            ICollection<DataSourceSeriesUri> seriesUris = new List<DataSourceSeriesUri>();
 
             foreach (ProcessNode node in this.ProcessNodes)
             {
@@ -34,12 +35,12 @@ namespace EmissionsMonitorModel.ProcessModeling
                 {
                     foreach (FunctionFactor factor in function.FunctionFactors)
                     {
-                        if(!seriesIds.Any(x => x == factor.FactorUri)) seriesIds.Add(factor.FactorUri);
+                        if(!seriesUris.Any(x => x.Uri == factor.FactorUri.Uri)) seriesUris.Add(factor.FactorUri);
                     }
                 }
             }
 
-            return seriesIds;
+            return seriesUris;
         }
     }
 }

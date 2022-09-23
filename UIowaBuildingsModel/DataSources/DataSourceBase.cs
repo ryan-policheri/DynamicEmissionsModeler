@@ -8,9 +8,11 @@ namespace EmissionsMonitorModel.DataSources
 {
     public class DataSourceBase
     {
-        public DataSourceType SourceType { get; set; }
+        public int SourceId { get; set; }
 
         public string SourceName { get; set; }
+
+        public DataSourceType SourceType { get; set; }
     }
 
 

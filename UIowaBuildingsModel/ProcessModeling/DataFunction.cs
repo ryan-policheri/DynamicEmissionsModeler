@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 using DotNetCommon.DynamicCompilation;
+using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorModel.TimeSeries;
 using EmissionsMonitorModel.Units;
 using UnitsNet;
@@ -29,10 +30,10 @@ namespace EmissionsMonitorModel.ProcessModeling
             MethodInfo executeMethod = type.GetMethod(methodName);
             if (executeMethod == null) throw new InvalidOperationException($"Method {methodName} not found");
 
-            var paramMap = functionFactorValues.Join(this.FunctionFactors, dp => dp.SeriesName, factor => factor.FactorUri,
+            var paramMap = functionFactorValues.Join(this.FunctionFactors, dp => dp.Series.SeriesUri.Uri, factor => factor.FactorUri.Uri,
                 (dp, factor) => new
                 {
-                    SeriesName = dp.SeriesName,
+                    SeriesName = dp.Series.SeriesUri.SeriesName,
                     FactorUri = factor.FactorUri,
                     ParameterName = factor.FactorName.ToValidVariableName() + "Point",
                     ParameterValue = dp,
@@ -133,7 +134,7 @@ namespace EmissionsMonitorModel.ProcessModeling
     {
         public string FactorName { get; set; }
 
-        public string FactorUri { get; set; }
+        public DataSourceSeriesUri FactorUri { get; set; }
 
         [NotMapped] 
         public string ParameterName => FactorName + "Point";

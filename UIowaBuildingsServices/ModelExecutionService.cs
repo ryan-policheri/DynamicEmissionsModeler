@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using DotNetCommon.Extensions;
+﻿using DotNetCommon.Extensions;
+using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorModel.ProcessModeling;
 using EmissionsMonitorModel.TimeSeries;
 
@@ -17,8 +17,8 @@ namespace EmissionsMonitorServices
         public async Task<ICollection<MonitorSeries>> ExecuteModelAsync(ModelExecutionSpec spec)
         {
             IEnumerable<ProcessNode> leafs = spec.Model.GetProcessLeafs();
-            ICollection<string> neededSeriesIds = spec.Model.GetAllSeriesIds();
-            ICollection<Series> neededSeries = await QuerySeries(neededSeriesIds, spec.StartTime, spec.EndTime);
+            ICollection<DataSourceSeriesUri> neededSeriesUris = spec.Model.GetAllSeriesUris();
+            ICollection<Series> neededSeries = await QuerySeries(neededSeriesUris, spec.StartTime, spec.EndTime);
 
             ICollection<MonitorSeries> monitorSeriesList = new List<MonitorSeries>();
 
@@ -52,12 +52,12 @@ namespace EmissionsMonitorServices
             return monitorSeriesList;
         }
 
-        public async Task<ICollection<Series>> QuerySeries(ICollection<string> seriesIds, DateTimeOffset start, DateTimeOffset end)
+        public async Task<ICollection<Series>> QuerySeries(ICollection<DataSourceSeriesUri> seriesUris, DateTimeOffset start, DateTimeOffset end)
         {
             ICollection<Series> seriesList = new List<Series>();
-            foreach (string id in seriesIds)
+            foreach (DataSourceSeriesUri uri in seriesUris)
             {
-                Series series = await _dataSource.GetTimeSeriesAsync(id, start, end);
+                Series series = await _dataSource.GetTimeSeriesAsync(uri, start, end);
                 seriesList.Add(series);
             }
             return seriesList;

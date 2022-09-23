@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace EmissionsMonitorModel.TimeSeries
 {
-    public class MonitorSeries : Series
+    public class MonitorSeries
     {
-        public new ICollection<MonitorDataPoint> DataPoints { get; set; }
+        public string SeriesName { get; set; }
+
+        public ICollection<MonitorDataPoint> DataPoints { get; set; }
     }
 }

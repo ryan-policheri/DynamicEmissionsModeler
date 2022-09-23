@@ -1,8 +1,10 @@
-﻿namespace EmissionsMonitorModel.TimeSeries
+﻿using EmissionsMonitorModel.DataSources;
+
+namespace EmissionsMonitorModel.TimeSeries
 {
     public class Series
     {
-        public string SeriesName { get; set; }
+        public DataSourceSeriesUri SeriesUri { get; set; }
         public IEnumerable<DataPoint> DataPoints { get; set; }
     }
 }
