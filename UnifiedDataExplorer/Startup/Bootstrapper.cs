@@ -18,6 +18,7 @@ using UnifiedDataExplorer.Services.Window;
 using UnifiedDataExplorer.Services.DataPersistence;
 using UnifiedDataExplorer.Services.Reporting;
 using UnifiedDataExplorer.ViewModel.DataSources;
+using EIA.Domain.Model;
 
 namespace UnifiedDataExplorer.Startup
 {

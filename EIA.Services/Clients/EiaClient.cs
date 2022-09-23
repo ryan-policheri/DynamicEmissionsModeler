@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using DotNetCommon.Extensions;
 using DotNetCommon.WebApiClient;
-using EIA.Domain.Constants;
 using EIA.Domain.Extensions;
 using EIA.Domain.Model;
 
@@ -16,6 +15,11 @@ namespace EIA.Services.Clients
         public EiaClient() : base()
         {
             this.Client = new HttpClient();
+        }
+
+        public void Initialize(IEiaConnectionInfo connectionInfo)
+        {
+            Initialize(connectionInfo.BaseUrl, connectionInfo.SubscriptionKey);
         }
 
         public void Initialize(string baseAddress, string subscriptionKey)

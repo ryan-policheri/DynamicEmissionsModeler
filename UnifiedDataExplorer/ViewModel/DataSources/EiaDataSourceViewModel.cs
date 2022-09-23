@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
+using EIA.Domain.Model;
 using EIA.Services.Clients;
 using EmissionsMonitorModel.DataSources;
 using UnifiedDataExplorer.Events;

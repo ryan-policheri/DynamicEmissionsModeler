@@ -18,7 +18,7 @@ namespace EmissionsMonitorServices.DataSourceWrappers
         public void Initialize(PiDataSource sourceInfo)
         {
             _info = sourceInfo;
-            _client.Initialize(sourceInfo);
+            _client.Initialize(_info);
         }
 
         public async Task<Series> GetTimeSeriesAsync(DataSourceSeriesUri uri, DateTimeOffset startTime, DateTimeOffset endTime)

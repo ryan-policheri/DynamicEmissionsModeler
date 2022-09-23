@@ -2,6 +2,7 @@
 using DotNetCommon.PersistenceHelpers;
 using DotNetCommon.Security;
 using DotNetCommon.SystemHelpers;
+using EIA.Domain.Model;
 using EIA.Services.Clients;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
