@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
-using DotNetCommon.EventAggregation;
 using DotNetCommon.MVVM;
+using EmissionsMonitorDataAccess.Abstractions;
 using EmissionsMonitorModel.DataSources;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ViewModel.Base;
@@ -13,16 +14,30 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
 {
     public class DataSourceManagerViewModel : RobustViewModelBase
     {
-        public DataSourceManagerViewModel(RobustViewModelDependencies facade) : base(facade)
+        private readonly IDataSourceRepository _repo;
+
+        public DataSourceManagerViewModel(IDataSourceRepository repo, RobustViewModelDependencies facade) : base(facade)
         {
+            _repo = repo;
             DataSources = new ObservableCollection<DataSourceBase>();
             AddDataSource = new DelegateCommand<DataSourceType?>(OnAddDataSource);
             this.MessageHub.Subscribe<CloseViewModelEvent>(OnCloseViewModelEvent);
             this.MessageHub.Subscribe<SaveViewModelEvent>(OnSaveViewModelEvent);
         }
 
-
         public ObservableCollection<DataSourceBase> DataSources { get; }
+
+
+        private DataSourceBase _selectedDataSourceBase;
+        public DataSourceBase SelectedDataSourceBase
+        {
+            get { return _selectedDataSourceBase; }
+            set
+            {
+                SetField(ref _selectedDataSourceBase, value);
+                OnDataSourceSelected(value);
+            }
+        }
 
         public bool ShowDataSource => SelectedDataSource != null;
 
@@ -30,22 +45,44 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
         public ViewModelBase SelectedDataSource
         {
             get { return _selectedDataSource; }
-            set { SetField(ref _selectedDataSource, value); OnPropertyChanged(nameof(ShowDataSource)); OnPropertyChanged(nameof(CanAddDataSource)); }
+            set
+            {
+                SetField(ref _selectedDataSource, value); 
+                OnPropertyChanged(nameof(ShowDataSource)); 
+                OnPropertyChanged(nameof(CanAddDataSource));
+            }
         }
 
         public bool CanAddDataSource => SelectedDataSource == null;
 
         public ICommand AddDataSource { get; }
 
+        public async Task LoadAsync()
+        {
+            IEnumerable<DataSourceBase> dataSources = await _repo.GetAllDataSourcesAsync();
+            DataSources.Clear();
+            foreach(DataSourceBase dataSource in dataSources) DataSources.Add(dataSource);
+        }
+
         private async void OnAddDataSource(DataSourceType? sourceType)
         {
             if (sourceType == null) throw new ArgumentNullException(nameof(sourceType));
+            await SelectDataSource(sourceType);
+        }
 
+        private async void OnDataSourceSelected(DataSourceBase args)
+        {
+            if (args == null) return;
+            await SelectDataSource(args.SourceType, args);
+        }
+
+        private async Task SelectDataSource(DataSourceType? sourceType, DataSourceBase model = null)
+        {
             switch (sourceType)
             {
                 case DataSourceType.Eia:
                     var vm = this.Resolve<EiaDataSourceViewModel>();
-                    await vm.LoadAsync();
+                    await vm.LoadAsync((EiaDataSource)model);
                     SelectedDataSource = vm;
                     break;
                 case DataSourceType.Pi:
@@ -56,20 +93,15 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
             }
         }
 
-        private void OnSaveViewModelEvent(SaveViewModelEvent args)
+        private async void OnSaveViewModelEvent(SaveViewModelEvent args)
         {
             if (args.SenderTypeName == nameof(EiaDataSourceViewModel))
             {
-                DataSources.Add(new DataSourceBase
-                {
-                    SourceName = "EIA.gov",
-                    SourceType = DataSourceType.Eia
-                });
                 this.SelectedDataSource = null;
+                await this.LoadAsync();
             }
 
         }
-
 
         private void OnCloseViewModelEvent(CloseViewModelEvent args)
         {

@@ -1,9 +1,10 @@
-﻿using EmissionsMonitorModel.DataSources;
+﻿using EmissionsMonitorDataAccess.Abstractions;
+using EmissionsMonitorModel.DataSources;
 using Microsoft.EntityFrameworkCore;
 
-namespace EmissionsMonitorServices.Database.Repositories
+namespace EmissionsMonitorDataAccess.Database.Repositories
 {
-    public class DataSourceRepository : GenericRepository<DataSourceBase, EmissionsMonitorContext>
+    public class DataSourceRepository : GenericRepository<DataSourceBase, EmissionsMonitorContext>, IDataSourceRepository
     {
         public DataSourceRepository(EmissionsMonitorContext context) : base(context)
         {
@@ -14,6 +15,8 @@ namespace EmissionsMonitorServices.Database.Repositories
             IEnumerable<DataSourceBase> dataSources = await Context.Set<DataSourceBase>().ToListAsync();
             return dataSources;
         }
+
+        public async Task<DataSourceBase> SaveDataSource(DataSourceBase dataSource) => await UpsertDataSource(dataSource);
 
         public async Task<DataSourceBase> UpsertDataSource(DataSourceBase source)
         {

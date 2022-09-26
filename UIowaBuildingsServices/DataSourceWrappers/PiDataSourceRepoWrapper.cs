@@ -3,7 +3,7 @@ using EmissionsMonitorModel.DataSources;
 using PiServices;
 using PiModel;
 
-namespace EmissionsMonitorServices.DataSourceWrappers
+namespace EmissionsMonitorDataAccess.DataSourceWrappers
 {
     public class PiDataSourceRepoWrapper : ITimeSeriesDataSource
     {

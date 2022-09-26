@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace EmissionsMonitorServices.Database.Repositories
+namespace EmissionsMonitorDataAccess.Database.Repositories
 {
     public class GenericRepository<TEntity, TContext> : IGenericRepository<TEntity>
         where TEntity : class

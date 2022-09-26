@@ -8,7 +8,7 @@ using DotNetCommon.Helpers;
 using EIA.Services.Clients;
 using EmissionsMonitorModel.DataSources;
 
-namespace EmissionsMonitorServices.DataSourceWrappers
+namespace EmissionsMonitorDataAccess.DataSourceWrappers
 {
     public class EiaDataSourceRepoWrapper : ITimeSeriesDataSource
     {

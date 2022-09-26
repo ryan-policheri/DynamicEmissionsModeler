@@ -1,4 +1,4 @@
-﻿namespace EmissionsMonitorServices.Database.Repositories
+﻿namespace EmissionsMonitorDataAccess.Database.Repositories
 {
     public interface IGenericRepository<T>
     {

@@ -1,5 +1,5 @@
 ﻿using EmissionsMonitorModel.DataSources;
-using EmissionsMonitorServices.Database.Repositories;
+using EmissionsMonitorDataAccess.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmissionsMonitorWebApi.Controllers
@@ -8,10 +8,10 @@ namespace EmissionsMonitorWebApi.Controllers
     [Route("[controller]")]
     public class DataSourceController
     {
-        private readonly DataSourceRepository _repo;
+        private readonly IDataSourceRepository _repo;
         private readonly ILogger<DataSourceController> _logger;
 
-        public DataSourceController(DataSourceRepository repo, ILogger<DataSourceController> logger)
+        public DataSourceController(IDataSourceRepository repo, ILogger<DataSourceController> logger)
         {
             _repo = repo;
             _logger = logger;
@@ -26,7 +26,7 @@ namespace EmissionsMonitorWebApi.Controllers
         [HttpPost]
         public async Task<DataSourceBase> PostDataSource(DataSourceBase source)
         {
-            return await _repo.UpsertDataSource(source);
+            return await _repo.SaveDataSource(source);
         }
     }
 }

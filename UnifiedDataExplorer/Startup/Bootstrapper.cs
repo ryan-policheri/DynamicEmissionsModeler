@@ -18,7 +18,8 @@ using UnifiedDataExplorer.Services.Window;
 using UnifiedDataExplorer.Services.DataPersistence;
 using UnifiedDataExplorer.Services.Reporting;
 using UnifiedDataExplorer.ViewModel.DataSources;
-using EIA.Domain.Model;
+using EmissionsMonitorDataAccess.Abstractions;
+using EmissiosMonitorDataAccess.Http;
 
 namespace UnifiedDataExplorer.Startup
 {
@@ -74,12 +75,14 @@ namespace UnifiedDataExplorer.Startup
             services.AddSingleton<ICredentialProvider>(credProvider);
             services.AddSingleton<DataFileProvider>(dataFileProvider);
 
+            //CLIENTS
             services.AddTransient<EiaClient>();
             services.AddTransient<PiHttpClient>(x => new PiHttpClient(config.PiWebApiBaseAddress,
                 credProvider.DecryptValue(credConfig.EncryptedPiUserName),
                 credProvider.DecryptValue(credConfig.EncryptedPiPassword),
                 config.PiAssestServerName));
 
+            //APP SERVICES
             services.AddSingleton<IMessageHub, MessageHub>();
             services.AddSingleton<IDialogService, DialogService>();
 
@@ -107,6 +110,13 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<PiAssetValuesViewModel>();
             services.AddTransient<PiInterpolatedDataViewModel>();
 
+            //EMISSIONS MONITOR SERVICES
+            services.AddTransient<IDataSourceRepository, EmissionsMonitorClient>((provider =>
+            {
+                var client = new EmissionsMonitorClient();
+                client.Initialize(config);
+                return client;
+            }));
 
             services.AddTransient<ExcelExportService>();
             services.AddSingleton<ReportProcessor>(x => new ReportProcessor(

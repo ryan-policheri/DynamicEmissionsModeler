@@ -3,7 +3,7 @@ using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorModel.ProcessModeling;
 using EmissionsMonitorModel.TimeSeries;
 
-namespace EmissionsMonitorServices
+namespace EmissionsMonitorDataAccess
 {
     public class ModelExecutionService
     {

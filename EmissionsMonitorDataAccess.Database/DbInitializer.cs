@@ -1,4 +1,4 @@
-﻿namespace EmissionsMonitorServices.Database
+﻿namespace EmissionsMonitorDataAccess.Database
 {
     public static class DbInitializer
     {

@@ -1,7 +1,7 @@
 ﻿using EmissionsMonitorModel.DataSources;
 using Microsoft.EntityFrameworkCore;
 
-namespace EmissionsMonitorServices.Database
+namespace EmissionsMonitorDataAccess.Database
 {
     public class EmissionsMonitorContext : DbContext
     {

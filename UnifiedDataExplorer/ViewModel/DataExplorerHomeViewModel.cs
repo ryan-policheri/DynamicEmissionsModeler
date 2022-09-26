@@ -24,9 +24,10 @@ namespace UnifiedDataExplorer.ViewModel
 
         public ICommand AddDataSource { get; }
 
-        private void OnAddDataSource()
+        private async void OnAddDataSource()
         {
             DataSourceManagerViewModel viewModel = this.Resolve<DataSourceManagerViewModel>();
+            await viewModel.LoadAsync();
             this.DialogService.ShowModalWindow<DataSourceManagerViewModel>(viewModel);
         }
     }

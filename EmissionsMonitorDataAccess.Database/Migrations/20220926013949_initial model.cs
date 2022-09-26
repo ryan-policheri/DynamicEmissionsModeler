@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace EmissionsMonitorServices.Database.Migrations
+namespace EmissionsMonitorDataAccess.Database.Migrations
 {
     public partial class initialmodel : Migration
     {

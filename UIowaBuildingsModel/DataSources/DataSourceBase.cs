@@ -33,10 +33,10 @@ namespace EmissionsMonitorModel.DataSources
 
         private void InternalMap(DataSourceBase source)
         {
-            this.SourceId = source.SourceId;
-            this.SourceName = source.SourceName;
-            this.SourceType = source.SourceType;
-            this.SourceDetailsJson = SourceDetailsJson;
+            source.SourceId = this.SourceId;
+            source.SourceName = this.SourceName;
+            source.SourceType = this.SourceType;
+            source.SourceDetailsJson = this.SourceDetailsJson;
         }
     }
 }

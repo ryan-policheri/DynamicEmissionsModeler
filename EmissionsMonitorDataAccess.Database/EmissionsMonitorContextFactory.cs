@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace EmissionsMonitorServices.Database
+namespace EmissionsMonitorDataAccess.Database
 {
     internal class EmissionsMonitorContextFactory : IDesignTimeDbContextFactory<EmissionsMonitorContext>
     {

@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
-using EIA.Domain.Model;
 using EIA.Services.Clients;
+using EmissionsMonitorDataAccess.Abstractions;
 using EmissionsMonitorModel.DataSources;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ViewModel.Base;
@@ -13,10 +13,12 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
 {
     public class EiaDataSourceViewModel : RobustViewModelBase
     {
-        public EiaDataSource _model;
+        private readonly IDataSourceRepository _repo;
+        private EiaDataSource _model;
 
-        public EiaDataSourceViewModel(RobustViewModelDependencies facade) : base(facade)
+        public EiaDataSourceViewModel(IDataSourceRepository repo, RobustViewModelDependencies facade) : base(facade)
         {
+            _repo = repo;
             Save = new DelegateCommand(OnSave);
             TestConnection = new DelegateCommand(OnTestConnection);
             Cancel = new DelegateCommand(OnCancel);
@@ -30,13 +32,26 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
         }
 
         [Required]
+        public string EiaSourceName
+        {
+            get { return _model.SourceName; }
+            set
+            {
+                _model.SourceName = value;
+                OnPropertyChanged();
+                Validate();
+            }
+        }
+
+
+        [Required]
         public string EiaBaseUrl
         {
             get { return _model.BaseUrl; }
             set
             {
                 _model.BaseUrl = value;
-                OnPropertyChanged(nameof(EiaBaseUrl));
+                OnPropertyChanged();
                 Validate();
             }
         }
@@ -48,7 +63,7 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
             set
             {
                 _model.SubscriptionKey = value;
-                OnPropertyChanged(nameof(EiaApiKey));
+                OnPropertyChanged();
                 Validate();
             }
         }
@@ -60,10 +75,11 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
         public ICommand Cancel { get; }
 
 
-        private void OnSave()
+        private async void OnSave()
         {
             if (this.IsValid())
             {
+                DataSourceBase dataSource = await _repo.SaveDataSource(_model);
                 this.MessageHub.Publish(new SaveViewModelEvent
                 {
                     Sender = this,

@@ -12,6 +12,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -22,13 +23,16 @@
         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" FontWeight="Bold" FontSize="14" TextWrapping="Wrap" Margin="0 0 0 20"
                    Text="EIA Api Key Needed! Go to https://www.eia.gov/opendata/register.php to register for a key. Place the key in the field below."/>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="EIA Api Base Url"/>
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding EiaBaseUrl, Mode=TwoWay}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Source Name"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding EiaSourceName, Mode=TwoWay}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
 
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="EIA Api Key"/>
-        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding EiaApiKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="EIA Api Base Url"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding EiaBaseUrl, Mode=TwoWay}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
 
-        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" Orientation="Horizontal" Margin="0 20 0 0">
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="EIA Api Key"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding EiaApiKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
+
+        <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" Orientation="Horizontal" Margin="0 20 0 0">
             <Button Content="Save &amp; Close" Command="{Binding Save}" Background="Transparent"/>
             <Button Content="Test" Margin="10 0 0 0" Command="{Binding TestConnection}" Background="Transparent"/>
             <Button Content="Cancel" Margin="10 0 0 0" Command="{Binding Cancel}" Background="Transparent"/>

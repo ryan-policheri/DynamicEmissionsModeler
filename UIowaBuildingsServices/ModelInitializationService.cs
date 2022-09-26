@@ -4,7 +4,7 @@ using EmissionsMonitorModel.ProcessModeling;
 using EmissionsMonitorModel.TimeSeries;
 using Microsoft.CSharp.RuntimeBinder;
 
-namespace EmissionsMonitorServices
+namespace EmissionsMonitorDataAccess
 {
     public class ModelInitializationService
     {
