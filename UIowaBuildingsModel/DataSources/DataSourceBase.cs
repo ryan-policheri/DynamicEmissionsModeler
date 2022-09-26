@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DotNetCommon.Extensions;
 
 namespace EmissionsMonitorModel.DataSources
 {
@@ -13,7 +9,34 @@ namespace EmissionsMonitorModel.DataSources
         public string SourceName { get; set; }
 
         public DataSourceType SourceType { get; set; }
+
+        public string SourceDetailsJson { get; set; }
+
+        public virtual string ToSourceDetails() => null;
+
+        public virtual DataSourceBase FromSourceDetails()
+        {
+            switch (SourceType)
+            {
+                case DataSourceType.Pi:
+                    var piSource = SourceDetailsJson.ConvertJsonToObject<PiDataSource>();
+                    InternalMap(piSource);
+                    return piSource;
+                case DataSourceType.Eia:
+                    var eiaSource = SourceDetailsJson.ConvertJsonToObject<EiaDataSource>();
+                    InternalMap(eiaSource);
+                    return eiaSource;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        private void InternalMap(DataSourceBase source)
+        {
+            this.SourceId = source.SourceId;
+            this.SourceName = source.SourceName;
+            this.SourceType = source.SourceType;
+            this.SourceDetailsJson = SourceDetailsJson;
+        }
     }
-
-
 }

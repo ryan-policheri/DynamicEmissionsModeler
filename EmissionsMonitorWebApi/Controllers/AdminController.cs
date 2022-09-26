@@ -17,11 +17,11 @@ namespace EmissionsMonitorWebApi.Controllers
             _logger = logger;
         }
 
-        [HttpPost(Name = "InitializeDatabase")]
-        public ActionResult Get()
-        {
-            DbInitializer.Initialize(_context);
-            return Ok();
-        }
+        //[HttpPost(Name = "InitializeDatabase")]
+        //public ActionResult Get()
+        //{
+        //    DbInitializer.Initialize(_context);
+        //    return Ok();
+        //}
     }
 }

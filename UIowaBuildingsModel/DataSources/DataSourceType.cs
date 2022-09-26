@@ -2,8 +2,8 @@
 {
     public enum DataSourceType
     {
-        Custom,
-        Pi,
-        Eia
+        Undefined = 0,
+        Pi = 1,
+        Eia = 2
     }
 }

@@ -10,14 +10,13 @@ namespace EmissionsMonitorServices.Database
             
         }
 
-        public DbSet<EiaDataSource> EiaDataSources { get; set; }
+        public DbSet<DataSourceBase> DataSources { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var spec = modelBuilder.Entity<EiaDataSource>();
-            spec.HasKey(x => x.SubscriptionKey);
-            spec.Property(x => x.BaseUrl);
-            spec.ToTable("DATA_SOURCE_EIA");
+            var spec = modelBuilder.Entity<DataSourceBase>();
+            spec.HasKey(x => x.SourceId);
+            spec.ToTable("DATA_SOURCE");
         }
     }
 }

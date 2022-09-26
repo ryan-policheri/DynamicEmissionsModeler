@@ -1,4 +1,6 @@
-﻿using PiModel;
+﻿using System.ComponentModel.DataAnnotations;
+using PiModel;
+using System.Dynamic;
 
 namespace EmissionsMonitorModel.DataSources
 {
@@ -12,12 +14,25 @@ namespace EmissionsMonitorModel.DataSources
             SourceType = DataSourceType.Pi;
         }
 
+        [Required]
         public string BaseUrl { get; set; }
 
+        [Required]
         public string UserName { get; set; }
 
+        [Required]
         public string Password { get; set; }
 
         public string DefaultAssetServer { get; set; }
+
+        public override string ToSourceDetails()
+        {
+            dynamic obj = new ExpandoObject();
+            obj.BaseUrl = this.BaseUrl;
+            obj.UserName = this.UserName;
+            obj.Password = this.Password;
+            obj.DefaultAssetServer = this.DefaultAssetServer;
+            return obj.ToJson();
+        }
     }
 }

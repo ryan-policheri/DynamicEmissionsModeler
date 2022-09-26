@@ -1,4 +1,5 @@
 using EmissionsMonitorServices.Database;
+using EmissionsMonitorServices.Database.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmissionsMonitorWebApi
@@ -18,6 +19,7 @@ namespace EmissionsMonitorWebApi
 
             string connString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<EmissionsMonitorContext>(options => options.UseSqlServer(connString));
+            builder.Services.AddTransient<DataSourceRepository>();
 
             var app = builder.Build();
 

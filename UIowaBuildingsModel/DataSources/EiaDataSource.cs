@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Dynamic;
 
 namespace EmissionsMonitorModel.DataSources
 {
@@ -18,5 +19,13 @@ namespace EmissionsMonitorModel.DataSources
 
         [Required] 
         public string SubscriptionKey { get; set; }
+
+        public override string ToSourceDetails()
+        {
+            dynamic obj = new ExpandoObject();
+            obj.BaseUrl = this.BaseUrl;
+            obj.SubscriptionKey = this.SubscriptionKey;
+            return obj.ToJson();
+        }
     }
 }
