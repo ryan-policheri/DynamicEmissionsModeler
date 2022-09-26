@@ -31,13 +31,13 @@
 
             <TextBlock Grid.Row="0" Text="Quick Links" FontWeight="Bold" FontSize="20"/>
             <TextBlock Grid.Row="1" Text="Available Data Sources:" Margin="0 20 0 0"/>
-            <ListBox Grid.Row="2">
+            <ListBox Grid.Row="2" ItemsSource="{Binding DataSources}" ItemTemplate="{StaticResource DataSourceListItemTemplate}">
 
             </ListBox>
             <Button Grid.Row="3" Background="Transparent" BorderThickness="0" HorizontalAlignment="Left" Padding="0 5 5 5"
                     Command="{Binding AddDataSource}">
                 <Button.Content>
-                    <TextBlock Text="Add a Data Source" Foreground="Blue" TextDecorations="Underline"/>
+                    <TextBlock Text="Modify Data Sources" Foreground="Blue" TextDecorations="Underline"/>
                 </Button.Content>
             </Button>
 

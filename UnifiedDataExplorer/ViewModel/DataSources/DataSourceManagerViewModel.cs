@@ -102,7 +102,6 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
                 this.SelectedDataSource = null;
                 await this.LoadAsync();
             }
-
         }
 
         private void OnCloseViewModelEvent(CloseViewModelEvent args)

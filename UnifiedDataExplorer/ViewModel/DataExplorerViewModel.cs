@@ -12,11 +12,14 @@ namespace UnifiedDataExplorer.ViewModel
 {
     public class DataExplorerViewModel : RobustViewModelBase
     {
+        private readonly DataExplorerHomeViewModel _homeViewModel;
+
         public DataExplorerViewModel(DataExplorerHomeViewModel homeViewModel, RobustViewModelDependencies facade) : base(facade)
         {
             Children = new ObservableCollection<ViewModelBase>();
             Children.Add(homeViewModel);
             CurrentChild = homeViewModel;
+            _homeViewModel = homeViewModel;
 
             MessageHub.Subscribe<OpenViewModelEvent>(OnOpenViewModel);
             MessageHub.Subscribe<CloseViewModelEvent>(OnCloseViewModel);
@@ -39,7 +42,7 @@ namespace UnifiedDataExplorer.ViewModel
 
         public async Task LoadAsync()
         {
-
+            await _homeViewModel.LoadAsync();
         }
 
         private void AddAndSwitchChild(ViewModelBase viewModel)
