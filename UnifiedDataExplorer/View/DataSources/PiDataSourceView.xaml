@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UnifiedDataExplorer.View"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" DataContextChanged="PiDataSourceView_OnDataContextChanged">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -22,8 +22,7 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" FontWeight="Bold" FontSize="14" TextWrapping="Wrap" Margin="0 0 0 20"
-                   Text="Credentials for PI needed! Talk to your PI administrator if you are unsure of what credentials to use! 
-                   NOTE: Your credentials are stored in an encrypted format (even though the box shows them in plain text below)"/>
+                   Text="Credentials for PI needed! Talk to your PI administrator if you are unsure of what credentials to use!"/>
 
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Source Name"/>
         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SourceName, UpdateSourceTrigger=PropertyChanged}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
@@ -35,7 +34,7 @@
         <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding PiUserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
 
         <TextBlock Grid.Row="4" Grid.Column="0" Text="PI Password"/>
-        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding PiPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
+        <PasswordBox Name="Passbox" Grid.Row="4" Grid.Column="1" PasswordChanged="PasswordBox_OnPasswordChanged" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
 
         <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" Orientation="Horizontal" Margin="0 20 0 0">
             <Button Content="Save &amp; Close" Command="{Binding Save}" Background="Transparent"/>
