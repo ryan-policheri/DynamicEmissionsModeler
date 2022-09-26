@@ -86,7 +86,9 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
                     SelectedDataSource = vm;
                     break;
                 case DataSourceType.Pi:
-                    SelectedDataSource = new PiDataSourceViewModel();
+                    var pvm = this.Resolve<PiDataSourceViewModel>();
+                    await pvm.LoadAsync((PiDataSource)model);
+                    SelectedDataSource = pvm;
                     break;
                 default:
                     throw new NotImplementedException();
@@ -95,7 +97,7 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
 
         private async void OnSaveViewModelEvent(SaveViewModelEvent args)
         {
-            if (args.SenderTypeName == nameof(EiaDataSourceViewModel))
+            if (args.SenderTypeName == nameof(EiaDataSourceViewModel) || args.SenderTypeName == nameof(PiDataSourceViewModel))
             {
                 this.SelectedDataSource = null;
                 await this.LoadAsync();

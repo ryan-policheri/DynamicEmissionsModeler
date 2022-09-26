@@ -1,27 +1,18 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using DotNetCommon.DelegateCommand;
 using EIA.Services.Clients;
 using EmissionsMonitorDataAccess.Abstractions;
 using EmissionsMonitorModel.DataSources;
-using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ViewModel.Base;
 
 namespace UnifiedDataExplorer.ViewModel.DataSources
 {
-    public class EiaDataSourceViewModel : RobustViewModelBase
+    public class EiaDataSourceViewModel : DataSourceBaseViewModel
     {
-        private readonly IDataSourceRepository _repo;
         private EiaDataSource _model;
 
-        public EiaDataSourceViewModel(IDataSourceRepository repo, RobustViewModelDependencies facade) : base(facade)
+        public EiaDataSourceViewModel(IDataSourceRepository repo, RobustViewModelDependencies facade) : base(repo, facade)
         {
-            _repo = repo;
-            Save = new DelegateCommand(OnSave);
-            TestConnection = new DelegateCommand(OnTestConnection);
-            Cancel = new DelegateCommand(OnCancel);
         }
 
         public async Task LoadAsync(EiaDataSource model = null)
@@ -29,18 +20,6 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
             if (model == null) model = new EiaDataSource();
             _model = model;
             EiaBaseUrl = _model.SuggestedBaseUrl;
-        }
-
-        [Required]
-        public string EiaSourceName
-        {
-            get { return _model.SourceName; }
-            set
-            {
-                _model.SourceName = value;
-                OnPropertyChanged();
-                Validate();
-            }
         }
 
 
@@ -68,48 +47,14 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
             }
         }
 
-        public ICommand Save { get; }
+        protected override DataSourceBase GetBackingModel() => _model;
 
-        public ICommand TestConnection { get; }
-
-        public ICommand Cancel { get; }
-
-
-        private async void OnSave()
-        {
-            if (this.IsValid())
-            {
-                DataSourceBase dataSource = await _repo.SaveDataSource(_model);
-                this.MessageHub.Publish(new SaveViewModelEvent
-                {
-                    Sender = this,
-                    SenderTypeName = nameof(EiaDataSourceViewModel)
-                });
-            }
-        }
-
-        private async void OnTestConnection()
+        protected override async Task<bool> TestDataSourceConnectionAsync()
         {
             EiaClient client = this.Resolve<EiaClient>();
-            try
-            {
-                client.Initialize(_model.BaseUrl, _model.SubscriptionKey);
-                await client.TestAsync();
-                this.DialogService.ShowInfoMessage("Connection successful!");
-            }
-            catch (Exception ex)
-            {
-                this.DialogService.ShowErrorMessage(ex.Message);
-            }
-        }
-
-        private void OnCancel()
-        {
-            this.MessageHub.Publish(new CloseViewModelEvent
-            {
-                Sender = this,
-                SenderTypeName = nameof(EiaDataSourceViewModel)
-            });
+            client.Initialize(_model.BaseUrl, _model.SubscriptionKey);
+            await client.TestAsync();
+            return true;
         }
     }
 }

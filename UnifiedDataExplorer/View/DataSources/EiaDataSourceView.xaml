@@ -24,10 +24,10 @@
                    Text="EIA Api Key Needed! Go to https://www.eia.gov/opendata/register.php to register for a key. Place the key in the field below."/>
 
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Source Name"/>
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding EiaSourceName, Mode=TwoWay}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SourceName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
 
         <TextBlock Grid.Row="2" Grid.Column="0" Text="EIA Api Base Url"/>
-        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding EiaBaseUrl, Mode=TwoWay}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding EiaBaseUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
 
         <TextBlock Grid.Row="3" Grid.Column="0" Text="EIA Api Key"/>
         <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding EiaApiKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>

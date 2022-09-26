@@ -51,7 +51,7 @@ namespace UnifiedDataExplorer.ViewModel
         {
             while (!_client.HasAuthorization)
             {
-                PiDataSourceViewModel viewModel = new PiDataSourceViewModel { PiWebApiUrl = _client.BaseAddress };
+                PiDataSourceViewModel viewModel = null; //= new PiDataSourceViewModel { PiWebApiUrl = _client.BaseAddress };
                 this.DialogService.ShowModalWindow(viewModel);
                 _client.UserName = viewModel.PiUserName;
                 _client.Password = viewModel.PiPassword;

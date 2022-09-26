@@ -6,7 +6,7 @@ namespace EmissionsMonitorWebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class DataSourceController
+    public class DataSourceController : ControllerBase
     {
         private readonly IDataSourceRepository _repo;
         private readonly ILogger<DataSourceController> _logger;
@@ -18,9 +18,17 @@ namespace EmissionsMonitorWebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<DataSourceBase>> GetAllDataSources()
+        public async Task<ActionResult> GetAllDataSources()
         {
-            return await _repo.GetAllDataSourcesAsync();
+            try
+            {
+                return Ok(await _repo.GetAllDataSourcesAsync());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Ok(e.ToString());
+            }
         }
 
         [HttpPost]

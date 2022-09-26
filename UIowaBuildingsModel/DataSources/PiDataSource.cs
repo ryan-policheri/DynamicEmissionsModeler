@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using PiModel;
 using System.Dynamic;
+using DotNetCommon.Extensions;
+using PiModel;
 
 namespace EmissionsMonitorModel.DataSources
 {
@@ -32,7 +33,7 @@ namespace EmissionsMonitorModel.DataSources
             obj.UserName = this.UserName;
             obj.Password = this.Password;
             obj.DefaultAssetServer = this.DefaultAssetServer;
-            return obj.ToJson();
+            return ((object)obj).ToJson();
         }
     }
 }
