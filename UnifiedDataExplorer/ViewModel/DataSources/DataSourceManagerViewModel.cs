@@ -64,35 +64,23 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
             foreach(DataSourceBase dataSource in dataSources) DataSources.Add(dataSource);
         }
 
-        private async void OnAddDataSource(DataSourceType? sourceType)
+        private void OnAddDataSource(DataSourceType? sourceType)
         {
             if (sourceType == null) throw new ArgumentNullException(nameof(sourceType));
-            await SelectDataSource(sourceType);
+            SelectDataSource(sourceType.Value);
         }
 
-        private async void OnDataSourceSelected(DataSourceBase args)
+        private void OnDataSourceSelected(DataSourceBase args)
         {
             if (args == null) return;
-            await SelectDataSource(args.SourceType, args);
+            SelectDataSource(args.SourceType, args);
         }
 
-        private async Task SelectDataSource(DataSourceType? sourceType, DataSourceBase model = null)
+        private void SelectDataSource(DataSourceType sourceType, DataSourceBase model = null)
         {
-            switch (sourceType)
-            {
-                case DataSourceType.Eia:
-                    var vm = this.Resolve<EiaDataSourceViewModel>();
-                    await vm.LoadAsync((EiaDataSource)model);
-                    SelectedDataSource = vm;
-                    break;
-                case DataSourceType.Pi:
-                    var pvm = this.Resolve<PiDataSourceViewModel>();
-                    await pvm.LoadAsync((PiDataSource)model);
-                    SelectedDataSource = pvm;
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
+            DataSourceBaseViewModel untypedVm = this.Resolve<DataSourceBaseViewModel>();
+            var vm = untypedVm.InitializeSubclassViewModel(sourceType, model);
+            SelectedDataSource = vm;
         }
 
         private async void OnSaveViewModelEvent(SaveViewModelEvent args)

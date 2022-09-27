@@ -94,6 +94,7 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<MainMenuViewModel>();
 
             //DATA SOURCES
+            services.AddTransient<DataSourceBaseViewModel>();
             services.AddTransient<EiaDataSourceViewModel>();
             services.AddTransient<PiDataSourceViewModel>();
 

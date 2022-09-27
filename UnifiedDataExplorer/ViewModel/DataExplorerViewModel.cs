@@ -4,9 +4,12 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using DotNetCommon.MVVM;
 using DotNetCommon.PersistenceHelpers;
+using EIA.Services.Clients;
+using EmissionsMonitorModel.DataSources;
 using UnifiedDataExplorer.Constants;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ViewModel.Base;
+using UnifiedDataExplorer.ViewModel.DataSources;
 
 namespace UnifiedDataExplorer.ViewModel
 {
@@ -64,12 +67,21 @@ namespace UnifiedDataExplorer.ViewModel
 
         private async void OnOpenViewModel(OpenViewModelEvent args)
         {
+            if (args.SenderTypeName == nameof(EiaDataSourceViewModel) && args.Verb == EiaDataSourceViewModel.OPEN_EIA_EXPLORER)
+            {
+                EiaDataSource dataSource = (args.Sender as EiaDataSourceViewModel).GetBackingModel() as EiaDataSource;
+                var datasetFinder = this.Resolve<EiaDatasetFinderViewModel>();
+                AddAndSwitchChild(datasetFinder);
+                await datasetFinder.LoadAsync(dataSource);
+            }
+
             if (args.SenderTypeName == nameof(EiaDatasetFinderViewModel))
             {
+                IEiaConnectionInfo connectionInfo = (args.Sender as EiaDatasetFinderViewModel).DataSourceConnectionInfo;
                 EiaSeriesViewModel vm = this.Resolve<EiaSeriesViewModel>();
                 Logger.LogInformation($"Loading series {args.Id}");
                 AddAndSwitchChild(vm);
-                await vm.LoadAsync(args);
+                await vm.LoadAsync(connectionInfo, args);
             }
             if (args.SenderTypeName == nameof(PiDatasetFinderViewModel))
             {

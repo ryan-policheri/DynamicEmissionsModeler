@@ -50,14 +50,14 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
             }
         }
 
-        public async Task LoadAsync(PiDataSource model = null)
+        public void Load(PiDataSource model = null)
         {
             if (model == null) model = new PiDataSource();
             _model = model;
         }
 
 
-        protected override DataSourceBase GetBackingModel() => _model;
+        public override DataSourceBase GetBackingModel() => _model;
 
         protected override Task<bool> TestDataSourceConnectionAsync()
         {

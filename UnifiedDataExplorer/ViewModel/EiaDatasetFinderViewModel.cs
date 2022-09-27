@@ -4,6 +4,7 @@ using DotNetCommon.MVVM;
 using EIA.Domain.Constants;
 using EIA.Domain.Model;
 using EIA.Services.Clients;
+using EmissionsMonitorModel.DataSources;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ModelWrappers;
 using UnifiedDataExplorer.ViewModel.Base;
@@ -25,6 +26,8 @@ namespace UnifiedDataExplorer.ViewModel
         public string HeaderDetail => "Navigate to a EIA dataset";
         public bool IsCloseable => false;
 
+        public IEiaConnectionInfo DataSourceConnectionInfo { get; private set; }
+
         private ObservableCollection<LazyTreeItemViewModel> _categories;
         public ObservableCollection<LazyTreeItemViewModel> Categories
         {
@@ -36,16 +39,10 @@ namespace UnifiedDataExplorer.ViewModel
             }
         }
 
-        public async Task LoadAsync()
+        public async Task LoadAsync(EiaDataSource dataSource)
         {
-            while (!_client.HasAuthorization)
-            {
-                //EiaDataSourceViewModel viewModel = new EiaDataSourceViewModel { EiaBaseUrl = _client.BaseAddress };
-                //this.DialogService.ShowModalWindow(viewModel);
-                //_client.SubscriptionKey = viewModel.EiaApiKey;
-                //_client.AddAuthorizationHeader();
-                //DataFileProvider.BuildCredentialsFile().Update<CredentialConfig>(x => x.EncryptedEiaWebApiKey = viewModel.EiaApiKey);
-            }
+            DataSourceConnectionInfo = dataSource;
+            _client.Initialize(DataSourceConnectionInfo);
             Category root = await _client.GetCategoryByIdAsync(EiaCategories.ABSOLUTE_ROOT);
             CategorySeriesWrapper wrapper = new CategorySeriesWrapper(root);
             Categories.Add(new LazyTreeItemViewModel(wrapper));

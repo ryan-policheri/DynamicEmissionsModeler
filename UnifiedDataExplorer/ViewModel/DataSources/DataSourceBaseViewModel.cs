@@ -10,7 +10,7 @@ using UnifiedDataExplorer.ViewModel.Base;
 
 namespace UnifiedDataExplorer.ViewModel.DataSources
 {
-    public abstract class DataSourceBaseViewModel : RobustViewModelBase
+    public class DataSourceBaseViewModel : RobustViewModelBase
     {
         protected readonly IDataSourceRepository Repo;
 
@@ -40,8 +40,25 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
 
         public ICommand Cancel { get; }
 
-        protected abstract DataSourceBase GetBackingModel();
-        protected abstract Task<bool> TestDataSourceConnectionAsync();
+        public DataSourceBaseViewModel InitializeSubclassViewModel(DataSourceType sourceType, DataSourceBase model = null)
+        {
+            switch (sourceType)
+            {
+                case DataSourceType.Eia:
+                    var evm = this.Resolve<EiaDataSourceViewModel>();
+                    evm.Load((EiaDataSource)model);
+                    return evm;
+                case DataSourceType.Pi:
+                    var pvm = this.Resolve<PiDataSourceViewModel>();
+                    pvm.Load((PiDataSource)model);
+                    return pvm;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        public virtual DataSourceBase GetBackingModel() => throw new NotImplementedException();
+        protected virtual Task<bool> TestDataSourceConnectionAsync() => throw new NotImplementedException();
 
         private async void OnSave()
         {

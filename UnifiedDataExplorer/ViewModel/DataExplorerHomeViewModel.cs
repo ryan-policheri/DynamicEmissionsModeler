@@ -17,7 +17,7 @@ namespace UnifiedDataExplorer.ViewModel
         public DataExplorerHomeViewModel(IDataSourceRepository repo, RobustViewModelDependencies facade) : base(facade)
         {
             _repo = repo;
-            DataSources = new ObservableCollection<DataSourceBase>();
+            DataSources = new ObservableCollection<DataSourceBaseViewModel>();
             AddDataSource = new DelegateCommand(OnAddDataSource);
             this.MessageHub.Subscribe<SaveViewModelEvent>(OnSaveViewModelEvent);
         }
@@ -26,14 +26,19 @@ namespace UnifiedDataExplorer.ViewModel
         public string HeaderDetail => "Open an explorer to find data!";
         public bool IsCloseable => false;
 
-        public ObservableCollection<DataSourceBase> DataSources { get; }
+        public ObservableCollection<DataSourceBaseViewModel> DataSources { get; }
 
         public ICommand AddDataSource { get; }
 
         public async Task LoadAsync()
-        {
+        {//TODO: This is smelly
+            DataSourceBaseViewModel untypedVm = this.Resolve<DataSourceBaseViewModel>();
             DataSources.Clear();
-            foreach(DataSourceBase dataSource in (await _repo.GetAllDataSourcesAsync())) DataSources.Add(dataSource);
+            foreach (DataSourceBase dataSource in (await _repo.GetAllDataSourcesAsync()))
+            {
+                var typedVm = untypedVm.InitializeSubclassViewModel(dataSource.SourceType, dataSource);
+                DataSources.Add(typedVm);
+            }
         }
 
         private async void OnAddDataSource()

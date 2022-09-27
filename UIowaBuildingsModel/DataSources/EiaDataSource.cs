@@ -2,10 +2,11 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Dynamic;
 using DotNetCommon.Extensions;
+using EIA.Services.Clients;
 
 namespace EmissionsMonitorModel.DataSources
 {
-    public class EiaDataSource : DataSourceBase
+    public class EiaDataSource : DataSourceBase, IEiaConnectionInfo
     {
         public EiaDataSource() : base()
         {

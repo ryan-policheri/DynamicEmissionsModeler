@@ -61,8 +61,9 @@ namespace UnifiedDataExplorer.ViewModel
 
         public ICommand ExcelExportCommand { get; }
 
-        public async Task LoadAsync(IEiaDetailLoadingInfo loadingInfo)
+        public async Task LoadAsync(IEiaConnectionInfo connectionInfo, IEiaDetailLoadingInfo loadingInfo)
         {
+            _client.Initialize(connectionInfo);
             Series series = await _client.GetSeriesByIdAsync(loadingInfo.Id, 30);
             SeriesName = series.Name;
             SeriesId = series.Id;

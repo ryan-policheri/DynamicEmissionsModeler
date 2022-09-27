@@ -1,21 +1,28 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using DotNetCommon.DelegateCommand;
 using EIA.Services.Clients;
 using EmissionsMonitorDataAccess.Abstractions;
 using EmissionsMonitorModel.DataSources;
+using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ViewModel.Base;
 
 namespace UnifiedDataExplorer.ViewModel.DataSources
 {
     public class EiaDataSourceViewModel : DataSourceBaseViewModel
     {
+        public const string OPEN_EIA_EXPLORER = "OPEN_EIA_EXPLORER";
         private EiaDataSource _model;
 
         public EiaDataSourceViewModel(IDataSourceRepository repo, RobustViewModelDependencies facade) : base(repo, facade)
         {
+            OpenEiaExplorer = new DelegateCommand(OnOpenEiaExplorer);
         }
 
-        public async Task LoadAsync(EiaDataSource model = null)
+        public ICommand OpenEiaExplorer { get; }
+
+        public void Load(EiaDataSource model = null)
         {
             if (model == null) model = new EiaDataSource();
             _model = model;
@@ -47,7 +54,7 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
             }
         }
 
-        protected override DataSourceBase GetBackingModel() => _model;
+        public override DataSourceBase GetBackingModel() => _model;
 
         protected override async Task<bool> TestDataSourceConnectionAsync()
         {
@@ -55,6 +62,16 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
             client.Initialize(_model.BaseUrl, _model.SubscriptionKey);
             await client.TestAsync();
             return true;
+        }
+
+        private void OnOpenEiaExplorer()
+        {
+            this.MessageHub.Publish<OpenViewModelEvent>(new OpenViewModelEvent
+            {
+                Sender = this,
+                SenderTypeName = nameof(EiaDataSourceViewModel),
+                Verb = OPEN_EIA_EXPLORER
+            });
         }
     }
 }
