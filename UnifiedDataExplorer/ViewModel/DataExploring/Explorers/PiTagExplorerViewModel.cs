@@ -17,6 +17,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.Explorers
     public class PiTagExplorerViewModel : ExplorerViewModel
     {
         private readonly DataSourceServiceFactory _clientFactory;
+        private int _dataSourceId;
         private PiHttpClient _client;
 
         public const string SHOW_JSON = "SHOW_JSON";
@@ -62,6 +63,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.Explorers
 
         public async Task LoadAsync(int dataSourceId)
         {
+            _dataSourceId = dataSourceId;
             _client = _clientFactory.GetDataSourceServiceById<PiHttpClient>(dataSourceId);
             AppDataFile dataFile = DataFileProvider.BuildSearchHistoryDataFile();
             if (dataFile.FileExists)
@@ -107,10 +109,11 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.Explorers
 
         private void PublishOpenViewModelEvent(PiTagItemViewModel obj, string action)
         {
-            MessageHub.Publish(new OpenViewModelEvent
+            MessageHub.Publish(new OpenDataSourceViewModelEvent
             {
                 Sender = this,
                 SenderTypeName = nameof(PiTagExplorerViewModel),
+                DataSourceId = _dataSourceId,
                 Id = obj.Link,
                 Name = obj.TagName,
                 Verb = action,
