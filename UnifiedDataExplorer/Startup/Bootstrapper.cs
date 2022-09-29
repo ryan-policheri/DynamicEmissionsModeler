@@ -20,6 +20,7 @@ using UnifiedDataExplorer.Services.Reporting;
 using UnifiedDataExplorer.ViewModel.DataSources;
 using EmissionsMonitorDataAccess.Abstractions;
 using EmissiosMonitorDataAccess.Http;
+using EmissionsMonitorServices.DataSourceWrappers;
 
 namespace UnifiedDataExplorer.Startup
 {
@@ -77,10 +78,11 @@ namespace UnifiedDataExplorer.Startup
 
             //CLIENTS
             services.AddTransient<EiaClient>();
-            services.AddTransient<PiHttpClient>(x => new PiHttpClient(config.PiWebApiBaseAddress,
-                credProvider.DecryptValue(credConfig.EncryptedPiUserName),
-                credProvider.DecryptValue(credConfig.EncryptedPiPassword),
-                config.PiAssestServerName));
+            services.AddTransient<PiHttpClient>();
+            services.AddSingleton<DataSourceServiceFactory>(x =>
+                new DataSourceServiceFactory(() => x.GetService<EiaClient>(), 
+                    () => x.GetService<PiHttpClient>(),
+                    x.GetService<IDataSourceRepository>()));
 
             //APP SERVICES
             services.AddSingleton<IMessageHub, MessageHub>();

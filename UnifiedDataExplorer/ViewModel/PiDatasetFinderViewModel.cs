@@ -4,25 +4,26 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
 using DotNetCommon.MVVM;
+using EmissionsMonitorServices.DataSourceWrappers;
 using PiModel;
 using PiServices;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ModelWrappers;
 using UnifiedDataExplorer.ViewModel.Base;
-using UnifiedDataExplorer.ViewModel.DataSources;
 
 namespace UnifiedDataExplorer.ViewModel
 {
     public class PiDatasetFinderViewModel : RobustViewModelBase
     {
-        private readonly PiHttpClient _client;
-
+        private readonly DataSourceServiceFactory _clientFactory;
+        private int _dataSourceId;
+        private PiHttpClient _client;
         public const string SHOW_JSON = "SHOW_JSON";
         public const string RENDER_VALUES = "RENDER_VALUES";
 
-        public PiDatasetFinderViewModel(PiHttpClient client, RobustViewModelDependencies facade) : base(facade)
+        public PiDatasetFinderViewModel(DataSourceServiceFactory clientFactory, RobustViewModelDependencies facade) : base(facade)
         {
-            _client = client;
+            _clientFactory = clientFactory;
             _categories = new ObservableCollection<LazyTreeItemViewModel>();
 
             ViewJsonCommand = new DelegateCommand<LazyTreeItemViewModel>(OnViewJson);
@@ -47,20 +48,10 @@ namespace UnifiedDataExplorer.ViewModel
         public ICommand ViewJsonCommand { get; }
         public ICommand RenderValuesCommand { get; }
 
-        public async Task LoadAsync()
+        public async Task LoadAsync(int dataSourceId)
         {
-            while (!_client.HasAuthorization)
-            {
-                PiDataSourceViewModel viewModel = null; //= new PiDataSourceViewModel { PiWebApiUrl = _client.BaseAddress };
-                this.DialogService.ShowModalWindow(viewModel);
-                _client.UserName = viewModel.PiUserName;
-                _client.Password = viewModel.PiPassword;
-                _client.AddAuthorizationHeader();
-                DataFileProvider.BuildCredentialsFile().Update<CredentialConfig>(x => {
-                    x.EncryptedPiUserName = viewModel.PiUserName;
-                    x.EncryptedPiPassword = viewModel.PiPassword;
-                });
-            }
+            _dataSourceId = dataSourceId;
+            _client = _clientFactory.GetDataSourceServiceById<PiHttpClient>(dataSourceId);
             AssetServer root = await _client.AssetServerSearch(_client.DefaultAssetServer);
             ServerDatabaseAssetWrapper wrapper = new ServerDatabaseAssetWrapper(root);
             Categories.Add(new LazyTreeItemViewModel(wrapper));
@@ -120,10 +111,11 @@ namespace UnifiedDataExplorer.ViewModel
 
         private void PublishOpenViewModelEvent(ServerDatabaseAssetWrapper model, string verb)
         {
-            this.MessageHub.Publish<OpenViewModelEvent>(new OpenViewModelEvent
+            this.MessageHub.Publish<OpenDataSourceViewModelEvent>(new OpenDataSourceViewModelEvent()
             {
                 Sender = this,
                 SenderTypeName = nameof(PiDatasetFinderViewModel),
+                DataSourceId = _dataSourceId,
                 Id = model.GetLinkToSelf(),
                 Name = model.GetItemName(),
                 Verb = verb,

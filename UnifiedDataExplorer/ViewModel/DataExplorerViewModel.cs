@@ -24,7 +24,7 @@ namespace UnifiedDataExplorer.ViewModel
             CurrentChild = homeViewModel;
             _homeViewModel = homeViewModel;
 
-            MessageHub.Subscribe<OpenViewModelEvent>(OnOpenViewModel);
+            MessageHub.Subscribe<OpenDataSourceViewModelEvent>(OpenDataSourceViewModelEvent);
             MessageHub.Subscribe<CloseViewModelEvent>(OnCloseViewModel);
             MessageHub.Subscribe<MenuItemEvent>(OnMenuItemEvent);
         }
@@ -65,24 +65,41 @@ namespace UnifiedDataExplorer.ViewModel
             }
         }
 
-        private async void OnOpenViewModel(OpenViewModelEvent args)
+        private async void OpenDataSourceViewModelEvent(OpenDataSourceViewModelEvent args)
         {
+            //EIA
             if (args.SenderTypeName == nameof(EiaDataSourceViewModel) && args.Verb == EiaDataSourceViewModel.OPEN_EIA_EXPLORER)
             {
-                EiaDataSource dataSource = (args.Sender as EiaDataSourceViewModel).GetBackingModel() as EiaDataSource;
                 var datasetFinder = this.Resolve<EiaDatasetFinderViewModel>();
                 AddAndSwitchChild(datasetFinder);
-                await datasetFinder.LoadAsync(dataSource);
+                await datasetFinder.LoadAsync(args.DataSourceId);
             }
-
             if (args.SenderTypeName == nameof(EiaDatasetFinderViewModel))
             {
-                IEiaConnectionInfo connectionInfo = (args.Sender as EiaDatasetFinderViewModel).DataSourceConnectionInfo;
                 EiaSeriesViewModel vm = this.Resolve<EiaSeriesViewModel>();
                 Logger.LogInformation($"Loading series {args.Id}");
                 AddAndSwitchChild(vm);
-                await vm.LoadAsync(connectionInfo, args);
+                await vm.LoadAsync(args);
             }
+
+            //PI
+            if (args.SenderTypeName == nameof(PiDataSourceViewModel))
+            {
+                if (args.Verb == PiDataSourceViewModel.OPEN_AF_EXPLORER)
+                {
+                    PiDatasetFinderViewModel vm = this.Resolve<PiDatasetFinderViewModel>();
+                    AddAndSwitchChild(vm);
+                    await vm.LoadAsync(args.DataSourceId);
+                }
+
+                if (args.Verb == PiDataSourceViewModel.OPEN_PI_SEARCH_EXPLORER)
+                {
+                    PiSearchViewModel vm = this.Resolve<PiSearchViewModel>();
+                    AddAndSwitchChild(vm);
+                    await vm.LoadAsync(args.DataSourceId);
+                }
+            }
+
             if (args.SenderTypeName == nameof(PiDatasetFinderViewModel))
             {
                 if (args.Verb == PiDatasetFinderViewModel.SHOW_JSON)
@@ -98,7 +115,8 @@ namespace UnifiedDataExplorer.ViewModel
                     await vm.LoadAsync(args);
                 }
             }
-            if(args.SenderTypeName == nameof(PiAssetValuesViewModel))
+
+            if (args.SenderTypeName == nameof(PiAssetValuesViewModel))
             {
                 if (args.Verb == PiAssetValuesViewModel.SHOW_DETAILS_AS_JSON)
                 {
@@ -134,13 +152,13 @@ namespace UnifiedDataExplorer.ViewModel
         {
             if (args.MenuItemHeader == MenuItemHeaders.SAVE_OPEN_EXPLORE_POINTS)
             {
-                List<OpenViewModelEvent> openingEvents = new List<OpenViewModelEvent>();
+                List<OpenDataSourceViewModelEvent> openingEvents = new List<OpenDataSourceViewModelEvent>();
 
                 foreach (ViewModelBase child in this.Children)
                 {
                     if (child is ExplorePointViewModel)
                     {
-                        openingEvents.Add(((ExplorePointViewModel)child).CurrentLoadingInfo as OpenViewModelEvent);
+                        openingEvents.Add(((ExplorePointViewModel)child).CurrentLoadingInfo as OpenDataSourceViewModelEvent);
                     }
                 }
 
@@ -148,17 +166,17 @@ namespace UnifiedDataExplorer.ViewModel
                 while (vm.SaveName == null) { DialogService.ShowModalWindow(vm); }
                 
                 AppDataFile file = DataFileProvider.BuildDataViewFile();
-                file.Save<List<OpenViewModelEvent>>(openingEvents, vm.SaveName);
+                file.Save<List<OpenDataSourceViewModelEvent>>(openingEvents, vm.SaveName);
             }
             else if (args.MenuItemHeader == MenuItemHeaders.OPEN_SAVE)
             {
                 AppDataFile file = args.Data as AppDataFile;
                 if (file != null)
                 {
-                    List<OpenViewModelEvent> openingEvents = file.Read<List<OpenViewModelEvent>>();
-                    foreach (OpenViewModelEvent openEvent in openingEvents)
+                    List<OpenDataSourceViewModelEvent> openingEvents = file.Read<List<OpenDataSourceViewModelEvent>>();
+                    foreach (OpenDataSourceViewModelEvent openEvent in openingEvents)
                     {
-                        this.OnOpenViewModel(openEvent);
+                        this.OpenDataSourceViewModelEvent(openEvent);
                     }
                 }
             }

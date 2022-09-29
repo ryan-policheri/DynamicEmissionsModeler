@@ -4,29 +4,28 @@ using DotNetCommon.MVVM;
 using EIA.Domain.Constants;
 using EIA.Domain.Model;
 using EIA.Services.Clients;
-using EmissionsMonitorModel.DataSources;
+using EmissionsMonitorServices.DataSourceWrappers;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ModelWrappers;
 using UnifiedDataExplorer.ViewModel.Base;
-using UnifiedDataExplorer.ViewModel.DataSources;
 
 namespace UnifiedDataExplorer.ViewModel
 {
     public class EiaDatasetFinderViewModel : RobustViewModelBase
     {
-        private readonly EiaClient _client;
+        private readonly DataSourceServiceFactory _clientFactory;
+        private int _dataSourceId;
+        private EiaClient _client;
 
-        public EiaDatasetFinderViewModel(EiaClient client, RobustViewModelDependencies facade) : base(facade)
+        public EiaDatasetFinderViewModel(DataSourceServiceFactory clientFactory, RobustViewModelDependencies facade) : base(facade)
         {
-            _client = client;
+            _clientFactory = clientFactory;
             _categories = new ObservableCollection<LazyTreeItemViewModel>();
         }
 
         public string Header => "EIA Dataset Finder";
         public string HeaderDetail => "Navigate to a EIA dataset";
         public bool IsCloseable => false;
-
-        public IEiaConnectionInfo DataSourceConnectionInfo { get; private set; }
 
         private ObservableCollection<LazyTreeItemViewModel> _categories;
         public ObservableCollection<LazyTreeItemViewModel> Categories
@@ -39,10 +38,10 @@ namespace UnifiedDataExplorer.ViewModel
             }
         }
 
-        public async Task LoadAsync(EiaDataSource dataSource)
+        public async Task LoadAsync(int dataSourceId)
         {
-            DataSourceConnectionInfo = dataSource;
-            _client.Initialize(DataSourceConnectionInfo);
+            _dataSourceId = dataSourceId;
+            _client = _clientFactory.GetDataSourceServiceById<EiaClient>(dataSourceId);
             Category root = await _client.GetCategoryByIdAsync(EiaCategories.ABSOLUTE_ROOT);
             CategorySeriesWrapper wrapper = new CategorySeriesWrapper(root);
             Categories.Add(new LazyTreeItemViewModel(wrapper));
@@ -64,14 +63,19 @@ namespace UnifiedDataExplorer.ViewModel
             }
         }
 
-        public async Task PeformLeafActionAsync(LazyTreeItemViewModel treeItem)
+        public void PeformLeafActionAsync(LazyTreeItemViewModel treeItem)
         {
             ILazyTreeItemBackingModel modelInterface = treeItem.GetBackingModel();
             CategorySeriesWrapper model = modelInterface as CategorySeriesWrapper;
             if (model != null && model.IsSeries())
             {
-                this.MessageHub.Publish<OpenViewModelEvent>(new OpenViewModelEvent { Sender = this, SenderTypeName = nameof(EiaDatasetFinderViewModel), Id = model.GetId() });
-                return;
+                this.MessageHub.Publish<OpenDataSourceViewModelEvent>(new OpenDataSourceViewModelEvent
+                {
+                    Sender = this,
+                    SenderTypeName = nameof(EiaDatasetFinderViewModel),
+                    DataSourceId = _dataSourceId,
+                    Id = model.GetId()
+                });
             }
         }
     }

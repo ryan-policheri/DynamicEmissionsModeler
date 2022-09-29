@@ -14,6 +14,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -27,16 +28,19 @@
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Source Name"/>
         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SourceName, UpdateSourceTrigger=PropertyChanged}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
 
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="PI Api Url"/>
-        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding PiWebApiUrl, UpdateSourceTrigger=PropertyChanged}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Source Name"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding PiDefaultAssetServer, UpdateSourceTrigger=PropertyChanged}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
 
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="PI User Name"/>
-        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding PiUserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="PI Api Url"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding PiWebApiUrl, UpdateSourceTrigger=PropertyChanged}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
 
-        <TextBlock Grid.Row="4" Grid.Column="0" Text="PI Password"/>
-        <PasswordBox Name="Passbox" Grid.Row="4" Grid.Column="1" PasswordChanged="PasswordBox_OnPasswordChanged" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="PI User Name"/>
+        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding PiUserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
 
-        <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" Orientation="Horizontal" Margin="0 20 0 0">
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="PI Password"/>
+        <PasswordBox Name="Passbox" Grid.Row="5" Grid.Column="1" PasswordChanged="PasswordBox_OnPasswordChanged" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
+
+        <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" Orientation="Horizontal" Margin="0 20 0 0">
             <Button Content="Save &amp; Close" Command="{Binding Save}" Background="Transparent"/>
             <Button Content="Test" Margin="10 0 0 0" Command="{Binding TestConnection}" Background="Transparent"/>
             <Button Content="Cancel" Margin="10 0 0 0" Command="{Binding Cancel}" Background="Transparent"/>

@@ -43,8 +43,8 @@
                         <StackPanel Orientation="Horizontal">
                             <Image Height="25" Width="50" Source="{Binding SourceType, Converter={StaticResource DataSourceTypeToIconPath}}" />
                             <TextBlock Text="{Binding SourceName}" Margin="5 0 10 0 "/>
-                            <Button Content="Open AF Explorer" Background="Transparent"/>
-                            <Button Content="Open Search Explorer" Background="Transparent"/>
+                            <Button Content="Open AF Explorer" Background="Transparent" Command="{Binding OpenAfExplorer}"/>
+                            <Button Content="Open Search Explorer" Background="Transparent" Command="{Binding OpenPiSearchExplorer}"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.Resources>

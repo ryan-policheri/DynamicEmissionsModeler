@@ -30,7 +30,7 @@ namespace UnifiedDataExplorer.View
                     }
                     else if (treeItemViewModel != null && treeItemViewModel.IsLeaf)
                     {
-                        await _viewModel.PeformLeafActionAsync(treeItemViewModel);
+                        _viewModel.PeformLeafActionAsync(treeItemViewModel);
                         args.Handled = true;
                     }
                 }

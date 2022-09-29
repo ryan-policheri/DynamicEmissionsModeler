@@ -10,18 +10,19 @@ using UnifiedDataExplorer.ModelWrappers;
 using UnifiedDataExplorer.Services.DataPersistence;
 using UIowaBuildingsServices;
 using DotNetCommon.SystemHelpers;
+using EmissionsMonitorServices.DataSourceWrappers;
 
 namespace UnifiedDataExplorer.ViewModel
 {
     public class EiaSeriesViewModel : ExplorePointViewModel
     {
-        private readonly EiaClient _client;
+        private readonly DataSourceServiceFactory _clientFactory;
         private readonly DataFileProvider _dataFileProvider;
         private readonly ExcelExportService _exporter;
 
-        public EiaSeriesViewModel(EiaClient client,  DataFileProvider dataFileProvider, ExcelExportService exporter, IMessageHub messageHub) : base(messageHub)
+        public EiaSeriesViewModel(DataSourceServiceFactory clientFactory, DataFileProvider dataFileProvider, ExcelExportService exporter, IMessageHub messageHub) : base(messageHub)
         {
-            _client = client;
+            _clientFactory = clientFactory;
             _dataFileProvider = dataFileProvider;
             _exporter = exporter;
             ExcelExportCommand = new DelegateCommand(OnExcelExport);
@@ -61,10 +62,10 @@ namespace UnifiedDataExplorer.ViewModel
 
         public ICommand ExcelExportCommand { get; }
 
-        public async Task LoadAsync(IEiaConnectionInfo connectionInfo, IEiaDetailLoadingInfo loadingInfo)
+        public async Task LoadAsync(IEiaDetailLoadingInfo loadingInfo)
         {
-            _client.Initialize(connectionInfo);
-            Series series = await _client.GetSeriesByIdAsync(loadingInfo.Id, 30);
+            EiaClient client = _clientFactory.GetDataSourceServiceById<EiaClient>(loadingInfo.DataSourceId);
+            Series series = await client.GetSeriesByIdAsync(loadingInfo.Id, 30);
             SeriesName = series.Name;
             SeriesId = series.Id;
             ValueUnit = series.Units;

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using DotNetCommon.EventAggregation;
 using DotNetCommon.Extensions;
+using EmissionsMonitorServices.DataSourceWrappers;
 using PiModel;
 using PiServices;
 using UnifiedDataExplorer.ModelWrappers;
@@ -10,11 +11,11 @@ namespace UnifiedDataExplorer.ViewModel
 {
     public class PiJsonDisplayViewModel : ExplorePointViewModel
     {
-        private readonly PiHttpClient _client;
+        private readonly DataSourceServiceFactory _clientFactory;
 
-        public PiJsonDisplayViewModel(PiHttpClient client, IMessageHub messageHub) : base(messageHub)
+        public PiJsonDisplayViewModel(DataSourceServiceFactory clientFactory, IMessageHub messageHub) : base(messageHub)
         {
-            _client = client;
+            _clientFactory = clientFactory;
         }
 
         private string _json;
@@ -26,23 +27,24 @@ namespace UnifiedDataExplorer.ViewModel
 
         public async Task LoadAsync(IPiDetailLoadingInfo loadingInfo) //Assume Id is a link, assume tag is a "type"
         {
+            PiHttpClient client = _clientFactory.GetDataSourceServiceById<PiHttpClient>(loadingInfo.DataSourceId);
             switch(loadingInfo.TypeTag)
             {
                 case ServerDatabaseAssetWrapper.ASSET_SERVER_TYPE:
                 case ServerDatabaseAssetWrapper.DATABASE_TYPE:
                 case ServerDatabaseAssetWrapper.ASSET_TYPE:
                     ItemBase itemBase;
-                    if (loadingInfo.TypeTag == ServerDatabaseAssetWrapper.ASSET_SERVER_TYPE) itemBase = await _client.GetByDirectLink<AssetServer>(loadingInfo.Id);
-                    else if (loadingInfo.TypeTag == ServerDatabaseAssetWrapper.DATABASE_TYPE) itemBase = await _client.GetByDirectLink<Database>(loadingInfo.Id);
-                    else if (loadingInfo.TypeTag == ServerDatabaseAssetWrapper.ASSET_TYPE) itemBase = await _client.GetByDirectLink<Asset>(loadingInfo.Id);
-                    else if (loadingInfo.TypeTag == nameof(AssetValue)) itemBase = await _client.GetByDirectLink<AssetValue>(loadingInfo.Id);
+                    if (loadingInfo.TypeTag == ServerDatabaseAssetWrapper.ASSET_SERVER_TYPE) itemBase = await client.GetByDirectLink<AssetServer>(loadingInfo.Id);
+                    else if (loadingInfo.TypeTag == ServerDatabaseAssetWrapper.DATABASE_TYPE) itemBase = await client.GetByDirectLink<Database>(loadingInfo.Id);
+                    else if (loadingInfo.TypeTag == ServerDatabaseAssetWrapper.ASSET_TYPE) itemBase = await client.GetByDirectLink<Asset>(loadingInfo.Id);
+                    else if (loadingInfo.TypeTag == nameof(AssetValue)) itemBase = await client.GetByDirectLink<AssetValue>(loadingInfo.Id);
                     else throw new NotImplementedException("Don't know how to get pi model from the loading info");
                     Json = itemBase.ToBeautifulJson();
                     Header = itemBase.Name.First(25) + " (Json)";
                     HeaderDetail = itemBase.Name + " (Json)";
                     break;
                 case PiPoint.PI_POINT_TYPE:
-                    PiPoint piPoint = await _client.GetByDirectLink<PiPoint>(loadingInfo.Id);
+                    PiPoint piPoint = await client.GetByDirectLink<PiPoint>(loadingInfo.Id);
                     Json = piPoint.ToBeautifulJson();
                     Header = piPoint.Name.First(25) + " (Json)";
                     HeaderDetail = piPoint.Descriptor;

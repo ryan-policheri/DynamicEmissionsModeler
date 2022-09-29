@@ -1,17 +1,25 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using DotNetCommon.DelegateCommand;
 using EmissionsMonitorDataAccess.Abstractions;
 using EmissionsMonitorModel.DataSources;
+using EmissionsMonitorServices.DataSourceWrappers;
+using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ViewModel.Base;
 
 namespace UnifiedDataExplorer.ViewModel.DataSources
 {
     public class PiDataSourceViewModel : DataSourceBaseViewModel
     {
+        public const string OPEN_AF_EXPLORER = "OPEN_PI_AF_EXPLORER";
+        public const string OPEN_PI_SEARCH_EXPLORER = "OPEN_PI_SEARCH_EXPLORER";
         private PiDataSource _model;
 
-        public PiDataSourceViewModel(IDataSourceRepository repo, RobustViewModelDependencies facade) : base(repo, facade)
+        public PiDataSourceViewModel(IDataSourceRepository repo, DataSourceServiceFactory clientFactory, RobustViewModelDependencies facade) : base(repo, clientFactory, facade)
         {
+            OpenAfExplorer = new DelegateCommand(OnOpenAfExplorer);
+            OpenPiSearchExplorer = new DelegateCommand(OnOpenPiSearchExplorer);
         }
 
         [Required]
@@ -21,6 +29,18 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
             set
             {
                 _model.BaseUrl = value;
+                OnPropertyChanged();
+                Validate();
+            }
+        }
+
+        [Required]
+        public string PiDefaultAssetServer
+        {
+            get { return _model.DefaultAssetServer; }
+            set
+            {
+                _model.DefaultAssetServer = value;
                 OnPropertyChanged();
                 Validate();
             }
@@ -50,6 +70,10 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
             }
         }
 
+        public ICommand OpenAfExplorer { get; }
+
+        public ICommand OpenPiSearchExplorer { get; }
+
         public void Load(PiDataSource model = null)
         {
             if (model == null) model = new PiDataSource();
@@ -62,6 +86,28 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
         protected override Task<bool> TestDataSourceConnectionAsync()
         {
             throw new System.NotImplementedException();
+        }
+
+        private void OnOpenAfExplorer()
+        {
+            this.MessageHub.Publish<OpenDataSourceViewModelEvent>(new OpenDataSourceViewModelEvent
+            {
+                Sender = this,
+                SenderTypeName = nameof(PiDataSourceViewModel),
+                DataSourceId = this.DataSourceId,
+                Verb = OPEN_AF_EXPLORER
+            });
+        }
+
+        private void OnOpenPiSearchExplorer()
+        {
+            this.MessageHub.Publish<OpenDataSourceViewModelEvent>(new OpenDataSourceViewModelEvent
+            {
+                Sender = this,
+                SenderTypeName = nameof(PiDataSourceViewModel),
+                DataSourceId = this.DataSourceId,
+                Verb = OPEN_PI_SEARCH_EXPLORER
+            });
         }
     }
 }

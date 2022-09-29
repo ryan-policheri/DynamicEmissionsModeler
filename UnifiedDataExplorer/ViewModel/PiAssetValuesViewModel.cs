@@ -6,6 +6,7 @@ using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
 using DotNetCommon.EventAggregation;
 using DotNetCommon.Extensions;
+using EmissionsMonitorServices.DataSourceWrappers;
 using PiModel;
 using PiServices;
 using UnifiedDataExplorer.Events;
@@ -15,14 +16,15 @@ namespace UnifiedDataExplorer.ViewModel
 {
     public class PiAssetValuesViewModel : ExplorePointViewModel
     {
-        private readonly PiHttpClient _client;
+        private readonly DataSourceServiceFactory _clientFactory;
+        private int _dataSourceId;
 
         public const string SHOW_DETAILS_AS_JSON = "SHOW_DETAILS_AS_JSON";
         public const string RENDER_INTERPOLATED_VALUES = "RENDER_INTERPOLATED_VALUES";
 
-        public PiAssetValuesViewModel(PiHttpClient client, IMessageHub messageHub) : base(messageHub)
+        public PiAssetValuesViewModel(DataSourceServiceFactory clientFactory, IMessageHub messageHub) : base(messageHub)
         {
-            _client = client;
+            _clientFactory = clientFactory;
             AssetValues = new ObservableCollection<PiAssetValueViewModel>();
             ViewDetailsAsJsonCommand = new DelegateCommand<PiAssetValueViewModel>(OnViewDetailsAsJson);
             RenderInterpolatedValuesCommand = new DelegateCommand<PiAssetValueViewModel>(OnRenderInterpolatedValues);
@@ -45,10 +47,12 @@ namespace UnifiedDataExplorer.ViewModel
 
         public async Task LoadAsync(IPiDetailLoadingInfo loadingInfo) //Assume Id is a link, assume tag is a "type"
         {
+            _dataSourceId = loadingInfo.DataSourceId;
             if (loadingInfo.TypeTag == ServerDatabaseAssetWrapper.ASSET_TYPE)
             {
-                Asset asset = await _client.GetByDirectLink<Asset>(loadingInfo.Id);
-                await _client.LoadAssetValueList(asset);
+                PiHttpClient client = _clientFactory.GetDataSourceServiceById<PiHttpClient>(loadingInfo.DataSourceId);
+                Asset asset = await client.GetByDirectLink<Asset>(loadingInfo.Id);
+                await client.LoadAssetValueList(asset);
 
                 Header = asset.Name.First(25) + " (Values)";
                 HeaderDetail = $"Value for asset {asset.Name}";
@@ -83,10 +87,11 @@ namespace UnifiedDataExplorer.ViewModel
         private void PublishEvent(PiAssetValueViewModel obj, string verb)
         {
             AssetValue model = obj.GetBackingModel();
-            this.MessageHub.Publish<OpenViewModelEvent>(new OpenViewModelEvent
+            this.MessageHub.Publish<OpenDataSourceViewModelEvent>(new OpenDataSourceViewModelEvent
             {
                 Sender = this,
                 SenderTypeName = nameof(PiAssetValuesViewModel),
+                DataSourceId = _dataSourceId,
                 Id = model.Links.Source,
                 Name = model.Name,
                 Verb = verb,

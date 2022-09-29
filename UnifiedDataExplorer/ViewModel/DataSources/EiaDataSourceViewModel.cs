@@ -5,6 +5,7 @@ using DotNetCommon.DelegateCommand;
 using EIA.Services.Clients;
 using EmissionsMonitorDataAccess.Abstractions;
 using EmissionsMonitorModel.DataSources;
+using EmissionsMonitorServices.DataSourceWrappers;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ViewModel.Base;
 
@@ -15,7 +16,7 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
         public const string OPEN_EIA_EXPLORER = "OPEN_EIA_EXPLORER";
         private EiaDataSource _model;
 
-        public EiaDataSourceViewModel(IDataSourceRepository repo, RobustViewModelDependencies facade) : base(repo, facade)
+        public EiaDataSourceViewModel(IDataSourceRepository repo, DataSourceServiceFactory clientFactory, RobustViewModelDependencies facade) : base(repo, clientFactory, facade)
         {
             OpenEiaExplorer = new DelegateCommand(OnOpenEiaExplorer);
         }
@@ -66,10 +67,11 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
 
         private void OnOpenEiaExplorer()
         {
-            this.MessageHub.Publish<OpenViewModelEvent>(new OpenViewModelEvent
+            this.MessageHub.Publish<OpenDataSourceViewModelEvent>(new OpenDataSourceViewModelEvent
             {
                 Sender = this,
                 SenderTypeName = nameof(EiaDataSourceViewModel),
+                DataSourceId = this.DataSourceId,
                 Verb = OPEN_EIA_EXPLORER
             });
         }

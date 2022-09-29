@@ -4,6 +4,7 @@ using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
 using EmissionsMonitorDataAccess.Abstractions;
 using EmissionsMonitorModel.DataSources;
+using EmissionsMonitorServices.DataSourceWrappers;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ViewModel.Base;
 using UnifiedDataExplorer.ViewModel.DataSources;
@@ -13,10 +14,12 @@ namespace UnifiedDataExplorer.ViewModel
     public class DataExplorerHomeViewModel : RobustViewModelBase
     {
         private readonly IDataSourceRepository _repo;
+        private readonly DataSourceServiceFactory _serviceFactory;
 
-        public DataExplorerHomeViewModel(IDataSourceRepository repo, RobustViewModelDependencies facade) : base(facade)
+        public DataExplorerHomeViewModel(IDataSourceRepository repo, DataSourceServiceFactory serviceFactory, RobustViewModelDependencies facade) : base(facade)
         {
             _repo = repo;
+            _serviceFactory = serviceFactory;
             DataSources = new ObservableCollection<DataSourceBaseViewModel>();
             AddDataSource = new DelegateCommand(OnAddDataSource);
             this.MessageHub.Subscribe<SaveViewModelEvent>(OnSaveViewModelEvent);
@@ -32,6 +35,7 @@ namespace UnifiedDataExplorer.ViewModel
 
         public async Task LoadAsync()
         {//TODO: This is smelly
+            await _serviceFactory.LoadAllDataSourceServices();
             DataSourceBaseViewModel untypedVm = this.Resolve<DataSourceBaseViewModel>();
             DataSources.Clear();
             foreach (DataSourceBase dataSource in (await _repo.GetAllDataSourcesAsync()))

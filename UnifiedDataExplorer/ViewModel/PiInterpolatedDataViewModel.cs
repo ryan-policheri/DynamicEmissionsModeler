@@ -2,6 +2,7 @@
 using System.Data;
 using System.Threading.Tasks;
 using DotNetCommon.EventAggregation;
+using EmissionsMonitorServices.DataSourceWrappers;
 using PiModel;
 using PiServices;
 using UnifiedDataExplorer.ModelWrappers;
@@ -10,11 +11,11 @@ namespace UnifiedDataExplorer.ViewModel
 {
     public class PiInterpolatedDataViewModel : ExplorePointViewModel
     {
-        private readonly PiHttpClient _client;
+        private readonly DataSourceServiceFactory _clientFactory;
 
-        public PiInterpolatedDataViewModel(PiHttpClient client, IMessageHub messageHub) : base(messageHub)
+        public PiInterpolatedDataViewModel(DataSourceServiceFactory clientFactory, IMessageHub messageHub) : base(messageHub)
         {
-            _client = client;
+            _clientFactory = clientFactory;
         }
 
         private string _messge;
@@ -49,28 +50,29 @@ namespace UnifiedDataExplorer.ViewModel
 
         public async Task LoadAsync(IPiDetailLoadingInfo loadingInfo)
         {
+            PiHttpClient client = _clientFactory.GetDataSourceServiceById<PiHttpClient>(loadingInfo.DataSourceId);
             if (loadingInfo.TypeTag == nameof(AssetValue))
             {
                 CurrentLoadingInfo = loadingInfo;
-                AssetValue value = await this._client.GetByDirectLink<AssetValue>(loadingInfo.Id);
-                Asset asset = await this._client.GetByDirectLink<Asset>(value.Links.Element);
+                AssetValue value = await client.GetByDirectLink<AssetValue>(loadingInfo.Id);
+                Asset asset = await client.GetByDirectLink<Asset>(value.Links.Element);
                 Header = asset.Name + " - " + value.Name;
                 HeaderDetail = $"Interpolated {value.Name} data for {asset.Name}";
                 AssetName = asset.Name;
                 ValueName = value.Name;
-                await this._client.LoadInterpolatedValues(value, 30);
+                await client.LoadInterpolatedValues(value, 30);
                 DataSet = value.RenderDataPointsAsTable();
             }
             else if(loadingInfo.TypeTag == PiPoint.PI_POINT_TYPE)
             {
                 CurrentLoadingInfo = loadingInfo;
-                PiPoint piPoint = await this._client.GetByDirectLink<PiPoint>(loadingInfo.Id);
-                await _client.LoadInterpolatedValues(piPoint, 30);
+                PiPoint piPoint = await client.GetByDirectLink<PiPoint>(loadingInfo.Id);
+                await client.LoadInterpolatedValues(piPoint, 30);
                 Header = piPoint.Name;
                 HeaderDetail = $"Interpolated {piPoint.Name} data for {piPoint.Name}";
                 AssetName = piPoint.Name;
                 ValueName = piPoint.Descriptor;
-                await this._client.LoadInterpolatedValues(piPoint, 30);
+                await client.LoadInterpolatedValues(piPoint, 30);
                 DataSet = piPoint.RenderDataPointsAsTable();
             }
             else

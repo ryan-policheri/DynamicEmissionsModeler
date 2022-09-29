@@ -5,6 +5,7 @@ using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
 using EmissionsMonitorDataAccess.Abstractions;
 using EmissionsMonitorModel.DataSources;
+using EmissionsMonitorServices.DataSourceWrappers;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ViewModel.Base;
 
@@ -12,15 +13,19 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
 {
     public class DataSourceBaseViewModel : RobustViewModelBase
     {
+        private readonly DataSourceServiceFactory _clientFactory;
         protected readonly IDataSourceRepository Repo;
 
-        public DataSourceBaseViewModel(IDataSourceRepository repo, RobustViewModelDependencies facade) : base(facade)
+        public DataSourceBaseViewModel(IDataSourceRepository repo, DataSourceServiceFactory clientFactory, RobustViewModelDependencies facade) : base(facade)
         {
+            _clientFactory = clientFactory;
             Repo = repo;
             Save = new DelegateCommand(OnSave);
             TestConnection = new DelegateCommand(OnTestConnection);
             Cancel = new DelegateCommand(OnCancel);
         }
+
+        public int DataSourceId => this.GetBackingModel().SourceId;
 
         [Required]
         public string SourceName
@@ -66,6 +71,7 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
             {
                 DataSourceBase model = GetBackingModel();
                 DataSourceBase dataSource = await Repo.SaveDataSource(model);
+                _clientFactory.UpdateDataSourceService(model);
                 this.MessageHub.Publish(new SaveViewModelEvent
                 {
                     Sender = this,
