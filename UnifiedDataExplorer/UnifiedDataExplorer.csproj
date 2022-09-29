@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Remove="Resources\Images\EIA_Logo.png" />
+    <None Remove="Resources\Images\Eia_Search_Logo.png" />
     <None Remove="Resources\Images\Flame.png" />
     <None Remove="Resources\Images\Gascan.png" />
     <None Remove="Resources\Images\Leaf.png" />
@@ -15,12 +16,15 @@
     <None Remove="Resources\Images\Loading.gif" />
     <None Remove="Resources\Images\MEC_Logo.png" />
     <None Remove="Resources\Images\MISO_Logo.png" />
+    <None Remove="Resources\Images\PI_AF_LOGO.jpg" />
     <None Remove="Resources\Images\Pi_Logo.png" />
+    <None Remove="Resources\Images\Pi_Search_Logo.png" />
     <None Remove="Resources\Images\Water.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Resources\Images\EIA_Logo.png" />
+    <Resource Include="Resources\Images\Eia_Search_Logo.png" />
     <Resource Include="Resources\Images\Flame.png" />
     <Resource Include="Resources\Images\Gascan.png" />
   </ItemGroup>
@@ -33,7 +37,9 @@
     <Resource Include="Resources\Images\Loading.gif" />
     <Resource Include="Resources\Images\MEC_Logo.png" />
     <Resource Include="Resources\Images\MISO_Logo.png" />
+    <Resource Include="Resources\Images\PI_AF_LOGO.jpg" />
     <Resource Include="Resources\Images\Pi_Logo.png" />
+    <Resource Include="Resources\Images\Pi_Search_Logo.png" />
     <Resource Include="Resources\Images\Water.png" />
   </ItemGroup>
 

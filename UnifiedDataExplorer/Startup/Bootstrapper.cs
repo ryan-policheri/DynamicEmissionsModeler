@@ -21,6 +21,9 @@ using UnifiedDataExplorer.ViewModel.DataSources;
 using EmissionsMonitorDataAccess.Abstractions;
 using EmissiosMonitorDataAccess.Http;
 using EmissionsMonitorServices.DataSourceWrappers;
+using UnifiedDataExplorer.ViewModel.DataExploring;
+using UnifiedDataExplorer.ViewModel.DataExploring.Explorers;
+using UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints;
 
 namespace UnifiedDataExplorer.Startup
 {
@@ -101,18 +104,18 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<PiDataSourceViewModel>();
 
             //DATA EXPLORATION
-            services.AddTransient<DataExplorerViewModel>();
-            services.AddTransient<DataExplorerHomeViewModel>();
+            services.AddTransient<DataExplorationManagerViewModel>();
+            services.AddTransient<DataExploringHomeViewModel>();
             services.AddTransient<DataSourceManagerViewModel>();
-            services.AddTransient<EiaDatasetFinderViewModel>();
-            services.AddTransient<PiDatasetFinderViewModel>();
-            services.AddTransient<PiSearchViewModel>();
+            services.AddTransient<EiaApiExplorerViewModel>();
+            services.AddTransient<PiAssetFrameworkExplorerViewModel>();
+            services.AddTransient<PiTagExplorerViewModel>();
 
             //DATASET RENDERING
-            services.AddTransient<EiaSeriesViewModel>();
-            services.AddTransient<PiJsonDisplayViewModel>();
-            services.AddTransient<PiAssetValuesViewModel>();
-            services.AddTransient<PiInterpolatedDataViewModel>();
+            services.AddTransient<EiaSeriesExplorePointViewModel>();
+            services.AddTransient<PiJsonDisplayExplorePointViewModel>();
+            services.AddTransient<PiAssetValuesExplorePointViewModel>();
+            services.AddTransient<PiInterpolatedDataExplorePointViewModel>();
 
             //EMISSIONS MONITOR SERVICES
             services.AddTransient<IDataSourceRepository, EmissionsMonitorClient>((provider =>

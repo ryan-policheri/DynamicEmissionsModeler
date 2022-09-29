@@ -27,6 +27,8 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
 
         public int DataSourceId => this.GetBackingModel().SourceId;
 
+        public DataSourceType DataSourceType => this.GetBackingModel().SourceType;
+
         [Required]
         public string SourceName
         {

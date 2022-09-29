@@ -2,18 +2,19 @@
 using DotNetCommon.MVVM;
 using UnifiedDataExplorer.Services.Reporting;
 using UnifiedDataExplorer.ViewModel.Base;
+using UnifiedDataExplorer.ViewModel.DataExploring;
 using UnifiedDataExplorer.ViewModel.MainMenu;
 
 namespace UnifiedDataExplorer.ViewModel
 {
     public class MainViewModel : RobustViewModelBase
     {
-        private readonly DataExplorerViewModel _dataExplorer;
+        private readonly DataExplorationManagerViewModel _dataExplorationManager;
         private readonly ReportProcessor _reportProcessor;
 
-        public MainViewModel(DataExplorerViewModel dataExplorer, MainMenuViewModel toolBar, ReportProcessor reportProcessor, RobustViewModelDependencies facade) : base(facade)
+        public MainViewModel(DataExplorationManagerViewModel dataExplorationManager, MainMenuViewModel toolBar, ReportProcessor reportProcessor, RobustViewModelDependencies facade) : base(facade)
         {
-            _dataExplorer = dataExplorer;
+            _dataExplorationManager = dataExplorationManager;
             _reportProcessor = reportProcessor;
 
             MainToolBar = toolBar;
@@ -34,8 +35,8 @@ namespace UnifiedDataExplorer.ViewModel
 
         public async Task LoadAsync()
         {
-            CurrentChild = _dataExplorer;
-            await _dataExplorer.LoadAsync();
+            CurrentChild = _dataExplorationManager;
+            await _dataExplorationManager.LoadAsync();
         }
     }
 }
