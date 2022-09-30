@@ -21,6 +21,7 @@ namespace EmissionsMonitorWebApi
             string connString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<EmissionsMonitorContext>(options => options.UseSqlServer(connString));
             builder.Services.AddTransient<IDataSourceRepository, DataSourceRepository>();
+            builder.Services.AddTransient<IVirtualFileSystemRepository, VirtualFileSystemRepository>();
 
             var app = builder.Build();
 
