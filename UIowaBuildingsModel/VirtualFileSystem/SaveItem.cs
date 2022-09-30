@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace EmissionsMonitorModel.VirtualFileSystem
 {
     public class SaveItem
     {
-        public int FileSystemId { get; set; }
-
         public int FolderId { get; set; }
+
+        [JsonIgnore]
+        public Folder? Folder { get; set; }
+
+        public string SaveItemName { get; set; }
 
         public int SaveItemId { get; set; }
     }

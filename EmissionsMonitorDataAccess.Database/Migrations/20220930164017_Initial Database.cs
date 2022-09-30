@@ -4,7 +4,7 @@
 
 namespace EmissionsMonitorDataAccess.Database.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class InitialDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -24,37 +24,17 @@ namespace EmissionsMonitorDataAccess.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FILE_SYSTEM",
-                columns: table => new
-                {
-                    FileSystemId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FileSystemName = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FILE_SYSTEM", x => x.FileSystemId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "FOLDER",
                 columns: table => new
                 {
                     FolderId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OwningFileSystemId = table.Column<int>(type: "int", nullable: false),
-                    ParentFolderId = table.Column<int>(type: "int", nullable: false),
+                    ParentFolderId = table.Column<int>(type: "int", nullable: true),
                     FolderName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FOLDER", x => x.FolderId);
-                    table.ForeignKey(
-                        name: "FK_FOLDER_FILE_SYSTEM_OwningFileSystemId",
-                        column: x => x.OwningFileSystemId,
-                        principalTable: "FILE_SYSTEM",
-                        principalColumn: "FileSystemId",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_FOLDER_FOLDER_ParentFolderId",
                         column: x => x.ParentFolderId,
@@ -64,35 +44,23 @@ namespace EmissionsMonitorDataAccess.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SaveItems",
+                name: "SAVE_ITEM",
                 columns: table => new
                 {
                     SaveItemId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FileSystemId = table.Column<int>(type: "int", nullable: false),
                     FolderId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SaveItems", x => x.SaveItemId);
+                    table.PrimaryKey("PK_SAVE_ITEM", x => x.SaveItemId);
                     table.ForeignKey(
-                        name: "FK_SaveItems_FILE_SYSTEM_FileSystemId",
-                        column: x => x.FileSystemId,
-                        principalTable: "FILE_SYSTEM",
-                        principalColumn: "FileSystemId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SaveItems_FOLDER_FolderId",
+                        name: "FK_SAVE_ITEM_FOLDER_FolderId",
                         column: x => x.FolderId,
                         principalTable: "FOLDER",
                         principalColumn: "FolderId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FOLDER_OwningFileSystemId",
-                table: "FOLDER",
-                column: "OwningFileSystemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FOLDER_ParentFolderId",
@@ -100,13 +68,8 @@ namespace EmissionsMonitorDataAccess.Database.Migrations
                 column: "ParentFolderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SaveItems_FileSystemId",
-                table: "SaveItems",
-                column: "FileSystemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SaveItems_FolderId",
-                table: "SaveItems",
+                name: "IX_SAVE_ITEM_FolderId",
+                table: "SAVE_ITEM",
                 column: "FolderId");
         }
 
@@ -116,13 +79,10 @@ namespace EmissionsMonitorDataAccess.Database.Migrations
                 name: "DATA_SOURCE");
 
             migrationBuilder.DropTable(
-                name: "SaveItems");
+                name: "SAVE_ITEM");
 
             migrationBuilder.DropTable(
                 name: "FOLDER");
-
-            migrationBuilder.DropTable(
-                name: "FILE_SYSTEM");
         }
     }
 }

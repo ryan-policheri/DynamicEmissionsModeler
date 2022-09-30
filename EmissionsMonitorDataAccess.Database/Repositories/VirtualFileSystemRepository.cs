@@ -13,38 +13,50 @@ namespace EmissionsMonitorDataAccess.Database.Repositories
             _context = context;
         }
 
-        public async Task<ICollection<FileSystem>> GetAllFileSystems()
+        public async Task<List<Folder>> GetAllRootFoldersAsync()
         {
-            return await _context.Set<FileSystem>().ToListAsync();
+            return await _context.Set<Folder>()
+                .AsNoTracking()
+                .Where(x => x.ParentFolderId == null)
+                .ToListAsync();
         }
 
-        public async Task<FileSystem> GetFileSystemByIdAsync(int fileSystemId)
+        public async Task<Folder> CreateRootFolderAsync(Folder folder)
         {
-            return await _context.Set<FileSystem>()
-                .Include(x => x.Folders)
-                .FirstAsync();
-        }
-        public async Task<FileSystem> AddFileSystemAsync(FileSystem fileSystem)
-        {
-            _context.Set<FileSystem>().Add(fileSystem);
-            await _context.SaveChangesAsync();
-            return fileSystem;
-        }
-
-        public async Task<Folder> AddFolderAsync(Folder folder)
-        {
-            FileSystem owningFileSystem = await GetFileSystemByIdAsync(folder.FileSystem.FileSystemId);
-            folder.FileSystem = owningFileSystem;
-            if (folder.ParentFolder != null && folder.ParentFolder.FolderId > 0)
-            {
-                var parent = await _context.Set<Folder>().FirstAsync(x => x.FolderId == folder.ParentFolder.FolderId);
-                folder.ParentFolder = parent;
-            }
+            folder.ParentFolderId = null;
             _context.Set<Folder>().Add(folder);
             await _context.SaveChangesAsync();
-            folder.FileSystem = null;
-            folder.ParentFolder = null;
             return folder;
+        }
+
+        public async Task<Folder> GetFolderAsync(int folderId)
+        {
+            return await _context.Set<Folder>().AsNoTracking()
+                .Where(x => x.FolderId == folderId).FirstAsync();
+        }
+
+        public async Task<Folder> GetFolderWithContents(int folderId)
+        {
+            return _context.Set<Folder>()
+                .Include(x => x.SaveItems)
+                .AsEnumerable()
+                .Where(x => x.FolderId == folderId)
+                .ToList()
+                .First();
+        }
+
+        public async Task<Folder> CreateFolderAsync(Folder folder)
+        {
+            _context.Set<Folder>().Add(folder);
+            await _context.SaveChangesAsync();
+            return folder;
+        }
+
+        public async Task<SaveItem> CreateSaveItemAsync(SaveItem saveItem)
+        {
+            _context.Set<SaveItem>().Add(saveItem);
+            await _context.SaveChangesAsync();
+            return saveItem;
         }
     }
 }

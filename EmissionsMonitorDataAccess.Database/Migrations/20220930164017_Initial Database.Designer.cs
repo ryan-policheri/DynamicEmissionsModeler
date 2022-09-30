@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmissionsMonitorDataAccess.Database.Migrations
 {
     [DbContext(typeof(EmissionsMonitorContext))]
-    [Migration("20220930051529_parent folder nullable")]
-    partial class parentfoldernullable
+    [Migration("20220930164017_Initial Database")]
+    partial class InitialDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -48,23 +48,6 @@ namespace EmissionsMonitorDataAccess.Database.Migrations
                     b.ToTable("DATA_SOURCE", (string)null);
                 });
 
-            modelBuilder.Entity("EmissionsMonitorModel.VirtualFileSystem.FileSystem", b =>
-                {
-                    b.Property<int>("FileSystemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FileSystemId"), 1L, 1);
-
-                    b.Property<string>("FileSystemName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("FileSystemId");
-
-                    b.ToTable("FILE_SYSTEM", (string)null);
-                });
-
             modelBuilder.Entity("EmissionsMonitorModel.VirtualFileSystem.Folder", b =>
                 {
                     b.Property<int>("FolderId")
@@ -77,15 +60,10 @@ namespace EmissionsMonitorDataAccess.Database.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OwningFileSystemId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("ParentFolderId")
                         .HasColumnType("int");
 
                     b.HasKey("FolderId");
-
-                    b.HasIndex("OwningFileSystemId");
 
                     b.HasIndex("ParentFolderId");
 
@@ -100,64 +78,38 @@ namespace EmissionsMonitorDataAccess.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SaveItemId"), 1L, 1);
 
-                    b.Property<int>("FileSystemId")
-                        .HasColumnType("int");
-
                     b.Property<int>("FolderId")
                         .HasColumnType("int");
 
                     b.HasKey("SaveItemId");
 
-                    b.HasIndex("FileSystemId");
-
                     b.HasIndex("FolderId");
 
-                    b.ToTable("SaveItems");
+                    b.ToTable("SAVE_ITEM", (string)null);
                 });
 
             modelBuilder.Entity("EmissionsMonitorModel.VirtualFileSystem.Folder", b =>
                 {
-                    b.HasOne("EmissionsMonitorModel.VirtualFileSystem.FileSystem", "FileSystem")
-                        .WithMany("Folders")
-                        .HasForeignKey("OwningFileSystemId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("EmissionsMonitorModel.VirtualFileSystem.Folder", "ParentFolder")
-                        .WithMany("Folders")
+                    b.HasOne("EmissionsMonitorModel.VirtualFileSystem.Folder", null)
+                        .WithMany("ChildFolders")
                         .HasForeignKey("ParentFolderId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("FileSystem");
-
-                    b.Navigation("ParentFolder");
                 });
 
             modelBuilder.Entity("EmissionsMonitorModel.VirtualFileSystem.SaveItem", b =>
                 {
-                    b.HasOne("EmissionsMonitorModel.VirtualFileSystem.FileSystem", null)
-                        .WithMany("SaveItems")
-                        .HasForeignKey("FileSystemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EmissionsMonitorModel.VirtualFileSystem.Folder", null)
+                    b.HasOne("EmissionsMonitorModel.VirtualFileSystem.Folder", "Folder")
                         .WithMany("SaveItems")
                         .HasForeignKey("FolderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("EmissionsMonitorModel.VirtualFileSystem.FileSystem", b =>
-                {
-                    b.Navigation("Folders");
-
-                    b.Navigation("SaveItems");
+                    b.Navigation("Folder");
                 });
 
             modelBuilder.Entity("EmissionsMonitorModel.VirtualFileSystem.Folder", b =>
                 {
-                    b.Navigation("Folders");
+                    b.Navigation("ChildFolders");
 
                     b.Navigation("SaveItems");
                 });

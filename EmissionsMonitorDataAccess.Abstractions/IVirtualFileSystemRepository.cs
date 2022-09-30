@@ -2,14 +2,18 @@
 
 namespace EmissionsMonitorDataAccess.Abstractions
 {
-    public interface IVirtualFileSystemRepository 
+    public interface IVirtualFileSystemRepository
     {
-        public Task<ICollection<FileSystem>> GetAllFileSystems();
+        public Task<List<Folder>> GetAllRootFoldersAsync();
 
-        public Task<FileSystem> GetFileSystemByIdAsync(int fileSystemId);
+        public Task<Folder> CreateRootFolderAsync(Folder folder);
 
-        public Task<FileSystem> AddFileSystemAsync(FileSystem fileSystem);
+        public Task<Folder> GetFolderAsync(int folderId);
 
-        public Task<Folder> AddFolderAsync(Folder folder);
+        public Task<Folder> GetFolderWithContents(int folderId);
+
+        public Task<Folder> CreateFolderAsync(Folder folder);
+
+        public Task<SaveItem> CreateSaveItemAsync(SaveItem item);
     }
 }

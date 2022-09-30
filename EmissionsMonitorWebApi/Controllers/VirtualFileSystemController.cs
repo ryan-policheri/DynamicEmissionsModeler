@@ -18,28 +18,34 @@ namespace EmissionsMonitorWebApi.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        public async Task<ICollection<FileSystem>> GetFileSystems()
+        [HttpGet("roots")]
+        public async Task<ICollection<Folder>> GetAllRootFolders()
         {
-            return await _repo.GetAllFileSystems();
+            return await _repo.GetAllRootFoldersAsync();
         }
 
-        [HttpGet("{fileSystemId}")]
-        public async Task<FileSystem> GetFileSystem(int fileSystemId)
+        [HttpPost("roots")] //TODO: Require authorization
+        public async Task<Folder> CreateRootFolder(Folder folder)
         {
-            return await _repo.GetFileSystemByIdAsync(fileSystemId);
+            return await _repo.CreateRootFolderAsync(folder);
         }
 
-        [HttpPost]
-        public async Task<FileSystem> AddFileSystem(FileSystem fileSystem)
+        [HttpGet("folders/{folderId}")]
+        public async Task<Folder> GetFolder(int folderId)
         {
-            return await _repo.AddFileSystemAsync(fileSystem);
+            return await _repo.GetFolderWithContents(folderId);
         }
 
-        [HttpPost("folder")]
-        public async Task<Folder> AddFolder([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] Folder folder)
+        [HttpPost("folders")]
+        public async Task<Folder> CreateFolderAsync(Folder folder)
         {
-            return await _repo.AddFolderAsync(folder);
+            return await _repo.CreateFolderAsync(folder);
+        }
+
+        [HttpPost("saveitems")]
+        public async Task<SaveItem> CreateSaveItem(SaveItem saveItem)
+        {
+            return await _repo.CreateSaveItemAsync(saveItem);
         }
     }
 }
