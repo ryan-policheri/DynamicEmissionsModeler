@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using DotNetCommon.Extensions;
 using DotNetCommon.MVVM;
 using EmissionsMonitorModel.VirtualFileSystem;
@@ -21,19 +22,19 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
             DisplayText = folder.FolderName;
             Children = new List<FolderSaveItemViewModel>();
 
-            if (folder.SaveItems != null)
+            if (folder.ChildFolders != null)
             {
-                foreach (SaveItem saveItem in folder.SaveItems)
+                foreach (Folder childFolder in folder.ChildFolders.OrderBy(x => x.FolderName))
                 {
-                    Children.Add(new FolderSaveItemViewModel(saveItem));
+                    Children.Add(new FolderSaveItemViewModel(childFolder));
                 }
             }
 
-            if (folder.ChildFolders != null)
+            if (folder.SaveItems != null)
             {
-                foreach (Folder childFolder in folder.ChildFolders)
+                foreach (SaveItem saveItem in folder.SaveItems.OrderBy(x => x.SaveItemName))
                 {
-                    Children.Add(new FolderSaveItemViewModel(childFolder));
+                    Children.Add(new FolderSaveItemViewModel(saveItem));
                 }
             }
         }
@@ -48,7 +49,12 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
 
         public bool CanExpand => this.Children.Count > 0;
 
-        public bool IsExpanded { get; set; }
+        private bool _isExpanded;
+        public bool IsExpanded
+        {
+            get { return _isExpanded;}
+            set { SetField(ref _isExpanded, value); }
+        }
 
         public string DisplayText { get; set; }
 

@@ -16,6 +16,7 @@
 
             <!--CONVERTERS-->
             <converters:DataSourceTypeToResourceIcon x:Key="DataSourceTypeToIconPath"/>
+            <converters:BoolToFolderIcon x:Key="BoolToFolderIconString"/>
             <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
             <!--END CONVERTERS-->
 

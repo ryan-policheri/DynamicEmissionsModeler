@@ -9,19 +9,42 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <HierarchicalDataTemplate x:Key="FolderTemplate" DataType="{x:Type vm:FolderSaveItemViewModel}">
-            <TextBlock Text="{Binding DisplayText}"/>
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon ToolTip="Folder" Kind="{Binding IsExpanded, Converter={StaticResource BoolToFolderIconString}}" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding DisplayText}"/>
+            </StackPanel>
         </HierarchicalDataTemplate>
         <HierarchicalDataTemplate x:Key="SaveItemTemplate" DataType="{x:Type vm:FolderSaveItemViewModel}">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Margin="10 0 0 0">
+                <Label ToolTip="Save Item" Content="SI" Padding="0 -2 0 -2" Background="DimGray" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 5 0"/>
                 <TextBlock Text="{Binding DisplayText}"/>
-                <Button Content="TEST"></Button>
+                <Button Margin="5 0 0 0" ToolTip="Open Save Item" Padding="5 0 5 0" Height="Auto" Background="Transparent"
+                        Command="{Binding Path=DataContext.ViewJsonCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                        CommandParameter="{Binding}">
+                    <materialDesign:PackIcon Kind="OpenInApp" Width="10" Height="10" Padding="0" Margin="0"/>
+                </Button>
             </StackPanel>
         </HierarchicalDataTemplate>
         <HierarchicalDataTemplate x:Key="ExploreSetTemplate" DataType="{x:Type vm:FolderSaveItemViewModel}">
-            <StackPanel Orientation="Horizontal">
-                <Label Content="ES"/>
+            <StackPanel Orientation="Horizontal" Margin="10 0 0 0">
+                <Label ToolTip="Explore Set" Content="ES" Padding="0 -2 0 -2" Background="DimGray" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 5 0"/>
                 <TextBlock Text="{Binding DisplayText}"/>
-                <Button Content="TEST"></Button>
+                <Button Margin="5 0 0 0" ToolTip="Open Explore Set" Padding="5 0 5 0" Height="Auto" Background="Transparent"
+                        Command="{Binding Path=DataContext.ViewJsonCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                        CommandParameter="{Binding}">
+                    <materialDesign:PackIcon Kind="OpenInApp" Width="10" Height="10" Padding="0" Margin="0"/>
+                </Button>
+            </StackPanel>
+        </HierarchicalDataTemplate>
+        <HierarchicalDataTemplate x:Key="ModelTemplate" DataType="{x:Type vm:FolderSaveItemViewModel}">
+            <StackPanel Orientation="Horizontal" Margin="10 0 0 0">
+                <Label ToolTip="Energy Model" Content="M" Padding="0 -2 0 -2" Background="DimGray" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 5 0"/>
+                <TextBlock Text="{Binding DisplayText}"/>
+                <Button Margin="5 0 0 0" ToolTip="Open Explore Set" Padding="5 0 5 0" Height="Auto" Background="Transparent"
+                        Command="{Binding Path=DataContext.ViewJsonCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                        CommandParameter="{Binding}">
+                    <materialDesign:PackIcon Kind="OpenInApp" Width="10" Height="10" Padding="0" Margin="0"/>
+                </Button>
             </StackPanel>
         </HierarchicalDataTemplate>
     </UserControl.Resources>
@@ -36,7 +59,7 @@
         <TreeView Name="FolderView" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Folders}">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource TreeViewItem}">
-                    <Setter Property="IsExpanded" Value="{Binding IsExpanded}"/>
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
                 </Style>
             </TreeView.ItemContainerStyle>
             <TreeView.Resources>
@@ -51,6 +74,9 @@
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding ElementType}" Value="1">
                                         <Setter Property="ContentTemplate" Value="{StaticResource ExploreSetTemplate}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementType}" Value="2">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource ModelTemplate}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
