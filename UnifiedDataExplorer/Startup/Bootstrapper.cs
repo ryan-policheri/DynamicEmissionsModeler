@@ -19,6 +19,7 @@ using UnifiedDataExplorer.Services.DataPersistence;
 using UnifiedDataExplorer.Services.Reporting;
 using UnifiedDataExplorer.ViewModel.DataSources;
 using EmissionsMonitorDataAccess.Abstractions;
+using EmissionsMonitorDataAccess.Http;
 using EmissiosMonitorDataAccess.Http;
 using EmissionsMonitorServices.DataSourceWrappers;
 using UnifiedDataExplorer.ViewModel.DataExploring;
@@ -110,6 +111,7 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<EiaApiExplorerViewModel>();
             services.AddTransient<PiAssetFrameworkExplorerViewModel>();
             services.AddTransient<PiTagExplorerViewModel>();
+            services.AddTransient<ExploreSetsNavigationViewModel>();
 
             //DATASET RENDERING
             services.AddTransient<EiaSeriesExplorePointViewModel>();
@@ -118,9 +120,16 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<PiInterpolatedDataExplorePointViewModel>();
 
             //EMISSIONS MONITOR SERVICES
-            services.AddTransient<IDataSourceRepository, EmissionsMonitorClient>((provider =>
+            services.AddTransient<IDataSourceRepository, DataSourceClient>((provider =>
             {
-                var client = new EmissionsMonitorClient();
+                var client = new DataSourceClient();
+                client.Initialize(config);
+                return client;
+            }));
+
+            services.AddTransient<IVirtualFileSystemRepository, VirtualFileSystemClient>((provider =>
+            {
+                var client = new VirtualFileSystemClient();
                 client.Initialize(config);
                 return client;
             }));

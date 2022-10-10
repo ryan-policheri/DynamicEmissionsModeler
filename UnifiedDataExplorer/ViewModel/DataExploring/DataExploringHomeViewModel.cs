@@ -16,12 +16,19 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
         private readonly IDataSourceRepository _repo;
         private readonly DataSourceServiceFactory _serviceFactory;
 
-        public DataExploringHomeViewModel(IDataSourceRepository repo, DataSourceServiceFactory serviceFactory, RobustViewModelDependencies facade) : base(facade)
+        public DataExploringHomeViewModel(IDataSourceRepository repo,
+            DataSourceServiceFactory serviceFactory,
+            ExploreSetsNavigationViewModel exploreSetsNavigationViewModel,
+            RobustViewModelDependencies facade) : base(facade)
         {
             _repo = repo;
             _serviceFactory = serviceFactory;
+
             DataSources = new ObservableCollection<DataSourceBaseViewModel>();
             AddDataSource = new DelegateCommand(OnAddDataSource);
+
+            ExploreSetsNavigationViewModel = exploreSetsNavigationViewModel;
+
             this.MessageHub.Subscribe<SaveViewModelEvent>(OnSaveViewModelEvent);
             CloseExplorationItemCommand = new DelegateCommand(OnCloseExplorationItem);
         }
@@ -34,6 +41,8 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
 
         public ICommand AddDataSource { get; }
 
+        public ExploreSetsNavigationViewModel ExploreSetsNavigationViewModel { get; }
+
         public async Task LoadAsync()
         {//TODO: This is smelly
             await _serviceFactory.LoadAllDataSourceServices();
@@ -44,6 +53,8 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
                 var typedVm = untypedVm.InitializeSubclassViewModel(dataSource.SourceType, dataSource);
                 DataSources.Add(typedVm);
             }
+
+            await ExploreSetsNavigationViewModel.LoadAsync();
         }
 
         private async void OnAddDataSource()

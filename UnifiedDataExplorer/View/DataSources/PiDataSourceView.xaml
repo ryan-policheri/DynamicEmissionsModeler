@@ -28,7 +28,7 @@
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Source Name"/>
         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SourceName, UpdateSourceTrigger=PropertyChanged}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
 
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Source Name"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Default Asset Server"/>
         <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding PiDefaultAssetServer, UpdateSourceTrigger=PropertyChanged}" FontSize="12" Margin="10 0 0 0" FontWeight="Bold"/>
 
         <TextBlock Grid.Row="3" Grid.Column="0" Text="PI Api Url"/>

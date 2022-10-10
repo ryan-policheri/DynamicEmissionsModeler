@@ -14,11 +14,12 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="1" Text="Exploration Home" FontWeight="Bold" FontSize="24"/>
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Text="Exploration Home" FontWeight="Bold" FontSize="24" HorizontalAlignment="Center"/>
 
         <Grid Grid.Row="1" Grid.Column="0" Margin="0 20 0 0 ">
             <Grid.RowDefinitions>
@@ -64,6 +65,19 @@
                     <TextBlock Text="Modify Data Sources" FontSize="16" Foreground="Blue" TextDecorations="Underline" />
                 </Button.Content>
             </Button>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="1" Margin="0 20 0 0 ">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="Open an Explore Set" FontWeight="Bold" FontSize="20" />
+
+            <ContentControl Grid.Row="1" Content="{Binding ExploreSetsNavigationViewModel}" Margin="0 20 0 0"/>
         </Grid>
     </Grid>
 </UserControl>
