@@ -29,6 +29,7 @@ namespace EmissionsMonitorWebApi.Controllers
             return await _repo.CreateRootFolderAsync(folder);
         }
 
+
         [HttpGet("folders/{folderId}")]
         public async Task<Folder> GetFolder(int folderId)
         {
@@ -53,6 +54,13 @@ namespace EmissionsMonitorWebApi.Controllers
             return await _repo.DeleteFolderAsync(folderId);
         }
 
+
+        [HttpGet("saveitems/{itemId}")]
+        public async Task<SaveItem> GetSaveItemAsync(int itemId)
+        {
+            return await _repo.GetSaveItemAsync(itemId);
+        }
+
         [HttpPost("saveitems")]
         public async Task<SaveItem> CreateSaveItemAsync(SaveItem saveItem)
         {
@@ -63,6 +71,19 @@ namespace EmissionsMonitorWebApi.Controllers
         public async Task<SaveItem> DeleteSaveItemAsync(int saveItemId)
         {
             return await _repo.DeleteSaveItemAsync(saveItemId);
+        }
+
+
+        [HttpGet("exploresets/{itemId}")]
+        public async Task<ExploreSetSaveItem> CreateExploreSetItemAsync(int itemId)
+        {
+            return await _repo.GetExploreSetItemAsync(itemId);
+        }
+
+        [HttpPost("exploresets")]
+        public async Task<ExploreSetSaveItem> CreateExploreSetItemAsync(ExploreSetSaveItem exploreSetItem)
+        {
+            return await _repo.CreateExploreSetItemAsync(exploreSetItem);
         }
     }
 }

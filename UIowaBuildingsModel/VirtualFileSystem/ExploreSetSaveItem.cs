@@ -2,10 +2,11 @@
 {
     public class ExploreSetSaveItem : SaveItem
     {
-        public int ExploreSetId { get; set; }
+        public ExploreSetSaveItem()
+        {
+            SaveItemType = SaveItemTypes.ExploreSetSaveItem;
+        }
 
-        public string ExploreSetName { get; set; }
-
-        public string ExploreSetDetails { get; set; }
+        public string ExploreSetJsonDetails { get; set; }
     }
 }

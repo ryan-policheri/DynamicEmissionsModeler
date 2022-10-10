@@ -2,6 +2,9 @@
 {
     public class ModelSaveItem : SaveItem
     {
-        public int ModelId { get; set; }
+        public ModelSaveItem()
+        {
+            SaveItemType = SaveItemTypes.ModelSaveItem;
+        }
     }
 }

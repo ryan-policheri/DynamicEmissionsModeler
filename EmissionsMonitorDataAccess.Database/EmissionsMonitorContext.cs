@@ -41,17 +41,11 @@ namespace EmissionsMonitorDataAccess.Database
                 .HasForeignKey(x => x.FolderId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
+            saveItemSpec.HasDiscriminator(x => x.SaveItemType)
+                .HasValue<SaveItem>(SaveItemTypes.SaveItem)
+                .HasValue<ExploreSetSaveItem>(SaveItemTypes.ExploreSetSaveItem)
+                .HasValue<ModelSaveItem>(SaveItemTypes.ModelSaveItem);
             saveItemSpec.ToTable("SAVE_ITEM");
-            //var ryanFolder = new Folder { FileSystem = exploreSetFileSystem, FolderId = 1, FolderName = "Ryan's Folder" };
-            //var folders = new List<Folder>()
-            //{
-            //    ryanFolder,
-            //    new Folder { FileSystem = exploreSetFileSystem, FolderId = 2, FolderName = "Another Folder" },
-            //    new Folder { FileSystem = exploreSetFileSystem, FolderId = 3, FolderName = "A sub folder", ParentFolder = ryanFolder }
-            //};
-            //modelBuilder.Entity<Folder>().HasData(folders);
-
-
         }
     }
 }

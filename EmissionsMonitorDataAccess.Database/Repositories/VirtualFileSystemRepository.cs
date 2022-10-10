@@ -13,6 +13,7 @@ namespace EmissionsMonitorDataAccess.Database.Repositories
             _context = context;
         }
 
+        //ROOT FOLDERS
         public async Task<List<Folder>> GetAllRootFoldersAsync()
         {
             return await _context.Set<Folder>()
@@ -29,6 +30,7 @@ namespace EmissionsMonitorDataAccess.Database.Repositories
             return folder;
         }
 
+        //FOLDERS
         public async Task<Folder> GetFolderAsync(int folderId)
         {
             return await _context.Set<Folder>().AsNoTracking()
@@ -64,9 +66,13 @@ namespace EmissionsMonitorDataAccess.Database.Repositories
             return folder;
         }
 
-        public Task<SaveItem> GetSaveItemDetailsAsync(SaveItem item)
+        //GENERIC SAVE ITEMS
+        public async Task<SaveItem> GetSaveItemAsync(int itemId)
         {
-            throw new NotImplementedException();
+            var item = await _context.Set<SaveItem>().AsNoTracking()
+                .Where(x => x.SaveItemId == itemId)
+                .FirstAsync();
+            return item;
         }
 
         public async Task<SaveItem> CreateSaveItemAsync(SaveItem saveItem)
@@ -81,6 +87,22 @@ namespace EmissionsMonitorDataAccess.Database.Repositories
             var saveItem = await _context.Set<SaveItem>()
                 .Where(x => x.SaveItemId == itemId).FirstAsync();
             _context.Remove(saveItem);
+            await _context.SaveChangesAsync();
+            return saveItem;
+        }
+
+        //IMPLEMENTED SAVE ITEMS
+        public async Task<ExploreSetSaveItem> GetExploreSetItemAsync(int itemId)
+        {
+            var item = await _context.Set<ExploreSetSaveItem>().AsNoTracking()
+                .Where(x => x.SaveItemId == itemId)
+                .FirstAsync();
+            return item;
+        }
+
+        public async Task<ExploreSetSaveItem> CreateExploreSetItemAsync(ExploreSetSaveItem saveItem)
+        {
+            _context.Set<ExploreSetSaveItem>().Add(saveItem);
             await _context.SaveChangesAsync();
             return saveItem;
         }
