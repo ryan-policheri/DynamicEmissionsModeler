@@ -1,4 +1,7 @@
-﻿namespace EmissionsMonitorModel.VirtualFileSystem
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+
+namespace EmissionsMonitorModel.VirtualFileSystem
 {
     public class Folder
     {

@@ -8,6 +8,7 @@ using EmissionsMonitorServices.DataSourceWrappers;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ViewModel.Base;
 using UnifiedDataExplorer.ViewModel.DataSources;
+using UnifiedDataExplorer.ViewModel.VirtualFileSystem;
 
 namespace UnifiedDataExplorer.ViewModel.DataExploring
 {
@@ -18,7 +19,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
 
         public DataExploringHomeViewModel(IDataSourceRepository repo,
             DataSourceServiceFactory serviceFactory,
-            ExploreSetsNavigationViewModel exploreSetsNavigationViewModel,
+            ExploreSetFileSystemViewModel exploreSetFileSysVm,
             RobustViewModelDependencies facade) : base(facade)
         {
             _repo = repo;
@@ -27,7 +28,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
             DataSources = new ObservableCollection<DataSourceBaseViewModel>();
             AddDataSource = new DelegateCommand(OnAddDataSource);
 
-            ExploreSetsNavigationViewModel = exploreSetsNavigationViewModel;
+            ExploreSetFileSysVm = exploreSetFileSysVm;
 
             this.MessageHub.Subscribe<SaveViewModelEvent>(OnSaveViewModelEvent);
             CloseExplorationItemCommand = new DelegateCommand(OnCloseExplorationItem);
@@ -41,7 +42,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
 
         public ICommand AddDataSource { get; }
 
-        public ExploreSetsNavigationViewModel ExploreSetsNavigationViewModel { get; }
+        public ExploreSetFileSystemViewModel ExploreSetFileSysVm { get; }
 
         public async Task LoadAsync()
         {//TODO: This is smelly
@@ -54,7 +55,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
                 DataSources.Add(typedVm);
             }
 
-            await ExploreSetsNavigationViewModel.LoadAsync();
+            await ExploreSetFileSysVm.LoadAsync(FileSystemMode.OpenOnly);
         }
 
         private async void OnAddDataSource()

@@ -16,7 +16,7 @@ namespace UnifiedDataExplorer.ViewModel
         private const string UNSELECT_ALL = "Unselect All";
 
         private string[] exludeBuildings = { "College of Medicine Administration Building", "Dey House", "Distribution", "Engineering Research Facility",
-                                             "Hydraulics Laboratory Wind Tunnel", "Hydraulics Model Annex", "Landscape Services Complex",
+                                             "Hydraulics Laboratory Wind Tunnel", "Hydraulics Mode Annex", "Landscape Services Complex",
                                              "North Campus Parking and Chilled Water Facility", "Presidents Residence", "Quadrangle Hall",
                                              "Stanley Museum of Art", "State Historical Society Building", "West Campus Steam Plant" };
 

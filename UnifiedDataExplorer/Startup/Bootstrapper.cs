@@ -25,6 +25,7 @@ using EmissionsMonitorServices.DataSourceWrappers;
 using UnifiedDataExplorer.ViewModel.DataExploring;
 using UnifiedDataExplorer.ViewModel.DataExploring.Explorers;
 using UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints;
+using UnifiedDataExplorer.ViewModel.VirtualFileSystem;
 
 namespace UnifiedDataExplorer.Startup
 {
@@ -111,7 +112,7 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<EiaApiExplorerViewModel>();
             services.AddTransient<PiAssetFrameworkExplorerViewModel>();
             services.AddTransient<PiTagExplorerViewModel>();
-            services.AddTransient<ExploreSetsNavigationViewModel>();
+            services.AddTransient<ExploreSetFileSystemViewModel>();
 
             //DATASET RENDERING
             services.AddTransient<EiaSeriesExplorePointViewModel>();

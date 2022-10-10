@@ -11,6 +11,7 @@ using UnifiedDataExplorer.ViewModel.Base;
 using UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints;
 using UnifiedDataExplorer.ViewModel.DataExploring.Explorers;
 using UnifiedDataExplorer.ViewModel.DataSources;
+using UnifiedDataExplorer.ViewModel.VirtualFileSystem;
 
 namespace UnifiedDataExplorer.ViewModel.DataExploring
 {
@@ -18,7 +19,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
     {
         private readonly DataExploringHomeViewModel _homeViewModel;
 
-        public DataExplorationManagerViewModel(DataExploringHomeViewModel homeViewModel, RobustViewModelDependencies facade) : base(facade)
+        public DataExplorationManagerViewModel(DataExploringHomeViewModel homeViewModel, ExploreSetFileSystemViewModel navigationVm, RobustViewModelDependencies facade) : base(facade)
         {
             _homeViewModel = homeViewModel;
             Children = new ObservableCollection<ViewModelBase>();
@@ -163,6 +164,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
                     }
                 }
 
+                
                 FileSaveSettingsViewModel vm = new FileSaveSettingsViewModel();
                 while (vm.SaveName == null) { DialogService.ShowModalWindow(vm); }
                 

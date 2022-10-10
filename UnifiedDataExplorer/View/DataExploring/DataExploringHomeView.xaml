@@ -77,7 +77,7 @@
 
             <TextBlock Grid.Row="0" Text="Open an Explore Set" FontWeight="Bold" FontSize="20" />
 
-            <ContentControl Grid.Row="1" Content="{Binding ExploreSetsNavigationViewModel}" Margin="0 20 0 0"/>
+            <ContentControl Grid.Row="1" Content="{Binding ExploreSetFileSysVm}" Margin="0 20 0 0"/>
         </Grid>
     </Grid>
 </UserControl>
