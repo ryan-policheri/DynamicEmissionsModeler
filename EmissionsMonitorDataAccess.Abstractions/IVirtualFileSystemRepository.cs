@@ -10,10 +10,12 @@ namespace EmissionsMonitorDataAccess.Abstractions
 
         public Task<Folder> GetFolderAsync(int folderId);
 
-        public Task<Folder> GetFolderWithContents(int folderId);
+        public Task<Folder> GetFolderRecursiveAsync(int folderId);
 
         public Task<Folder> CreateFolderAsync(Folder folder);
-
+        public Task<Folder> DeleteFolderAsync(int folderId);
+        public Task<SaveItem> GetSaveItemDetailsAsync(SaveItem item);
         public Task<SaveItem> CreateSaveItemAsync(SaveItem item);
+        public Task<SaveItem> DeleteSaveItemAsync(int itemId);
     }
 }

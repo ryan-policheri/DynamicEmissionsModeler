@@ -32,10 +32,13 @@ namespace EmissionsMonitorDataAccess.Database.Repositories
         public async Task<Folder> GetFolderAsync(int folderId)
         {
             return await _context.Set<Folder>().AsNoTracking()
-                .Where(x => x.FolderId == folderId).FirstAsync();
+                .Where(x => x.FolderId == folderId)
+                .Include(x => x.ChildFolders)
+                .Include(x => x.SaveItems)
+                .FirstAsync();
         }
 
-        public async Task<Folder> GetFolderWithContents(int folderId)
+        public async Task<Folder> GetFolderRecursiveAsync(int folderId)
         {
             return _context.Set<Folder>()
                 .Include(x => x.SaveItems)
@@ -52,9 +55,32 @@ namespace EmissionsMonitorDataAccess.Database.Repositories
             return folder;
         }
 
+        public async Task<Folder> DeleteFolderAsync(int folderId)
+        {
+            var folder = await _context.Set<Folder>()
+                .Where(x => x.FolderId == folderId).FirstAsync();
+            _context.Remove(folder);
+            await _context.SaveChangesAsync();
+            return folder;
+        }
+
+        public Task<SaveItem> GetSaveItemDetailsAsync(SaveItem item)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<SaveItem> CreateSaveItemAsync(SaveItem saveItem)
         {
             _context.Set<SaveItem>().Add(saveItem);
+            await _context.SaveChangesAsync();
+            return saveItem;
+        }
+
+        public async Task<SaveItem> DeleteSaveItemAsync(int itemId)
+        {
+            var saveItem = await _context.Set<SaveItem>()
+                .Where(x => x.SaveItemId == itemId).FirstAsync();
+            _context.Remove(saveItem);
             await _context.SaveChangesAsync();
             return saveItem;
         }
