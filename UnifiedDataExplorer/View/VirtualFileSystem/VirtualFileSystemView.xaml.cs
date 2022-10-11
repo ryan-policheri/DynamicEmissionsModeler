@@ -20,6 +20,7 @@ namespace UnifiedDataExplorer.View.VirtualFileSystem
             InitializeComponent(); 
         }
 
+        //For saving
         private void FolderView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             TreeView treeView = sender as TreeView;
@@ -27,6 +28,12 @@ namespace UnifiedDataExplorer.View.VirtualFileSystem
             {
                 ViewModel.SelectedFolder = treeView.SelectedItem as FolderSaveItemViewModel;
             }
+        }
+
+        //For managing
+        private void OnContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            if (!ViewModel.CanManage) e.Handled = true;
         }
 
         private void OnRenameClick(object sender, RoutedEventArgs e)
@@ -131,9 +138,13 @@ namespace UnifiedDataExplorer.View.VirtualFileSystem
             if (element != null) element.Background = new SolidColorBrush(Colors.White);
         }
 
-        private void FrameworkElement_OnContextMenuOpening(object sender, ContextMenuEventArgs e)
+        private void OnOpenItemDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (!ViewModel.CanManage) e.Handled = true;
+            if (e.ClickCount == 2)
+            {
+                FolderSaveItemViewModel senderVm = (sender as StackPanel)?.DataContext as FolderSaveItemViewModel;
+                ViewModel.OpenCommand.Execute(senderVm);
+            }
         }
     }
 }

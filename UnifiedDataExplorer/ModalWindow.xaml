@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UnifiedDataExplorer"
         mc:Ignorable="d"
-        Title="ModalWindow" Height="450" Width="800">
+        Title="ModalWindow" Height="450" Width="800" DataContextChanged="ModalWindow_OnDataContextChanged">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -14,6 +14,6 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <ContentControl Content="{Binding}" Margin="10"/>
+        <ContentControl Content="{Binding ChildViewModel}" Margin="10"/>
     </Grid>
 </Window>

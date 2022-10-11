@@ -1,26 +1,27 @@
-﻿using DotNetCommon.MVVM;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows;
+using UnifiedDataExplorer.ViewModel;
 
 namespace UnifiedDataExplorer.Services.Window
 {
     public class DialogService : IDialogService
     {
+        private readonly Func<ModalViewModel> _modalViewModelFactory;
         private MainWindow _mainWindow;
 
-        public DialogService()
+        public DialogService(Func<ModalViewModel> modalViewModelFactory)
         {
+            _modalViewModelFactory = modalViewModelFactory;
         }
 
         public T ShowModalWindow<T>(T dataContext)
         {
+            var modalVm = _modalViewModelFactory();
+            modalVm.ChildViewModel = dataContext;
+
             _mainWindow = (MainWindow)App.Current.MainWindow;
             ModalWindow modalWindow = new ModalWindow();
-            modalWindow.DataContext = dataContext;
+            modalWindow.DataContext = modalVm;
             modalWindow.Owner = _mainWindow;
             modalWindow.Left = _mainWindow.Left + _mainWindow.Width / 4;
             modalWindow.Top = _mainWindow.Top + _mainWindow.Height / 4;

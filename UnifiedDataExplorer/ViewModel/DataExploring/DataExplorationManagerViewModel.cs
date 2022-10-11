@@ -32,6 +32,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
             MessageHub.Subscribe<OpenDataSourceViewModelEvent>(OpenDataSourceViewModelEvent);
             MessageHub.Subscribe<CloseViewModelEvent>(OnCloseViewModel);
             MessageHub.Subscribe<MenuItemEvent>(OnMenuItemEvent);
+            MessageHub.Subscribe<OpenSaveItemEvent>(OnOpenSaveItemEvent);
         }
 
         private ViewModelBase _currentChild;
@@ -169,7 +170,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
                 ExploreSetSaveItem saveItem = new ExploreSetSaveItem{ ExploreSetJsonDetails = openingEvents.ToBeautifulJson() };
                 var vm = this.Resolve<ExploreSetFileSystemViewModel>();
                 await vm.LoadAsync(FileSystemMode.SaveOrManage);
-                vm.SaveItem = saveItem;;
+                vm.SaveData = saveItem;
                 this.DialogService.ShowModalWindow(vm);
             }
             else if (args.MenuItemHeader == MenuItemHeaders.OPEN_SAVE)
@@ -195,6 +196,11 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
                     }
                 }
             }
+        }
+
+        private void OnOpenSaveItemEvent(OpenSaveItemEvent args)
+        {
+
         }
     }
 }

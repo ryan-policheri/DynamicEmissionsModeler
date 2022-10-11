@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using EmissionsMonitorDataAccess.Abstractions;
 using EmissionsMonitorModel.VirtualFileSystem;
 using UnifiedDataExplorer.Events;
@@ -13,26 +12,25 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
         {
         }
 
-        public ExploreSetSaveItem SaveItem { get; set; }
-
         public async Task LoadAsync(FileSystemMode mode)
         {
             await base.LoadAsync(SystemRoots.EXPLORE_SETS, mode);
         }
 
-        public override async void OnSaveAsync(SaveItem saveItem)
+        protected override async Task<SaveItem> OnSaveAsync(SaveItem saveItem)
         {
             var exploreSet = (ExploreSetSaveItem)saveItem;
             if (exploreSet != null && this.SelectedFolder != null)
             {
                 exploreSet = await Repo.CreateExploreSetItemAsync(exploreSet);
-                await LoadAsync(Mode);
+                return exploreSet;
             }
+            return null;
         }
 
-        public override async void OnOpenSaveItemAsync()
+        protected override async Task OnOpenSaveItemAsync(int id)
         {
-            var exploreSet = await Repo.GetExploreSetItemAsync(this.SelectedSaveItem.SaveItemId); 
+            ExploreSetSaveItem exploreSet = await Repo.GetExploreSetItemAsync(id); 
             MessageHub.Publish(new OpenSaveItemEvent
             {
                 Sender = this,

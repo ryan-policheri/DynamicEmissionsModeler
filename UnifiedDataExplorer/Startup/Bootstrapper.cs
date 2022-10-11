@@ -91,7 +91,7 @@ namespace UnifiedDataExplorer.Startup
 
             //APP SERVICES
             services.AddSingleton<IMessageHub, MessageHub>();
-            services.AddSingleton<IDialogService, DialogService>();
+            services.AddSingleton<IDialogService, DialogService>(x => new DialogService(() => x.GetRequiredService<ModalViewModel>()));
 
             services.AddTransient<RobustViewModelDependencies>();
             services.AddTransient<RobustViewModelBase>();
@@ -99,6 +99,7 @@ namespace UnifiedDataExplorer.Startup
             //MAIN
             services.AddTransient<MainViewModel>();
             services.AddTransient<MainMenuViewModel>();
+            services.AddTransient<ModalViewModel>();
 
             //DATA SOURCES
             services.AddTransient<DataSourceBaseViewModel>();
