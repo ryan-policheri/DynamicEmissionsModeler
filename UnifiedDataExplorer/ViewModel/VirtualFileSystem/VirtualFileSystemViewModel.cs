@@ -3,6 +3,8 @@ using EmissionsMonitorModel.VirtualFileSystem;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using DotNetCommon.DelegateCommand;
 using UnifiedDataExplorer.ViewModel.Base;
 
 namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
@@ -12,20 +14,37 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
         protected FileSystemMode Mode;
         protected readonly IVirtualFileSystemRepository Repo;
 
-        public VirtualFileSystemViewModel(IVirtualFileSystemRepository repo, RobustViewModelDependencies facade) :
-            base(facade)
+        public VirtualFileSystemViewModel(IVirtualFileSystemRepository repo, RobustViewModelDependencies facade) : base(facade)
         {
             Repo = repo;
+            DeleteCommand = new DelegateCommand<FolderSaveItemViewModel>(OnDelete);
             Folders = new ObservableCollection<FolderSaveItemViewModel>();
         }
 
-        public Folder SelectedFolder { get; set; }
+        public ICommand DeleteCommand { get; }
+
+
+        private FolderSaveItemViewModel _selectedFolder;
+        public FolderSaveItemViewModel SelectedFolder
+        {
+            get { return _selectedFolder; }
+            set
+            {
+                if (value.ElementType == FolderOrSaveItem.Folder)
+                {
+                    SetField(ref _selectedFolder, value);
+                }
+            }
+        }
 
         public ObservableCollection<FolderSaveItemViewModel> Folders { get; }
 
         public SaveItem SelectedSaveItem { get; set; }
 
-        public async Task LoadAsync(string rootFolderName, FileSystemMode mode)
+        public bool CanSave => this.Mode == FileSystemMode.SaveOrManage;
+        public string SaveItemName { get; set; }
+
+        protected async Task LoadAsync(string rootFolderName, FileSystemMode mode)
         {
             Mode = mode;
 
@@ -34,7 +53,7 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
             if (exploreSetRoot == null) exploreSetRoot = await Repo.CreateRootFolderAsync(new Folder { FolderName = rootFolderName });
 
             var root = await Repo.GetFolderRecursiveAsync(exploreSetRoot.FolderId);
-            FolderSaveItemViewModel vm = new FolderSaveItemViewModel(root);
+            FolderSaveItemViewModel vm = new FolderSaveItemViewModel(root, null);
             vm.IsExpanded = true;
             Folders.Clear();
             Folders.Add(vm);
@@ -49,6 +68,31 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
             if (this.SelectedSaveItem != null)
             {
                 _ = await Repo.DeleteFolderAsync(this.SelectedSaveItem.SaveItemId);
+            }
+        }
+
+        public async Task SaveFolder(Folder folder)
+        {
+            await Repo.SaveFolderAsync(folder);
+        }
+
+        public async Task UpdateDirectoryInfo(SaveItem item)
+        {
+            await Repo.SaveSaveItemInfo(item);
+        }
+
+        private async void OnDelete(FolderSaveItemViewModel item)
+        {
+            switch (item.ElementType)
+            {
+                case FolderOrSaveItem.Folder:
+                    await Repo.DeleteFolderAsync((item.GetBackingModel() as Folder).FolderId);
+                    item.Parent.Children.Remove(item);
+                    break;
+                default:
+                    await Repo.DeleteSaveItemAsync((item.GetBackingModel() as SaveItem).SaveItemId);
+                    item.Parent.Children.Remove(item);
+                    break;
             }
         }
     }

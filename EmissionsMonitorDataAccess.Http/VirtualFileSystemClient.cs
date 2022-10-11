@@ -33,7 +33,7 @@ namespace EmissionsMonitorDataAccess.Http
             return await this.GetAsync<Folder>($"folders/{folderId}/recursive");
         }
 
-        public async Task<Folder> CreateFolderAsync(Folder folder)
+        public async Task<Folder> SaveFolderAsync(Folder folder)
         {
             return await this.PostAsync<Folder>("folders", folder);
         }
@@ -48,7 +48,7 @@ namespace EmissionsMonitorDataAccess.Http
             return await this.GetAsync<SaveItem>($"saveitems/{itemId}");
         }
 
-        public async Task<SaveItem> CreateSaveItemAsync(SaveItem item)
+        public async Task<SaveItem> SaveSaveItemInfo(SaveItem item)
         {
             return await this.PostAsync<SaveItem>($"saveitems", item);
         }

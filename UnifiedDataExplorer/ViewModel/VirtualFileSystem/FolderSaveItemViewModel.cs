@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
+using DotNetCommon.DelegateCommand;
 using DotNetCommon.Extensions;
 using DotNetCommon.MVVM;
 using EmissionsMonitorModel.VirtualFileSystem;
@@ -10,8 +13,10 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
     {
         private object _backingModel;
 
-        public FolderSaveItemViewModel(Folder folder)
+        public FolderSaveItemViewModel(Folder folder, FolderSaveItemViewModel parent)
         {
+            Parent = parent;
+
             var tempHoldChildFolders = folder.ChildFolders; folder.ChildFolders = null;
             var tempHoldSaveItems = folder.SaveItems; folder.SaveItems = null;
             _backingModel = folder.Copy();
@@ -20,13 +25,14 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
 
             ElementType = FolderOrSaveItem.Folder;
             DisplayText = folder.FolderName;
-            Children = new List<FolderSaveItemViewModel>();
+            Children = new ObservableCollection<FolderSaveItemViewModel>();
+            ToggleRename = new DelegateCommand(() => { this.CanRename = !this.CanRename; });
 
             if (folder.ChildFolders != null)
             {
                 foreach (Folder childFolder in folder.ChildFolders.OrderBy(x => x.FolderName))
                 {
-                    Children.Add(new FolderSaveItemViewModel(childFolder));
+                    Children.Add(new FolderSaveItemViewModel(childFolder, this));
                 }
             }
 
@@ -34,18 +40,24 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
             {
                 foreach (SaveItem saveItem in folder.SaveItems.OrderBy(x => x.SaveItemName))
                 {
-                    Children.Add(new FolderSaveItemViewModel(saveItem));
+                    Children.Add(new FolderSaveItemViewModel(saveItem, this));
                 }
             }
+
+            this.PropertyChanged += (sender, args) => { if(args.PropertyName == nameof(this.Children)) OnPropertyChanged(nameof(CanDelete)); };
         }
 
-        public FolderSaveItemViewModel(SaveItem saveItem)
+        public FolderSaveItemViewModel(SaveItem saveItem, FolderSaveItemViewModel parent)
         {
+            Parent = parent;
             _backingModel = saveItem;
             ElementType = (FolderOrSaveItem)saveItem.SaveItemType;
-            Children = new List<FolderSaveItemViewModel>();
+            Children = new ObservableCollection<FolderSaveItemViewModel>();
             DisplayText = saveItem.SaveItemName;
+            ToggleRename = new DelegateCommand(() => { this.CanRename = !this.CanRename; });
         }
+
+        public ICommand ToggleRename { get; }
 
         public bool CanExpand => this.Children.Count > 0;
 
@@ -56,11 +68,27 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
             set { SetField(ref _isExpanded, value); }
         }
 
-        public string DisplayText { get; set; }
+        private bool _canRename;
+        public bool CanRename { get{ return _canRename;} set { SetField(ref _canRename, value); OnPropertyChanged(nameof(IsReadOnly)); } }
+        public bool IsReadOnly => !CanRename;
+
+        public bool CanDelete => Parent != null && ((ElementType != FolderOrSaveItem.Folder) || (this.Children.Count == 0));
+
+        private string _displayText;
+
+        public string DisplayText
+        {
+            get { return _displayText; }
+            set { SetField(ref _displayText, value); }
+        }
 
         public FolderOrSaveItem ElementType { get; set; }
 
-        public List<FolderSaveItemViewModel> Children { get; }
+        public FolderSaveItemViewModel Parent { get; private set; }
+
+        public ObservableCollection<FolderSaveItemViewModel> Children { get; }
+
+        public object GetBackingModel() => _backingModel;
     }
 
     public enum FolderOrSaveItem

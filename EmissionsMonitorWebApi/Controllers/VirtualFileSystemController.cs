@@ -43,9 +43,9 @@ namespace EmissionsMonitorWebApi.Controllers
         }
 
         [HttpPost("folders")]
-        public async Task<Folder> CreateFolderAsync(Folder folder)
+        public async Task<Folder> SaveFolderAsync(Folder folder)
         {
-            return await _repo.CreateFolderAsync(folder);
+            return await _repo.SaveFolderAsync(folder);
         }
 
         [HttpDelete("folders/{folderId}")]
@@ -62,9 +62,9 @@ namespace EmissionsMonitorWebApi.Controllers
         }
 
         [HttpPost("saveitems")]
-        public async Task<SaveItem> CreateSaveItemAsync(SaveItem saveItem)
+        public async Task<SaveItem> SaveSaveItemAsync(SaveItem saveItem)
         {
-            return await _repo.CreateSaveItemAsync(saveItem);
+            return await _repo.SaveSaveItemInfo(saveItem);
         }
 
         [HttpDelete("saveitems/{saveItemId}")]
@@ -75,7 +75,7 @@ namespace EmissionsMonitorWebApi.Controllers
 
 
         [HttpGet("exploresets/{itemId}")]
-        public async Task<ExploreSetSaveItem> CreateExploreSetItemAsync(int itemId)
+        public async Task<ExploreSetSaveItem> GetExploreSetItemAsync(int itemId)
         {
             return await _repo.GetExploreSetItemAsync(itemId);
         }

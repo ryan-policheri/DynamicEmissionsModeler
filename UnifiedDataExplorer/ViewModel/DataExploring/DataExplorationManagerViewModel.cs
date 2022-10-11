@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using DotNetCommon.Extensions;
 using DotNetCommon.MVVM;
 using DotNetCommon.PersistenceHelpers;
+using EmissionsMonitorModel.VirtualFileSystem;
 using Microsoft.Extensions.Logging;
 using UnifiedDataExplorer.Constants;
 using UnifiedDataExplorer.Events;
@@ -19,9 +20,11 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
     {
         private readonly DataExploringHomeViewModel _homeViewModel;
 
-        public DataExplorationManagerViewModel(DataExploringHomeViewModel homeViewModel, ExploreSetFileSystemViewModel navigationVm, RobustViewModelDependencies facade) : base(facade)
+        public DataExplorationManagerViewModel(DataExploringHomeViewModel homeViewModel,
+            RobustViewModelDependencies facade) : base(facade)
         {
             _homeViewModel = homeViewModel;
+
             Children = new ObservableCollection<ViewModelBase>();
             Children.Add(homeViewModel);
             CurrentChild = homeViewModel;
@@ -43,7 +46,6 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
         }
 
         public ObservableCollection<ViewModelBase> Children { get; }
-
 
         public async Task LoadAsync()
         {
@@ -150,7 +152,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
             }
         }
 
-        private void OnMenuItemEvent(MenuItemEvent args)
+        private async void OnMenuItemEvent(MenuItemEvent args)
         {
             if (args.MenuItemHeader == MenuItemHeaders.SAVE_OPEN_EXPLORE_POINTS)
             {
@@ -164,12 +166,11 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
                     }
                 }
 
-                
-                FileSaveSettingsViewModel vm = new FileSaveSettingsViewModel();
-                while (vm.SaveName == null) { DialogService.ShowModalWindow(vm); }
-                
-                AppDataFile file = DataFileProvider.BuildDataViewFile();
-                file.Save<List<OpenDataSourceViewModelEvent>>(openingEvents, vm.SaveName);
+                ExploreSetSaveItem saveItem = new ExploreSetSaveItem{ ExploreSetJsonDetails = openingEvents.ToBeautifulJson() };
+                var vm = this.Resolve<ExploreSetFileSystemViewModel>();
+                await vm.LoadAsync(FileSystemMode.SaveOrManage);
+                vm.SaveItem = saveItem;;
+                this.DialogService.ShowModalWindow(vm);
             }
             else if (args.MenuItemHeader == MenuItemHeaders.OPEN_SAVE)
             {

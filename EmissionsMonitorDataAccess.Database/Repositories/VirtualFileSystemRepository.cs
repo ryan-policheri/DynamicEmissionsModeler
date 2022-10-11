@@ -1,4 +1,5 @@
 ﻿using EmissionsMonitorDataAccess.Abstractions;
+using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorModel.VirtualFileSystem;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,11 +51,19 @@ namespace EmissionsMonitorDataAccess.Database.Repositories
                 .First();
         }
 
-        public async Task<Folder> CreateFolderAsync(Folder folder)
+        public async Task<Folder> SaveFolderAsync(Folder folder) => await UpsertFolder(folder);
+
+        public async Task<Folder> UpsertFolder(Folder source)
         {
-            _context.Set<Folder>().Add(folder);
+            Folder existing = await _context.Set<Folder>().FirstOrDefaultAsync(x => x.FolderId == source.FolderId);
+            if (existing == null) _context.Set<Folder>().Add(source);
+            else
+            {
+                _context.Set<Folder>().Remove(existing);
+                _context.Set<Folder>().Add(source);
+            }
             await _context.SaveChangesAsync();
-            return folder;
+            return source;
         }
 
         public async Task<Folder> DeleteFolderAsync(int folderId)
@@ -75,11 +84,19 @@ namespace EmissionsMonitorDataAccess.Database.Repositories
             return item;
         }
 
-        public async Task<SaveItem> CreateSaveItemAsync(SaveItem saveItem)
+        public async Task<SaveItem> SaveSaveItemInfo(SaveItem item) => await UpsertSaveItem(item);
+
+        public async Task<SaveItem> UpsertSaveItem(SaveItem source)
         {
-            _context.Set<SaveItem>().Add(saveItem);
+            SaveItem existing = await _context.Set<SaveItem>().FirstOrDefaultAsync(x => x.SaveItemId == source.SaveItemId);
+            if (existing == null) _context.Set<SaveItem>().Add(source);
+            else
+            {
+                _context.Set<SaveItem>().Remove(existing);
+                _context.Set<SaveItem>().Add(source);
+            }
             await _context.SaveChangesAsync();
-            return saveItem;
+            return source;
         }
 
         public async Task<SaveItem> DeleteSaveItemAsync(int itemId)

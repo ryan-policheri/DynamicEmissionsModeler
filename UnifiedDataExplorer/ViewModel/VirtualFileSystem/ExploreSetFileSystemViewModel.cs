@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using EmissionsMonitorDataAccess.Abstractions;
 using EmissionsMonitorModel.VirtualFileSystem;
 using UnifiedDataExplorer.Events;
@@ -11,6 +12,8 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
         public ExploreSetFileSystemViewModel(IVirtualFileSystemRepository repo, RobustViewModelDependencies facade) : base(repo, facade)
         {
         }
+
+        public ExploreSetSaveItem SaveItem { get; set; }
 
         public async Task LoadAsync(FileSystemMode mode)
         {
