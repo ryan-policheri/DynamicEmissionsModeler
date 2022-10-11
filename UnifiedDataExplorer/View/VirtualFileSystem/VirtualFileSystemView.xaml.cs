@@ -130,5 +130,10 @@ namespace UnifiedDataExplorer.View.VirtualFileSystem
             StackPanel element = sender as StackPanel;
             if (element != null) element.Background = new SolidColorBrush(Colors.White);
         }
+
+        private void FrameworkElement_OnContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            if (!ViewModel.CanManage) e.Handled = true;
+        }
     }
 }

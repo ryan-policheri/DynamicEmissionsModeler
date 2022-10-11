@@ -44,6 +44,8 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
         public bool CanSave => this.Mode == FileSystemMode.SaveOrManage;
         public string SaveItemName { get; set; }
 
+        public bool CanManage => this.Mode == FileSystemMode.SaveOrManage || this.Mode == FileSystemMode.OpenOrManage;
+
         protected async Task LoadAsync(string rootFolderName, FileSystemMode mode)
         {
             Mode = mode;

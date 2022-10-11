@@ -68,8 +68,10 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
             set { SetField(ref _isExpanded, value); }
         }
 
+        public bool IsNotRoot => this.Parent != null;
+
         private bool _canRename;
-        public bool CanRename { get{ return _canRename;} set { SetField(ref _canRename, value); OnPropertyChanged(nameof(IsReadOnly)); } }
+        public bool CanRename { get{ return _canRename; } set { SetField(ref _canRename, value); OnPropertyChanged(nameof(IsReadOnly)); } }
         public bool IsReadOnly => !CanRename;
 
         public bool CanDelete => Parent != null && ((ElementType != FolderOrSaveItem.Folder) || (this.Children.Count == 0));
