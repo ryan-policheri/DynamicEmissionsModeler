@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Drawing;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using EmissionsMonitorModel.VirtualFileSystem;
 using UnifiedDataExplorer.ViewModel.VirtualFileSystem;
+using Color = System.Drawing.Color;
 
 namespace UnifiedDataExplorer.View.VirtualFileSystem
 {
@@ -87,6 +91,44 @@ namespace UnifiedDataExplorer.View.VirtualFileSystem
                     senderVm.ToggleRename.Execute(null);
                 }
             }
+        }
+
+        private void OnFileMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                StackPanel element = sender as StackPanel;
+                if (element != null)
+                {
+                    DataObject obj = new DataObject(element.DataContext);
+                    DragDrop.DoDragDrop(element, obj, DragDropEffects.Move);
+                }
+            }
+        }
+
+        private void OnFolderDragOver(object sender, DragEventArgs e)
+        {
+            StackPanel element = sender as StackPanel;
+            if (element != null) element.Background = new SolidColorBrush(Colors.Gray);
+        }
+
+        private void OnFolderDrop(object sender, DragEventArgs e)
+        {
+            StackPanel element = sender as StackPanel;
+            FolderSaveItemViewModel source = e.Data.GetData(typeof(FolderSaveItemViewModel)) as FolderSaveItemViewModel;
+            FolderSaveItemViewModel target = element?.DataContext as FolderSaveItemViewModel;
+
+            if (source != null && target != null)
+            {
+                ViewModel.MoveItemToFolder(source, target);
+            }
+            if (element != null) element.Background = new SolidColorBrush(Colors.White);
+        }
+
+        private void OnFolderDragLeave(object sender, DragEventArgs e)
+        {
+            StackPanel element = sender as StackPanel;
+            if (element != null) element.Background = new SolidColorBrush(Colors.White);
         }
     }
 }

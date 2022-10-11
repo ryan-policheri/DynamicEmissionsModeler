@@ -87,6 +87,22 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
                     break;
             }
         }
+
+        public async void MoveItemToFolder(FolderSaveItemViewModel source, FolderSaveItemViewModel target)
+        {
+            if (source.ElementType != FolderOrSaveItem.Folder && target.ElementType == FolderOrSaveItem.Folder)
+            {
+                SaveItem saveItem = source.GetBackingModel() as SaveItem;
+                Folder folder = target.GetBackingModel() as Folder;
+                if (saveItem.FolderId != folder.FolderId)
+                {
+                    saveItem.FolderId = folder.FolderId;
+                    await Repo.SaveSaveItemInfo(saveItem);
+                    source.Parent.RemoveChild(source);
+                    target.AddChild(source);
+                }
+            }
+        }
     }
 
     public enum FileSystemMode
