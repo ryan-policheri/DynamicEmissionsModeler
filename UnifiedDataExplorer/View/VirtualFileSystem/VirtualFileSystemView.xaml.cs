@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using EmissionsMonitorModel.VirtualFileSystem;
@@ -8,11 +9,11 @@ namespace UnifiedDataExplorer.View.VirtualFileSystem
 {
     public partial class VirtualFileSystemView : UserControl
     {
-        private VirtualFileSystemViewModel _viewModel => this.DataContext as VirtualFileSystemViewModel;
+        public VirtualFileSystemViewModel ViewModel => this.DataContext as VirtualFileSystemViewModel;
 
         public VirtualFileSystemView()
         {
-            InitializeComponent();
+            InitializeComponent(); 
         }
 
         private void FolderView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -20,7 +21,21 @@ namespace UnifiedDataExplorer.View.VirtualFileSystem
             TreeView treeView = sender as TreeView;
             if (treeView != null)
             {
-                _viewModel.SelectedFolder = treeView.SelectedItem as FolderSaveItemViewModel;
+                ViewModel.SelectedFolder = treeView.SelectedItem as FolderSaveItemViewModel;
+            }
+        }
+
+        private void OnRenameClick(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = (sender as MenuItem);
+            (item.DataContext as FolderSaveItemViewModel)?.ToggleRename.Execute(null);
+
+            var owner = ((ContextMenu)item?.Parent)?.PlacementTarget as StackPanel;
+            TextBox box = owner?.Children.OfType<TextBox>().FirstOrDefault();
+            if (box != null)
+            {
+                box.Focus();
+                box.SelectAll();
             }
         }
 
@@ -34,7 +49,7 @@ namespace UnifiedDataExplorer.View.VirtualFileSystem
                 {
                     Folder folder = senderVm.GetBackingModel() as Folder;
                     folder.FolderName = box.Text;
-                    await _viewModel.SaveFolder(folder);
+                    await ViewModel.SaveFolder(folder);
                     senderVm.DisplayText = box.Text;
                     senderVm.ToggleRename.Execute(null);
                 }
@@ -51,8 +66,8 @@ namespace UnifiedDataExplorer.View.VirtualFileSystem
                 {
                     Folder parent = senderVm.GetBackingModel() as Folder;
                     Folder child = new Folder { ParentFolderId = parent.ParentFolderId, FolderName = "New Folder" };
-                    await _viewModel.SaveFolder(child);
-                    senderVm.Children.Add(new FolderSaveItemViewModel(child, senderVm));
+                    Folder savedFolder = await ViewModel.SaveFolder(child);
+                    senderVm.AddChild(new FolderSaveItemViewModel(savedFolder, senderVm));
                 }
             }
         }
@@ -67,7 +82,7 @@ namespace UnifiedDataExplorer.View.VirtualFileSystem
                 {
                     SaveItem item = senderVm.GetBackingModel() as SaveItem;
                     item.SaveItemName = box.Text;
-                    await _viewModel.UpdateDirectoryInfo(item);
+                    await ViewModel.UpdateDirectoryInfo(item);
                     senderVm.DisplayText = box.Text;
                     senderVm.ToggleRename.Execute(null);
                 }

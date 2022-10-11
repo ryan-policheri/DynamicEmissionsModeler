@@ -63,22 +63,14 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
 
         public abstract void OnOpenSaveItemAsync();
 
-        public virtual async void OnDeleteSaveItem()
+        public async Task<Folder> SaveFolder(Folder folder)
         {
-            if (this.SelectedSaveItem != null)
-            {
-                _ = await Repo.DeleteFolderAsync(this.SelectedSaveItem.SaveItemId);
-            }
+            return await Repo.SaveFolderAsync(folder);
         }
 
-        public async Task SaveFolder(Folder folder)
+        public async Task<SaveItem> UpdateDirectoryInfo(SaveItem item)
         {
-            await Repo.SaveFolderAsync(folder);
-        }
-
-        public async Task UpdateDirectoryInfo(SaveItem item)
-        {
-            await Repo.SaveSaveItemInfo(item);
+            return await Repo.SaveSaveItemInfo(item);
         }
 
         private async void OnDelete(FolderSaveItemViewModel item)
@@ -87,11 +79,11 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
             {
                 case FolderOrSaveItem.Folder:
                     await Repo.DeleteFolderAsync((item.GetBackingModel() as Folder).FolderId);
-                    item.Parent.Children.Remove(item);
+                    item.Parent.RemoveChild(item);
                     break;
                 default:
                     await Repo.DeleteSaveItemAsync((item.GetBackingModel() as SaveItem).SaveItemId);
-                    item.Parent.Children.Remove(item);
+                    item.Parent.RemoveChild(item);
                     break;
             }
         }

@@ -89,6 +89,18 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
         public ObservableCollection<FolderSaveItemViewModel> Children { get; }
 
         public object GetBackingModel() => _backingModel;
+
+        public void AddChild(FolderSaveItemViewModel child)
+        {
+            Children.Add(child);
+            OnPropertyChanged(nameof(CanDelete));
+        }
+
+        public void RemoveChild(FolderSaveItemViewModel child)
+        {
+            Children.Remove(child);
+            OnPropertyChanged(nameof(CanDelete));
+        }
     }
 
     public enum FolderOrSaveItem
