@@ -41,9 +41,10 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
             get { return _selectedFolder; }
             set
             {
-                if (value !=null && value.ElementType == FolderOrSaveItem.Folder)
+                if (value != null && value.ElementType == FolderOrSaveItem.Folder)
                 {
                     SetField(ref _selectedFolder, value);
+                    OnPropertyChanged(nameof(SaveReady));
                 }
             }
         }
@@ -114,7 +115,22 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
 
         //Saving: requires child implementation that knows how to save the data.
         public bool CanSave => this.Mode == FileSystemMode.SaveOrManage;
+        public bool SaveReady => this.SelectedFolder != null && this.SaveData?.SaveItemName != null;
         public SaveItem SaveData { get; set; }
+
+        public string SaveItemName
+        {
+            get { return SaveData?.SaveItemName; }
+            set
+            {
+                if (SaveData != null)
+                {
+                    SaveData.SaveItemName = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(SaveReady));
+                }
+            }
+        }
         protected abstract Task<SaveItem> OnSaveAsync(SaveItem saveItem);
 
         private async void OnSave()

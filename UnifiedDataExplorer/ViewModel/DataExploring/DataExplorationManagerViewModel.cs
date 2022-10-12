@@ -173,17 +173,11 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
                 vm.SaveData = saveItem;
                 this.DialogService.ShowModalWindow(vm);
             }
-            else if (args.MenuItemHeader == MenuItemHeaders.OPEN_SAVE)
+            else if (args.MenuItemHeader == MenuItemHeaders.BROWSE_EXPLORE_SETS)
             {
-                AppDataFile file = args.Data as AppDataFile;
-                if (file != null)
-                {
-                    List<OpenDataSourceViewModelEvent> openingEvents = file.Read<List<OpenDataSourceViewModelEvent>>();
-                    foreach (OpenDataSourceViewModelEvent openEvent in openingEvents)
-                    {
-                        this.OpenDataSourceViewModelEvent(openEvent);
-                    }
-                }
+                var vm = this.Resolve<ExploreSetFileSystemViewModel>();
+                await vm.LoadAsync(FileSystemMode.OpenOrManage);
+                this.DialogService.ShowModalWindow(vm);
             }
             else if (args.MenuItemHeader == MenuItemHeaders.CLOSE_ALL)
             {
@@ -200,7 +194,15 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
 
         private void OnOpenSaveItemEvent(OpenSaveItemEvent args)
         {
-
+            if (args.SenderTypeName == nameof(ExploreSetFileSystemViewModel))
+            {
+                ExploreSetSaveItem exploreSet = args.SaveItem as ExploreSetSaveItem;
+                List<OpenDataSourceViewModelEvent> openingEvents = exploreSet.ExploreSetJsonDetails.ConvertJsonToObject<List<OpenDataSourceViewModelEvent>>();
+                foreach (OpenDataSourceViewModelEvent openEvent in openingEvents)
+                {
+                    this.OpenDataSourceViewModelEvent(openEvent);
+                }
+            }
         }
     }
 }
