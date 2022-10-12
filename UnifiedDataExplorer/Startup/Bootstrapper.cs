@@ -20,11 +20,11 @@ using UnifiedDataExplorer.Services.Reporting;
 using UnifiedDataExplorer.ViewModel.DataSources;
 using EmissionsMonitorDataAccess.Abstractions;
 using EmissionsMonitorDataAccess.Http;
-using EmissiosMonitorDataAccess.Http;
 using EmissionsMonitorServices.DataSourceWrappers;
 using UnifiedDataExplorer.ViewModel.DataExploring;
 using UnifiedDataExplorer.ViewModel.DataExploring.Explorers;
 using UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints;
+using UnifiedDataExplorer.ViewModel.EnergyModel;
 using UnifiedDataExplorer.ViewModel.VirtualFileSystem;
 
 namespace UnifiedDataExplorer.Startup
@@ -91,7 +91,9 @@ namespace UnifiedDataExplorer.Startup
 
             //APP SERVICES
             services.AddSingleton<IMessageHub, MessageHub>();
-            services.AddSingleton<IDialogService, DialogService>(x => new DialogService(() => x.GetRequiredService<ModalViewModel>()));
+            services.AddSingleton<IDialogService, DialogService>(x => 
+                new DialogService(() => x.GetRequiredService<ModalViewModel>(), 
+                    () => x.GetRequiredService<SecondaryViewModel>()));
 
             services.AddTransient<RobustViewModelDependencies>();
             services.AddTransient<RobustViewModelBase>();
@@ -100,6 +102,7 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<MainViewModel>();
             services.AddTransient<MainMenuViewModel>();
             services.AddTransient<ModalViewModel>();
+            services.AddTransient<SecondaryViewModel>();
 
             //DATA SOURCES
             services.AddTransient<DataSourceBaseViewModel>();
@@ -120,6 +123,10 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<PiJsonDisplayExplorePointViewModel>();
             services.AddTransient<PiAssetValuesExplorePointViewModel>();
             services.AddTransient<PiInterpolatedDataExplorePointViewModel>();
+
+            //ENERGY MODELING
+            services.AddTransient<EnergyModelMainViewModel>();
+            services.AddTransient<EnergyModelFileSystemViewModel>();
 
             //EMISSIONS MONITOR SERVICES
             services.AddTransient<IDataSourceRepository, DataSourceClient>((provider =>

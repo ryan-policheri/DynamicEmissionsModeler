@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,7 +6,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using EmissionsMonitorModel.VirtualFileSystem;
 using UnifiedDataExplorer.ViewModel.VirtualFileSystem;
-using Color = System.Drawing.Color;
 
 namespace UnifiedDataExplorer.View.VirtualFileSystem
 {
@@ -24,7 +22,7 @@ namespace UnifiedDataExplorer.View.VirtualFileSystem
         private void FolderView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             TreeView treeView = sender as TreeView;
-            if (treeView != null)
+            if (treeView != null && ViewModel != null)
             {
                 ViewModel.SelectedFolder = treeView.SelectedItem as FolderSaveItemViewModel;
             }

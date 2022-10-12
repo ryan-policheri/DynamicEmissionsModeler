@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
 using DotNetCommon.MVVM;
@@ -12,6 +11,7 @@ using EmissionsMonitorServices.DataSourceWrappers;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ViewModel.Base;
 using UnifiedDataExplorer.ViewModel.DataSources;
+using UnifiedDataExplorer.ViewModel.EnergyModel;
 using UnifiedDataExplorer.ViewModel.VirtualFileSystem;
 
 namespace UnifiedDataExplorer.ViewModel.DataExploring
@@ -25,10 +25,12 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
         private readonly IDataSourceRepository _repo;
         private readonly DataSourceServiceFactory _serviceFactory;
         private readonly ExploreSetFileSystemViewModel _exploreSetFileSysVm;
+        private readonly EnergyModelFileSystemViewModel _energyModelFileSysVm;
 
         public DataExploringHomeViewModel(IDataSourceRepository repo,
             DataSourceServiceFactory serviceFactory,
             ExploreSetFileSystemViewModel exploreSetFileSysVm,
+            EnergyModelFileSystemViewModel energyModelFileSysVm,
             RobustViewModelDependencies facade) : base(facade)
         {
             _repo = repo;
@@ -36,11 +38,12 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
 
             DataSources = new ObservableCollection<DataSourceBaseViewModel>();
             AddDataSource = new DelegateCommand(OnAddDataSource);
-
+            CreateEnergyModel = new DelegateCommand(OnCreateEnergyModel);
             OpenOptions = new List<string>() { UNSELECTED, EXPLORE_SET, ENERGY_MODEL };
             SelectedOpenOption = OpenOptions.First();
 
             _exploreSetFileSysVm = exploreSetFileSysVm;
+            _energyModelFileSysVm = energyModelFileSysVm;
 
             this.MessageHub.Subscribe<SaveViewModelEvent>(OnSaveViewModelEvent);
             CloseExplorationItemCommand = new DelegateCommand(OnCloseExplorationItem);
@@ -53,6 +56,8 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
         public ObservableCollection<DataSourceBaseViewModel> DataSources { get; }
 
         public ICommand AddDataSource { get; }
+        public ICommand CreateEnergyModel { get; }
+
 
         private string _selectedOpenOption;
         public string SelectedOpenOption
@@ -63,6 +68,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
                 SetField(ref _selectedOpenOption, value);
                 if (value == null || value == UNSELECTED) CurrentOpenOptionViewModel = null;
                 if (value == EXPLORE_SET) CurrentOpenOptionViewModel = _exploreSetFileSysVm;
+                if (value == ENERGY_MODEL) CurrentOpenOptionViewModel = _energyModelFileSysVm;
                 OnPropertyChanged(nameof(CurrentOpenOptionViewModel));
             }
         }
@@ -81,6 +87,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
             }
 
             await _exploreSetFileSysVm.LoadAsync(FileSystemMode.OpenOnly);
+            await _energyModelFileSysVm.LoadAsync(FileSystemMode.OpenOnly);
         }
 
         private async void OnAddDataSource()
@@ -88,6 +95,12 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
             DataSourceManagerViewModel viewModel = this.Resolve<DataSourceManagerViewModel>();
             await viewModel.LoadAsync();
             this.DialogService.ShowModalWindow<DataSourceManagerViewModel>(viewModel);
+        }
+
+        private void OnCreateEnergyModel()
+        {
+            EnergyModelMainViewModel viewModel = this.Resolve<EnergyModelMainViewModel>();
+            this.DialogService.OpenSecondaryWindow<EnergyModelMainViewModel>(viewModel);
         }
 
         private async void OnSaveViewModelEvent(SaveViewModelEvent args)
@@ -104,5 +117,6 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
         {
             MessageHub.Publish(new CloseViewModelEvent { Sender = this, SenderTypeName = nameof(DataExploringHomeViewModel) });
         }
+
     }
 }

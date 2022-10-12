@@ -7,11 +7,13 @@ namespace UnifiedDataExplorer.Services.Window
     public class DialogService : IDialogService
     {
         private readonly Func<ModalViewModel> _modalViewModelFactory;
+        private readonly Func<SecondaryViewModel> _secondaryVmFactory;
         private MainWindow _mainWindow;
 
-        public DialogService(Func<ModalViewModel> modalViewModelFactory)
+        public DialogService(Func<ModalViewModel> modalViewModelFactory, Func<SecondaryViewModel> secondaryVmFactory)
         {
             _modalViewModelFactory = modalViewModelFactory;
+            _secondaryVmFactory = secondaryVmFactory;
         }
 
         public T ShowModalWindow<T>(T dataContext)
@@ -41,6 +43,23 @@ namespace UnifiedDataExplorer.Services.Window
         public void ShowInfoMessage(string message)
         {
             MessageBox.Show(message); //TODO: Use own window
+        }
+
+        public void OpenSecondaryWindow<T>(T dataContext)
+        {
+            var secondaryVm = _secondaryVmFactory();
+            secondaryVm.ChildViewModel = dataContext;
+
+            _mainWindow = (MainWindow)App.Current.MainWindow;
+            SecondaryWindow secondaryWindow = new SecondaryWindow();
+            secondaryWindow.DataContext = secondaryVm;
+            secondaryWindow.Owner = _mainWindow;
+            secondaryWindow.Left = _mainWindow.Left + _mainWindow.Width / 3;
+            secondaryWindow.Top = _mainWindow.Top + _mainWindow.Height / 3;
+            secondaryWindow.Width = _mainWindow.ActualWidth / 1.5;
+            secondaryWindow.Height = _mainWindow.ActualHeight / 1.5;
+            secondaryWindow.Title = typeof(T).Name;
+            secondaryWindow.Show();
         }
     }
 }
