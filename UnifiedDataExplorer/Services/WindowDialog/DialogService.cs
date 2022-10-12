@@ -54,8 +54,8 @@ namespace UnifiedDataExplorer.Services.Window
             SecondaryWindow secondaryWindow = new SecondaryWindow();
             secondaryWindow.DataContext = secondaryVm;
             secondaryWindow.Owner = _mainWindow;
-            secondaryWindow.Left = _mainWindow.Left + _mainWindow.Width / 3;
-            secondaryWindow.Top = _mainWindow.Top + _mainWindow.Height / 3;
+            secondaryWindow.Left = _mainWindow.Left + _mainWindow.Width / 4;
+            secondaryWindow.Top = _mainWindow.Top + _mainWindow.Height / 4;
             secondaryWindow.Width = _mainWindow.ActualWidth / 1.5;
             secondaryWindow.Height = _mainWindow.ActualHeight / 1.5;
             secondaryWindow.Title = typeof(T).Name;
