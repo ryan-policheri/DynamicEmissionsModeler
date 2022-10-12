@@ -24,7 +24,7 @@ using EmissionsMonitorServices.DataSourceWrappers;
 using UnifiedDataExplorer.ViewModel.DataExploring;
 using UnifiedDataExplorer.ViewModel.DataExploring.Explorers;
 using UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints;
-using UnifiedDataExplorer.ViewModel.EnergyModel;
+using UnifiedDataExplorer.ViewModel.ProcessModeling;
 using UnifiedDataExplorer.ViewModel.VirtualFileSystem;
 
 namespace UnifiedDataExplorer.Startup
@@ -125,7 +125,8 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<PiInterpolatedDataExplorePointViewModel>();
 
             //ENERGY MODELING
-            services.AddTransient<EnergyModelMainViewModel>();
+            services.AddTransient<ProcessModelMainViewModel>();
+            services.AddTransient<NodesNavigationViewModel>();
             services.AddTransient<EnergyModelFileSystemViewModel>();
 
             //EMISSIONS MONITOR SERVICES

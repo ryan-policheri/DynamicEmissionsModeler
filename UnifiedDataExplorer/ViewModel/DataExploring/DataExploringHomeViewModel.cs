@@ -11,7 +11,7 @@ using EmissionsMonitorServices.DataSourceWrappers;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ViewModel.Base;
 using UnifiedDataExplorer.ViewModel.DataSources;
-using UnifiedDataExplorer.ViewModel.EnergyModel;
+using UnifiedDataExplorer.ViewModel.ProcessModeling;
 using UnifiedDataExplorer.ViewModel.VirtualFileSystem;
 
 namespace UnifiedDataExplorer.ViewModel.DataExploring
@@ -99,8 +99,8 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
 
         private void OnCreateEnergyModel()
         {
-            EnergyModelMainViewModel viewModel = this.Resolve<EnergyModelMainViewModel>();
-            this.DialogService.OpenSecondaryWindow<EnergyModelMainViewModel>(viewModel);
+            ProcessModelMainViewModel viewModel = this.Resolve<ProcessModelMainViewModel>();
+            this.DialogService.OpenSecondaryWindow<ProcessModelMainViewModel>(viewModel);
         }
 
         private async void OnSaveViewModelEvent(SaveViewModelEvent args)
