@@ -1,7 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
+using DotNetCommon.MVVM;
 using EmissionsMonitorDataAccess.Abstractions;
 using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorServices.DataSourceWrappers;
@@ -14,8 +18,13 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
 {
     public class DataExploringHomeViewModel : RobustViewModelBase
     {
+        private const string UNSELECTED = "(Select Option)";
+        private const string EXPLORE_SET = "Explore Set";
+        private const string ENERGY_MODEL = "Energy Model";
+
         private readonly IDataSourceRepository _repo;
         private readonly DataSourceServiceFactory _serviceFactory;
+        private readonly ExploreSetFileSystemViewModel _exploreSetFileSysVm;
 
         public DataExploringHomeViewModel(IDataSourceRepository repo,
             DataSourceServiceFactory serviceFactory,
@@ -28,7 +37,10 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
             DataSources = new ObservableCollection<DataSourceBaseViewModel>();
             AddDataSource = new DelegateCommand(OnAddDataSource);
 
-            ExploreSetFileSysVm = exploreSetFileSysVm;
+            OpenOptions = new List<string>() { UNSELECTED, EXPLORE_SET, ENERGY_MODEL };
+            SelectedOpenOption = OpenOptions.First();
+
+            _exploreSetFileSysVm = exploreSetFileSysVm;
 
             this.MessageHub.Subscribe<SaveViewModelEvent>(OnSaveViewModelEvent);
             CloseExplorationItemCommand = new DelegateCommand(OnCloseExplorationItem);
@@ -42,7 +54,20 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
 
         public ICommand AddDataSource { get; }
 
-        public ExploreSetFileSystemViewModel ExploreSetFileSysVm { get; }
+        private string _selectedOpenOption;
+        public string SelectedOpenOption
+        {
+            get { return _selectedOpenOption; }
+            set
+            {
+                SetField(ref _selectedOpenOption, value);
+                if (value == null || value == UNSELECTED) CurrentOpenOptionViewModel = null;
+                if (value == EXPLORE_SET) CurrentOpenOptionViewModel = _exploreSetFileSysVm;
+                OnPropertyChanged(nameof(CurrentOpenOptionViewModel));
+            }
+        }
+        public List<string> OpenOptions { get; }
+        public ViewModelBase CurrentOpenOptionViewModel { get; private set; }
 
         public async Task LoadAsync()
         {//TODO: This is smelly
@@ -55,7 +80,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
                 DataSources.Add(typedVm);
             }
 
-            await ExploreSetFileSysVm.LoadAsync(FileSystemMode.OpenOnly);
+            await _exploreSetFileSysVm.LoadAsync(FileSystemMode.OpenOnly);
         }
 
         private async void OnAddDataSource()
