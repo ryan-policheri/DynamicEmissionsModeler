@@ -60,7 +60,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 
         private void AddLikeTermAggregator()
         {
-            LikeTermAggregatorViewModel vm = new LikeTermAggregatorViewModel(new LikeTermsAggregatorNode());
+            LikeTermAggregatorNodeViewModel vm = new LikeTermAggregatorNodeViewModel(new LikeTermsAggregatorNode());
             vm.NodeName = "New Like Term Aggregator Node";
             ProcessNodes.Add(vm);
             SelectedProcessNode = vm;

@@ -7,11 +7,11 @@ using EmissionsMonitorModel.ProcessModeling;
 
 namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 {
-    public class LikeTermAggregatorViewModel : ProcessNodeViewModel
+    public class LikeTermAggregatorNodeViewModel : ProcessNodeViewModel
     {
         private readonly LikeTermsAggregatorNode _model;
 
-        public LikeTermAggregatorViewModel(LikeTermsAggregatorNode aggregatorNode) : base(aggregatorNode)
+        public LikeTermAggregatorNodeViewModel(LikeTermsAggregatorNode aggregatorNode) : base(aggregatorNode)
         {
             _model = aggregatorNode;
         }
