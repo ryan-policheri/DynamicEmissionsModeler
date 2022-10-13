@@ -63,6 +63,17 @@ namespace EmissionsMonitorModel.ProcessModeling
         public abstract Type GetReturnType();
 
         public abstract double ToDefaultValueRendering(object value);
+
+        public FunctionTypeMapping ToTypeMapping() => 
+            new FunctionTypeMapping { FunctionUnit = this.FunctionUnit, FunctionUnitForm = this.FunctionUnitForm, TypeRep = this.GetType(), BaseUnit = this.GetReturnType() };
+
+        public static IEnumerable<FunctionTypeMapping> GetAllFunctionTypeMappings()
+        {
+            //TODO: don't hard code this. read from assembly instead
+            yield return new SteamEnergyFunction().ToTypeMapping();
+            yield return new Co2MassFunction().ToTypeMapping();
+            yield return new MoneyFunction().ToTypeMapping();
+        }
     }
 
     public abstract class EnergyFunction : DataFunction
@@ -138,5 +149,16 @@ namespace EmissionsMonitorModel.ProcessModeling
 
         [NotMapped] 
         public string ParameterName => FactorName + "Point";
+    }
+
+    public class FunctionTypeMapping
+    {
+        public string FunctionUnit { get; set; }
+
+        public string FunctionUnitForm { get; set; }
+
+        public Type TypeRep { get; set; }
+
+        public Type BaseUnit { get; set; }
     }
 }

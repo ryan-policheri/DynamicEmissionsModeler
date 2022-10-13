@@ -6,6 +6,7 @@ namespace EmissionsMonitorModel.ProcessModeling
     {
         public ExchangeNode()
         {
+            Costs = new List<DataFunction>();
         }
 
         public ICollection<DataFunction> Costs { get; set; }

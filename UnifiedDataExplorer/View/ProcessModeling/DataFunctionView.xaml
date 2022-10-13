@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="UnifiedDataExplorer.View.ProcessModeling.DataFunctionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UnifiedDataExplorer.View.ProcessModeling"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Text="Function of unit: " Margin="0 5 0 0"/>
+            <ComboBox Grid.Column="1" ItemsSource="{Binding UnitTypes}" SelectedItem="{Binding SelectedUnitType}" Margin="5 0 10 0" MinWidth="75" FontWeight="Bold"/>
+            <TextBlock Grid.Column="2" Text=" and domain: " Margin="0 5 0 0"/>
+            <ComboBox Grid.Column="3" ItemsSource="{Binding UnitForms}" SelectedItem="{Binding SelectedUnitForm}" Margin="5 0 10 0" MinWidth="75" FontWeight="Bold"/>
+
+            <TextBlock Grid.Column="4" Text="and name: " Margin="0 5 0 0"/>
+            <TextBox Grid.Column="5" Text="{Binding FunctionName, Mode=TwoWay}" Visibility="{Binding NameReady, Converter={StaticResource BoolToVisibility}}" Margin="5 0 0 0" FontWeight="Bold"/>
+        </Grid>
+    </Grid>
+</UserControl>
