@@ -3,7 +3,7 @@ using EmissionsMonitorModel.ProcessModeling;
 
 namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 {
-    public class ProcessNodeViewModel : ViewModelBase
+    public abstract class ProcessNodeViewModel : ViewModelBase
     {
         private readonly ProcessNode _model;
 
@@ -11,6 +11,8 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         {
             _model = processNode;
         }
+
+        public abstract string NodeTypeName { get; }
 
         public string NodeName
         { 

@@ -15,5 +15,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         {
             _model = aggregatorNode;
         }
+
+        public override string NodeTypeName => "Like Term Aggregator Node";
     }
 }

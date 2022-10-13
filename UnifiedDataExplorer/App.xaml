@@ -46,6 +46,13 @@
                 </Style.Triggers>
             </Style>
 
+            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource MaterialDesignLabel}">
+                <Style.Setters>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="FontSize" Value="14"/>
+                </Style.Setters>
+            </Style>
+
 
             <!--DYNAMIC DATAGRID-->
             <Style x:Key="DataGridHeaderStyle" TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle}">

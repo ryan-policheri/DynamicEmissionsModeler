@@ -15,5 +15,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         {
             _model = exchangeNode;
         }
+
+        public override string NodeTypeName => "Exchange Node";
     }
 }

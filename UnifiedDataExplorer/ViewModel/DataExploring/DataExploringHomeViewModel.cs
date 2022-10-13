@@ -18,7 +18,6 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
 {
     public class DataExploringHomeViewModel : RobustViewModelBase
     {
-        private const string UNSELECTED = "(Select Option)";
         private const string EXPLORE_SET = "Explore Set";
         private const string ENERGY_MODEL = "Energy Model";
 
@@ -39,11 +38,12 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
             DataSources = new ObservableCollection<DataSourceBaseViewModel>();
             AddDataSource = new DelegateCommand(OnAddDataSource);
             CreateEnergyModel = new DelegateCommand(OnCreateEnergyModel);
-            OpenOptions = new List<string>() { UNSELECTED, EXPLORE_SET, ENERGY_MODEL };
-            SelectedOpenOption = OpenOptions.First();
 
             _exploreSetFileSysVm = exploreSetFileSysVm;
             _energyModelFileSysVm = energyModelFileSysVm;
+
+            OpenOptions = new List<string>() { EXPLORE_SET, ENERGY_MODEL };
+            SelectedOpenOption = OpenOptions.First();
 
             this.MessageHub.Subscribe<SaveViewModelEvent>(OnSaveViewModelEvent);
             CloseExplorationItemCommand = new DelegateCommand(OnCloseExplorationItem);
@@ -66,7 +66,6 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
             set
             {
                 SetField(ref _selectedOpenOption, value);
-                if (value == null || value == UNSELECTED) CurrentOpenOptionViewModel = null;
                 if (value == EXPLORE_SET) CurrentOpenOptionViewModel = _exploreSetFileSysVm;
                 if (value == ENERGY_MODEL) CurrentOpenOptionViewModel = _energyModelFileSysVm;
                 OnPropertyChanged(nameof(CurrentOpenOptionViewModel));

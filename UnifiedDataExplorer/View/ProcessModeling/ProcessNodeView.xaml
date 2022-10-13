@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="UnifiedDataExplorer.View.ProcessModeling.ProcessModelMainView"
+﻿<UserControl x:Class="UnifiedDataExplorer.View.ProcessModeling.ProcessNodeView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,18 +8,16 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="0" Grid.Column="0" BorderThickness="1" BorderBrush="LightGray" Padding="10">
-            <ContentControl Content="{Binding NodesNavigationViewModel}"/>
-        </Border>
-        <Border Grid.Row="0" Grid.Column="1" BorderThickness="1" BorderBrush="LightGray" Padding="10">
-            <ContentControl Grid.Row="0" Grid.Column="1" Content="{Binding SelectedProcessNode}" Margin="20 0 0 0"/>
-        </Border>
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Label Content="{Binding NodeTypeName}"/>
+            <Label Content="Name:" Margin="0 0 5 0" Padding="0 4 0 0"/>
+            <TextBox Text="{Binding NodeName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Padding="10 0 10 0" FontSize="14"/>
+        </StackPanel>
     </Grid>
 </UserControl>
