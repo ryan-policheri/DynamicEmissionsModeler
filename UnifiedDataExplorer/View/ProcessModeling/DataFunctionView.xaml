@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UnifiedDataExplorer.View.ProcessModeling"
+             xmlns:vm="clr-namespace:UnifiedDataExplorer.ViewModel.ProcessModeling"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -24,11 +26,101 @@
 
             <TextBlock Grid.Column="0" Text="Function of unit: " Margin="0 5 0 0"/>
             <ComboBox Grid.Column="1" ItemsSource="{Binding UnitTypes}" SelectedItem="{Binding SelectedUnitType}" Margin="5 0 10 0" MinWidth="75" FontWeight="Bold"/>
-            <TextBlock Grid.Column="2" Text=" and domain: " Margin="0 5 0 0"/>
+            <TextBlock Grid.Column="2" Text=" and type: " Margin="0 5 0 0"/>
             <ComboBox Grid.Column="3" ItemsSource="{Binding UnitForms}" SelectedItem="{Binding SelectedUnitForm}" Margin="5 0 10 0" MinWidth="75" FontWeight="Bold"/>
 
             <TextBlock Grid.Column="4" Text="and name: " Margin="0 5 0 0"/>
-            <TextBox Grid.Column="5" Text="{Binding FunctionName, Mode=TwoWay}" Visibility="{Binding NameReady, Converter={StaticResource BoolToVisibility}}" Margin="5 0 0 0" FontWeight="Bold"/>
+            <TextBox Grid.Column="5" Text="{Binding FunctionName, Mode=TwoWay}" Visibility="{Binding UnitAndTypeSelected, Converter={StaticResource BoolToVisibility}}" Margin="5 0 0 0" FontWeight="Bold"/>
+        </Grid>
+
+        <Grid Grid.Row="1" Visibility="{Binding UnitAndTypeSelected, Converter={StaticResource BoolToVisibility}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="Description" Margin="0 20 0 0" FontWeight="Bold"/>
+            <TextBox Grid.Row="1" Text="Start" Margin="0 0 0 0" 
+                 TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" SpellCheck.IsEnabled="True" MinLines="3" BorderThickness="1"/>
+
+            <TextBlock Grid.Row="2" FontSize="16">
+                <Run Text="public " Foreground="Blue"/>
+                <Run Text="{Binding ReturnType, Mode=OneWay}" Foreground="#2B91AF"/>
+                <Run Text="{Binding MethodName, Mode=OneWay}" Foreground="#74531F"/>
+                <Run Text="("/>
+                <ListBox ItemsSource="{Binding FunctionFactors}">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel IsItemsHost="True" Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:FunctionFactorViewModel}">
+                            <TextBlock Text="{Binding FactorName}"></TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Run Text=")"/>
+            </TextBlock>
+
+            <TextBlock Grid.Row="3" Text="{}{"/>
+
+            <TextBox Grid.Row="4" Text="{Binding FunctionCode, Mode=TwoWay}" Margin="15 0 0 0" 
+                 TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" SpellCheck.IsEnabled="True" MinLines="3" BorderThickness="0.5" VerticalScrollBarVisibility="Auto" />
+
+            <TextBlock Grid.Row="5" Text="{}}"/>
+
+            <Grid Grid.Row="6" Margin="0 10 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" Grid.Column="0">
+                    <Button ToolTip="Add a new parameter to the function" Padding="5" Height="Auto" Background="Transparent"
+                            Command="{Binding OpenEiaExplorer}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="FunctionVariant" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Add Factor"/>
+                        </StackPanel>
+                    </Button>
+                    <Button ToolTip="Test that the function code compiles successfully" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
+                        Command="{Binding OpenEiaExplorer}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="CodeBraces" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Compile"/>
+                        </StackPanel>
+                    </Button>
+                    <Button ToolTip="Test the function with sample data" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
+                        Command="{Binding OpenEiaExplorer}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="TestTube" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Test"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button ToolTip="Confirm adding this function" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
+                            Command="{Binding OpenEiaExplorer}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="ContentSave" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Confirm"/>
+                        </StackPanel>
+                    </Button>
+                    <Button ToolTip="Delete this function" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
+                            Command="{Binding OpenEiaExplorer}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Delete" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Delete"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>
