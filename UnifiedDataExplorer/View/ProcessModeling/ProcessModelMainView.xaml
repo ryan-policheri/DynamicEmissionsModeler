@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UnifiedDataExplorer.View.ProcessModeling"
              xmlns:vm="clr-namespace:UnifiedDataExplorer.ViewModel.ProcessModeling"
+             xmlns:vmBase="clr-namespace:UnifiedDataExplorer.ViewModel.Base"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -17,7 +19,23 @@
         </Grid.ColumnDefinitions>
 
         <Border Grid.Row="0" Grid.Column="0" BorderThickness="1" BorderBrush="LightGray" Padding="10">
-            <ContentControl Content="{Binding NodesNavigationViewModel}"/>
+            <StackPanel>
+                <Button ToolTip="Save Process Model" Margin="0 0 0 10" Padding="5" Height="Auto" Background="Transparent"
+                        Command="{Binding SaveCommand}" CommandParameter="false">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="ContentSaveAll" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                        <TextBlock Text="Save" />
+                    </StackPanel>
+                </Button>
+                <Button ToolTip="Save Process Model" Margin="0 0 0 10" Padding="5" Height="Auto" Background="Transparent"
+                        Command="{Binding SaveCommand}" CommandParameter="true">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="ContentSaveEdit" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                        <TextBlock Text="Save As" />
+                    </StackPanel>
+                </Button>
+                <ContentControl Content="{Binding NodesNavigationViewModel}"/>
+            </StackPanel>
         </Border>
         <Border Grid.Row="0" Grid.Column="1" BorderThickness="1" BorderBrush="LightGray" Padding="10">
             <ContentControl Content="{Binding SelectedProcessNode}" />

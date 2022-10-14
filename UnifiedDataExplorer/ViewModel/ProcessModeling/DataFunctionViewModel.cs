@@ -14,8 +14,9 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 {
     public class DataFunctionViewModel : RobustViewModelBase
     {
-        private DataFunction _model;
         private readonly ICollection<FunctionTypeMapping> _functionTypes;
+        private DataFunction _model;
+        private Action<ViewModelDataStatus> _onDoneCallback;
 
         public DataFunctionViewModel(RobustViewModelDependencies facade) : base(facade)
         {
@@ -30,11 +31,13 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             FunctionFactors = new ObservableCollection<FunctionFactorViewModel>();
             OpenFactor = new DelegateCommand<FunctionFactorViewModel>(OnOpenFactor);
             AddFactor = new DelegateCommand(OnAddFactor);
+            DoneCommand = new DelegateCommand<ViewModelDataStatus?>(OnDoneCommand);
         }
 
-        public void Load(DataFunction func)
+        public void Load(DataFunction func, Action<ViewModelDataStatus> callback)
         {
             _model = func;
+            _onDoneCallback = callback;
         }
 
         public ObservableCollection<string> UnitTypes { get; }
@@ -75,7 +78,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         public string FunctionName
         {
             get { return _model?.FunctionName; }
-            set { if (_model != null) _model.FunctionName = value; OnPropertyChanged(); }
+            set { if (_model != null) _model.FunctionName = value; OnPropertyChanged(); OnPropertyChanged(nameof(MethodName)); }
         }
 
         public string ReturnType => _model?.GetReturnType().Name;
@@ -91,18 +94,6 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         public ObservableCollection<FunctionFactorViewModel> FunctionFactors { get; }
 
         public ICommand OpenFactor { get; }
-        public ICommand AddFactor { get; }
-
-        private void PopulateUnitForms(string selectedUnit)
-        {
-            this.UnitForms.Clear();
-            foreach (string form in _functionTypes.Where(x => x.FunctionUnit == selectedUnit)
-                         .Select(x => x.FunctionUnitForm))
-            {
-                this.UnitForms.Add(form);
-            }
-        }
-
         private void OnOpenFactor(FunctionFactorViewModel obj)
         {
             FunctionFactorViewModel copy = obj.Copy();
@@ -117,13 +108,34 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             }, ModalOptions.SaveCancelDeleteOption);
         }
 
+        public ICommand AddFactor { get; }
         private void OnAddFactor()
         {
             FunctionFactorViewModel factorVm = new FunctionFactorViewModel(new FunctionFactor());
             this.DialogService.ShowModalWindow(factorVm, () =>
             {
-                if(factorVm.Status == ViewModelDataStatus.Saved) FunctionFactors.Add(factorVm);
+                if (factorVm.Status == ViewModelDataStatus.Saved) FunctionFactors.Add(factorVm);
             }, ModalOptions.SaveCancelOption);
+        }
+
+        public ICommand DoneCommand { get; }
+        private void OnDoneCommand(ViewModelDataStatus? obj)
+        {
+            if (obj != null)
+            {
+                _onDoneCallback(obj.Value);
+            }
+        }
+
+
+        private void PopulateUnitForms(string selectedUnit)
+        {
+            this.UnitForms.Clear();
+            foreach (string form in _functionTypes.Where(x => x.FunctionUnit == selectedUnit)
+                         .Select(x => x.FunctionUnitForm))
+            {
+                this.UnitForms.Add(form);
+            }
         }
     }
 }

@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UnifiedDataExplorer.View.ProcessModeling"
              xmlns:vm="clr-namespace:UnifiedDataExplorer.ViewModel.ProcessModeling"
+             xmlns:vmBase="clr-namespace:UnifiedDataExplorer.ViewModel.Base"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -106,14 +107,21 @@
                 </StackPanel>
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
                     <Button ToolTip="Confirm adding this function" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
-                            Command="{Binding OpenEiaExplorer}">
+                            Command="{Binding DoneCommand}" CommandParameter="{x:Static vmBase:ViewModelDataStatus.Saved}">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="ContentSave" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
-                            <TextBlock Text="Confirm"/>
+                            <TextBlock Text="Save" />
+                        </StackPanel>
+                    </Button>
+                    <Button ToolTip="Cancel changes to this function" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
+                            Command="{Binding DoneCommand}" CommandParameter="{x:Static vmBase:ViewModelDataStatus.Canceled}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Cancel" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Cancel"/>
                         </StackPanel>
                     </Button>
                     <Button ToolTip="Delete this function" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
-                            Command="{Binding OpenEiaExplorer}">
+                            Command="{Binding DoneCommand}" CommandParameter="{x:Static vmBase:ViewModelDataStatus.Deleted}">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Delete" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
                             <TextBlock Text="Delete"/>

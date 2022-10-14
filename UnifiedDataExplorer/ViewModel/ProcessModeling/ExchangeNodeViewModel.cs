@@ -39,7 +39,11 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             foreach (DataFunction function in exchangeNode.Costs)
             {
                 var vm = this.Resolve<DataFunctionViewModel>();
-                vm.Load(function);
+                vm.Load(function, (status) =>
+                {
+                    if (status == ViewModelDataStatus.Deleted) this.CostFunctions.Remove(vm);
+                    this.SelectedCostFunction = null;
+                });
                 CostFunctions.Add(vm);
             }
         }
@@ -47,7 +51,11 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         private void OnAddCostFunction()
         {
             var vm = this.Resolve<DataFunctionViewModel>();
-            vm.Load(null);
+            vm.Load(null, (status) =>
+            {
+                if (status == ViewModelDataStatus.Deleted) this.CostFunctions.Remove(vm);
+                this.SelectedCostFunction = null;
+            });
             CostFunctions.Add(vm);
             SelectedCostFunction = vm;
         }

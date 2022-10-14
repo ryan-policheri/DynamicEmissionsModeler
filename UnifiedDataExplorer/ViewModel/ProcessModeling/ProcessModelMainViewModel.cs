@@ -17,11 +17,14 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         {
             NodesNavigationViewModel = nodeNavViewModel;
             NodesNavigationViewModel.PropertyChanged += NodesNavigationViewModel_PropertyChanged;
+            SaveCommand = new DelegateCommand<bool?>(OnSave);
         }
 
         public NodesNavigationViewModel NodesNavigationViewModel { get; }
 
         public ProcessNodeViewModel SelectedProcessNode { get; private set; }
+
+        public ICommand SaveCommand { get; }
 
         private void NodesNavigationViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs args)
         {
@@ -29,6 +32,11 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             {
                 SelectedProcessNode = NodesNavigationViewModel.SelectedProcessNode; OnPropertyChanged(nameof(SelectedProcessNode));
             }
+        }
+
+        private void OnSave(bool? obj)
+        {
+            //EnergyModelSaveItem 
         }
     }
 }
