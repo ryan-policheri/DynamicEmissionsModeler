@@ -1,11 +1,13 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using UnifiedDataExplorer.ViewModel;
 
 namespace UnifiedDataExplorer
 {
     public partial class ModalWindow : Window
     {
-        private ModalViewModel _dataContext;
+        private ModalViewModel ViewModel;
+        private bool ClosedByViewModel = false;
 
         public ModalWindow()
         {
@@ -14,20 +16,27 @@ namespace UnifiedDataExplorer
 
         private void ModalWindow_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (_dataContext != null)
+            if (ViewModel != null)
             {
-                _dataContext.OnRequestClose -= _dataContext_OnRequestClose;
+                ViewModel.OnRequestClose -= ViewModelOnRequestClose;
             }
             if (this.DataContext as ModalViewModel != null)
             {
-                this._dataContext = this.DataContext as ModalViewModel;
-                this._dataContext.OnRequestClose += _dataContext_OnRequestClose;
+                this.ViewModel = this.DataContext as ModalViewModel;
+                this.ViewModel.OnRequestClose += ViewModelOnRequestClose;
             }
         }
 
-        private void _dataContext_OnRequestClose(object sender, Events.CloseViewModelEvent args)
+        private void ViewModelOnRequestClose(object sender, Events.CloseViewModelEvent args)
         {
+            ClosedByViewModel = true;
             this.Close();
+        }
+
+        private void ModalWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            //if(!ClosedByViewModel) e.Cancel = true;
+            //this.ViewModel.CancelProxyCommand.Execute(null);
         }
     }
 }

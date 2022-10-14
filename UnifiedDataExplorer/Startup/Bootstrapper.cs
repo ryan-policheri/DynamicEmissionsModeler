@@ -14,7 +14,7 @@ using UIowaBuildingsServices;
 using UnifiedDataExplorer.ViewModel;
 using UnifiedDataExplorer.ViewModel.Base;
 using UnifiedDataExplorer.ViewModel.MainMenu;
-using UnifiedDataExplorer.Services.Window;
+using UnifiedDataExplorer.Services.WindowDialog;
 using UnifiedDataExplorer.Services.DataPersistence;
 using UnifiedDataExplorer.Services.Reporting;
 using UnifiedDataExplorer.ViewModel.DataSources;
@@ -128,6 +128,9 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<ProcessModelMainViewModel>();
             services.AddTransient<NodesNavigationViewModel>();
             services.AddTransient<EnergyModelFileSystemViewModel>();
+            services.AddTransient<ExchangeNodeViewModel>();
+            services.AddTransient<LikeTermAggregatorNodeViewModel>();
+            services.AddTransient<DataFunctionViewModel>();
 
             //EMISSIONS MONITOR SERVICES
             services.AddTransient<IDataSourceRepository, DataSourceClient>((provider =>

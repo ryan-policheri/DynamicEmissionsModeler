@@ -3,7 +3,7 @@ using DotNetCommon.EventAggregation;
 using DotNetCommon.MVVM;
 using Microsoft.Extensions.Logging;
 using UnifiedDataExplorer.Services.DataPersistence;
-using UnifiedDataExplorer.Services.Window;
+using UnifiedDataExplorer.Services.WindowDialog;
 
 namespace UnifiedDataExplorer.ViewModel.Base
 {

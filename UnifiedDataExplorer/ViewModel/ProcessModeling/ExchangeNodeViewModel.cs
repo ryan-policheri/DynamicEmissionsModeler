@@ -1,29 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
 using EmissionsMonitorModel.ProcessModeling;
+using UnifiedDataExplorer.ViewModel.Base;
 
 namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 {
     public class ExchangeNodeViewModel : ProcessNodeViewModel
     {
-        private readonly ExchangeNode _model;
+        private ExchangeNode _model;
 
-        public ExchangeNodeViewModel(ExchangeNode exchangeNode) : base(exchangeNode)
+        public ExchangeNodeViewModel(RobustViewModelDependencies facade) : base(facade)
         {
-            _model = exchangeNode;
+
             CostFunctions = new ObservableCollection<DataFunctionViewModel>();
             AddCostFunction = new DelegateCommand(OnAddCostFunction);
-
-            foreach (DataFunction function in exchangeNode.Costs)
-            {
-                CostFunctions.Add(new DataFunctionViewModel(function));
-            }
         }
 
         public override string NodeTypeName => "Exchange Node";
@@ -36,13 +28,28 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             get { return _selectedCostFunction; }
             set { SetField(ref _selectedCostFunction, value); }
         }
+        
         public ICommand AddCostFunction { get; }
+
+        public void Load(ExchangeNode exchangeNode)
+        {
+            base.Load(exchangeNode);
+            _model = exchangeNode;
+
+            foreach (DataFunction function in exchangeNode.Costs)
+            {
+                var vm = this.Resolve<DataFunctionViewModel>();
+                vm.Load(function);
+                CostFunctions.Add(vm);
+            }
+        }
 
         private void OnAddCostFunction()
         {
-            DataFunctionViewModel newFunc = new DataFunctionViewModel(null);
-            CostFunctions.Add(newFunc);
-            SelectedCostFunction = newFunc;
+            var vm = this.Resolve<DataFunctionViewModel>();
+            vm.Load(null);
+            CostFunctions.Add(vm);
+            SelectedCostFunction = vm;
         }
     }
 }

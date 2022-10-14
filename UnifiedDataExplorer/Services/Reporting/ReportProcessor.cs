@@ -11,7 +11,7 @@ using UIowaBuildingsServices;
 using UnifiedDataExplorer.Constants;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.Services.DataPersistence;
-using UnifiedDataExplorer.Services.Window;
+using UnifiedDataExplorer.Services.WindowDialog;
 using UnifiedDataExplorer.ViewModel;
 using EmissionsMonitorModel;
 using DotNetCommon.Helpers;

@@ -61,7 +61,7 @@
                     </ListBox.ItemsPanel>
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type vm:FunctionFactorViewModel}">
-                            <TextBlock Text="{Binding FactorName}"></TextBlock>
+                            <TextBlock Text="{Binding FactorName}" MouseDown="OnDoubleClick"/>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -83,7 +83,7 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal" Grid.Column="0">
                     <Button ToolTip="Add a new parameter to the function" Padding="5" Height="Auto" Background="Transparent"
-                            Command="{Binding OpenEiaExplorer}">
+                            Command="{Binding AddFactor}">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="FunctionVariant" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
                             <TextBlock Text="Add Factor"/>

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DotNetCommon.MVVM;
+﻿using DotNetCommon.MVVM;
 using EmissionsMonitorModel.ProcessModeling;
+using UnifiedDataExplorer.ViewModel.Base;
 
 namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 {
-    public class FunctionFactorViewModel : ViewModelBase
+    public class FunctionFactorViewModel : ViewModelBase, IHaveDataStatus
     {
         private readonly FunctionFactor _model;
 
@@ -23,5 +19,6 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             set { if(_model != null) _model.FactorName = value; OnPropertyChanged(); }
         }
 
+        public ViewModelDataStatus Status { get; set; }
     }
 }

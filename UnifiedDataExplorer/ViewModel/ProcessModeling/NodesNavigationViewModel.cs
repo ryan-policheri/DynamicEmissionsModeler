@@ -43,7 +43,8 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 
         private void AddExchangeNode()
         {
-            ExchangeNodeViewModel vm = new (new ExchangeNode());
+            ExchangeNodeViewModel vm = this.Resolve<ExchangeNodeViewModel>();
+            vm.Load(new ExchangeNode());
             vm.NodeName = "New Exchange Node";
             ProcessNodes.Add(vm);
             SelectedProcessNode = vm;
@@ -54,7 +55,8 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 
         private void AddLikeTermAggregator()
         {
-            LikeTermAggregatorNodeViewModel vm = new LikeTermAggregatorNodeViewModel(new LikeTermsAggregatorNode());
+            LikeTermAggregatorNodeViewModel vm = this.Resolve<LikeTermAggregatorNodeViewModel>();
+            vm.Load(new LikeTermsAggregatorNode());
             vm.NodeName = "New Like Term Aggregator Node";
             ProcessNodes.Add(vm);
             SelectedProcessNode = vm;

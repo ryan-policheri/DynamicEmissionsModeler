@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using UnifiedDataExplorer.ViewModel.ProcessModeling;
+using UnifiedDataExplorer.ViewModel.VirtualFileSystem;
 
 namespace UnifiedDataExplorer.View.ProcessModeling
 {
@@ -20,9 +22,20 @@ namespace UnifiedDataExplorer.View.ProcessModeling
     /// </summary>
     public partial class DataFunctionView : UserControl
     {
+        public DataFunctionViewModel ViewModel => this.DataContext as DataFunctionViewModel;
+
         public DataFunctionView()
         {
             InitializeComponent();
+        }
+
+        private void OnDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2 && ViewModel != null)
+            {
+                FunctionFactorViewModel senderVm = (sender as TextBlock)?.DataContext as FunctionFactorViewModel;
+                ViewModel.OpenFactor.Execute(senderVm);
+            }
         }
     }
 }

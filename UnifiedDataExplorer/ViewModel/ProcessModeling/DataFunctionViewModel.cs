@@ -5,21 +5,20 @@ using System.Linq;
 using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
 using DotNetCommon.DynamicCompilation;
-using DotNetCommon.MVVM;
+using DotNetCommon.Extensions;
 using EmissionsMonitorModel.ProcessModeling;
-using UnifiedDataExplorer.Services.Window;
+using UnifiedDataExplorer.Services.WindowDialog;
+using UnifiedDataExplorer.ViewModel.Base;
 
 namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 {
-    public class DataFunctionViewModel : ViewModelBase
+    public class DataFunctionViewModel : RobustViewModelBase
     {
         private DataFunction _model;
         private readonly ICollection<FunctionTypeMapping> _functionTypes;
 
-        public DataFunctionViewModel(DataFunction func)
+        public DataFunctionViewModel(RobustViewModelDependencies facade) : base(facade)
         {
-
-            _model = func;
             _functionTypes = DataFunction.GetAllFunctionTypeMappings().ToList();
             UnitTypes = new ObservableCollection<string>();
             UnitForms = new ObservableCollection<string>();
@@ -28,7 +27,14 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
                 UnitTypes.Add(unitType);
             }
 
+            FunctionFactors = new ObservableCollection<FunctionFactorViewModel>();
+            OpenFactor = new DelegateCommand<FunctionFactorViewModel>(OnOpenFactor);
             AddFactor = new DelegateCommand(OnAddFactor);
+        }
+
+        public void Load(DataFunction func)
+        {
+            _model = func;
         }
 
         public ObservableCollection<string> UnitTypes { get; }
@@ -82,8 +88,9 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             set { if(_model != null) _model.FunctionCode = value; OnPropertyChanged(); }
         }
 
-        public ObservableCollection<FunctionFactorViewModel> FunctionFactors { get; set; }
+        public ObservableCollection<FunctionFactorViewModel> FunctionFactors { get; }
 
+        public ICommand OpenFactor { get; }
         public ICommand AddFactor { get; }
 
         private void PopulateUnitForms(string selectedUnit)
@@ -96,9 +103,27 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             }
         }
 
+        private void OnOpenFactor(FunctionFactorViewModel obj)
+        {
+            FunctionFactorViewModel copy = obj.Copy();
+            this.DialogService.ShowModalWindow(obj, () =>
+            {
+                if (obj.Status == ViewModelDataStatus.Deleted) FunctionFactors.Remove(obj);
+                if (obj.Status == ViewModelDataStatus.Canceled)
+                {
+                    FunctionFactors.Remove(obj);
+                    FunctionFactors.Add(copy);
+                }
+            }, ModalOptions.SaveCancelDeleteOption);
+        }
+
         private void OnAddFactor()
         {
-            throw new NotImplementedException();
+            FunctionFactorViewModel factorVm = new FunctionFactorViewModel(new FunctionFactor());
+            this.DialogService.ShowModalWindow(factorVm, () =>
+            {
+                if(factorVm.Status == ViewModelDataStatus.Saved) FunctionFactors.Add(factorVm);
+            }, ModalOptions.SaveCancelOption);
         }
     }
 }

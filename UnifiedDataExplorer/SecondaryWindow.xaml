@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UnifiedDataExplorer"
         mc:Ignorable="d"
-        Title="SecondaryWindow" Height="450" Width="800" DataContextChanged="ModalWindow_OnDataContextChanged">
+        Title="SecondaryWindow" Height="450" Width="800" DataContextChanged="ModalWindow_OnDataContextChanged"
+        Icon="./Resources/Images/Leaf2.png">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

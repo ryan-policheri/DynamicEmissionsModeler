@@ -1,21 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EmissionsMonitorModel.ProcessModeling;
+﻿using EmissionsMonitorModel.ProcessModeling;
+using UnifiedDataExplorer.ViewModel.Base;
 
 namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 {
     public class LikeTermAggregatorNodeViewModel : ProcessNodeViewModel
     {
-        private readonly LikeTermsAggregatorNode _model;
+        private LikeTermsAggregatorNode _model;
 
-        public LikeTermAggregatorNodeViewModel(LikeTermsAggregatorNode aggregatorNode) : base(aggregatorNode)
+        public LikeTermAggregatorNodeViewModel(RobustViewModelDependencies facade) : base(facade)
         {
-            _model = aggregatorNode;
         }
 
         public override string NodeTypeName => "Like Term Aggregator Node";
+
+        public void Load(LikeTermsAggregatorNode aggregatorNode)
+        {
+            base.Load(aggregatorNode);
+            _model = aggregatorNode;
+        }
     }
 }
