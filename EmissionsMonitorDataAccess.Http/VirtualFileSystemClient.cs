@@ -67,5 +67,15 @@ namespace EmissionsMonitorDataAccess.Http
         {
             return await this.PostAsync<ExploreSetSaveItem>($"exploresets", saveItem);
         }
+
+        public Task<ModelSaveItem> GetModelSaveItemAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ModelSaveItem> SaveModelSaveItemAsync(ModelSaveItem saveItem)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

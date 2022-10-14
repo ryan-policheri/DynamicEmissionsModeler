@@ -127,10 +127,10 @@ namespace UnifiedDataExplorer.Startup
             //ENERGY MODELING
             services.AddTransient<ProcessModelMainViewModel>();
             services.AddTransient<NodesNavigationViewModel>();
-            services.AddTransient<EnergyModelFileSystemViewModel>();
             services.AddTransient<ExchangeNodeViewModel>();
             services.AddTransient<LikeTermAggregatorNodeViewModel>();
             services.AddTransient<DataFunctionViewModel>();
+            services.AddTransient<EnergyModelFileSystemViewModel>();
 
             //EMISSIONS MONITOR SERVICES
             services.AddTransient<IDataSourceRepository, DataSourceClient>((provider =>

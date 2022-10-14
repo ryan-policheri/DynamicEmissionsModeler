@@ -5,6 +5,7 @@
              xmlns:converters="clr-namespace:UnifiedDataExplorer.Converters"
              xmlns:datasourcemodel="clr-namespace:EmissionsMonitorModel.DataSources;assembly=EmissionsMonitorModel"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              Startup="Application_Startup"
              DispatcherUnhandledException="Application_DispatcherUnhandledException">
     <Application.Resources>
@@ -13,6 +14,9 @@
                 <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="BlueGrey" SecondaryColor="Amber" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <system:Boolean x:Key="FalseValue">False</system:Boolean>
+            <system:Boolean x:Key="TrueValue">True</system:Boolean>
 
             <!--CONVERTERS-->
             <converters:DataSourceTypeToResourceIcon x:Key="DataSourceTypeToIconPath"/>

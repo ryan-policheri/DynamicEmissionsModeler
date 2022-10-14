@@ -21,14 +21,14 @@
         <Border Grid.Row="0" Grid.Column="0" BorderThickness="1" BorderBrush="LightGray" Padding="10">
             <StackPanel>
                 <Button ToolTip="Save Process Model" Margin="0 0 0 10" Padding="5" Height="Auto" Background="Transparent"
-                        Command="{Binding SaveCommand}" CommandParameter="false">
+                        Command="{Binding SaveCommand}" CommandParameter="{StaticResource FalseValue}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="ContentSaveAll" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
                         <TextBlock Text="Save" />
                     </StackPanel>
                 </Button>
                 <Button ToolTip="Save Process Model" Margin="0 0 0 10" Padding="5" Height="Auto" Background="Transparent"
-                        Command="{Binding SaveCommand}" CommandParameter="true">
+                        Command="{Binding SaveCommand}" CommandParameter="{StaticResource TrueValue}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="ContentSaveEdit" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
                         <TextBlock Text="Save As" />

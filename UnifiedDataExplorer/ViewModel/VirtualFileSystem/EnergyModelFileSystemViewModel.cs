@@ -1,8 +1,8 @@
-﻿using System;
-using EmissionsMonitorDataAccess.Abstractions;
+﻿using EmissionsMonitorDataAccess.Abstractions;
 using EmissionsMonitorModel.VirtualFileSystem;
 using System.Threading.Tasks;
 using UnifiedDataExplorer.ViewModel.Base;
+using UnifiedDataExplorer.Events;
 
 namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
 {
@@ -19,12 +19,24 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
 
         protected override async Task<SaveItem> OnSaveAsync(SaveItem saveItem)
         {
-            throw new NotImplementedException();
+            var modelSave = (ModelSaveItem)saveItem;
+            if (modelSave != null && this.SelectedFolder != null)
+            {
+                modelSave = await Repo.SaveModelSaveItemAsync(modelSave);
+                return modelSave;
+            }
+            return null;
         }
 
         protected override async Task OnOpenSaveItemAsync(int id)
         {
-            throw new NotImplementedException();
+            ModelSaveItem modelSave = await Repo.GetModelSaveItemAsync(id);
+            MessageHub.Publish(new OpenSaveItemEvent
+            {
+                Sender = this,
+                SenderTypeName = nameof(EnergyModelFileSystemViewModel),
+                SaveItem = modelSave
+            });
         }
     }
 }

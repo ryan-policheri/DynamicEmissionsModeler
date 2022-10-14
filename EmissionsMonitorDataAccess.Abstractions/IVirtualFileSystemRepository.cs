@@ -19,5 +19,7 @@ namespace EmissionsMonitorDataAccess.Abstractions
         public Task<SaveItem> DeleteSaveItemAsync(int itemId);
         public Task<ExploreSetSaveItem> GetExploreSetItemAsync(int itemId);
         public Task<ExploreSetSaveItem> CreateExploreSetItemAsync(ExploreSetSaveItem saveItem);
+        public Task<ModelSaveItem> GetModelSaveItemAsync(int id);
+        public Task<ModelSaveItem> SaveModelSaveItemAsync(ModelSaveItem saveItem);
     }
 }

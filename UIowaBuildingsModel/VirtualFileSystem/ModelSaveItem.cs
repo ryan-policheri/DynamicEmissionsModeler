@@ -6,5 +6,7 @@
         {
             SaveItemType = SaveItemTypes.ModelSaveItem;
         }
+
+        public string ProcessModelJsonDetails { get; set; }
     }
 }

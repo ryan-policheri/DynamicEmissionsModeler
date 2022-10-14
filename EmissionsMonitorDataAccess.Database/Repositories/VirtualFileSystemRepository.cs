@@ -123,5 +123,15 @@ namespace EmissionsMonitorDataAccess.Database.Repositories
             await _context.SaveChangesAsync();
             return saveItem;
         }
+
+        public Task<ModelSaveItem> GetModelSaveItemAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ModelSaveItem> SaveModelSaveItemAsync(ModelSaveItem saveItem)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
