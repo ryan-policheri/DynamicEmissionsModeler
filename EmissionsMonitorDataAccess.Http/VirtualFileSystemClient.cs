@@ -6,11 +6,6 @@ namespace EmissionsMonitorDataAccess.Http
 {
     public class VirtualFileSystemClient : EmissionsMonitorClient, IVirtualFileSystemRepository
     {
-        public VirtualFileSystemClient()
-        {
-            this.SerializerOptions
-        }
-
         public new void Initialize(IEmissionsMonitorClientConfig config)
         {
             base.Initialize(config);
