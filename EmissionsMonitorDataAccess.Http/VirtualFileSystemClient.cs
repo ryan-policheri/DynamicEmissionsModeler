@@ -6,6 +6,10 @@ namespace EmissionsMonitorDataAccess.Http
 {
     public class VirtualFileSystemClient : EmissionsMonitorClient, IVirtualFileSystemRepository
     {
+        public VirtualFileSystemClient()
+        {
+            this.SerializerOptions
+        }
 
         public new void Initialize(IEmissionsMonitorClientConfig config)
         {
@@ -68,14 +72,14 @@ namespace EmissionsMonitorDataAccess.Http
             return await this.PostAsync<ExploreSetSaveItem>($"exploresets", saveItem);
         }
 
-        public Task<ModelSaveItem> GetModelSaveItemAsync(int id)
+        public async Task<ModelSaveItem> GetModelSaveItemAsync(int id)
         {
-            throw new NotImplementedException();
+            return await this.GetAsync<ModelSaveItem>($"processmodels/{id}");
         }
 
-        public Task<ModelSaveItem> SaveModelSaveItemAsync(ModelSaveItem saveItem)
+        public async Task<ModelSaveItem> SaveModelSaveItemAsync(ModelSaveItem saveItem)
         {
-            throw new NotImplementedException();
+            return await this.PostAsync<ModelSaveItem>($"processmodels", saveItem);
         }
     }
 }

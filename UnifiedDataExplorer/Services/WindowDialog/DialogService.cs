@@ -48,10 +48,13 @@ namespace UnifiedDataExplorer.Services.WindowDialog
         }
 
         //Modal shows on main windows and blocks all windows until modal completes
-        public T ShowModalWindow<T>(T dataContext)
+        public T ShowModalWindow<T>(T dataContext, ModalOptions options = null)
         {
+            if (options == null) options = ModalOptions.DefaultModalOptions;
+
             var modalVm = _modalViewModelFactory();
             modalVm.ChildViewModel = dataContext;
+            modalVm.Options = options;
 
             System.Windows.Window currentWindow = App.Current.Windows.OfType<System.Windows.Window>().SingleOrDefault(x => x.IsActive);
             ModalWindow modalWindow = new ModalWindow();

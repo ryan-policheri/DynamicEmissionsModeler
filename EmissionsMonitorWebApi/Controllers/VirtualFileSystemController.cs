@@ -85,5 +85,17 @@ namespace EmissionsMonitorWebApi.Controllers
         {
             return await _repo.CreateExploreSetItemAsync(exploreSetItem);
         }
+
+        [HttpGet("processmodels/{itemId}")]
+        public async Task<ModelSaveItem> GetProcessModelAsync(int itemId)
+        {
+            return await _repo.GetModelSaveItemAsync(itemId);
+        }
+
+        [HttpPost("processmodels")]
+        public async Task<ModelSaveItem> SaveProcessModelAsync(ModelSaveItem modelSaveItem)
+        {
+            return await _repo.SaveModelSaveItemAsync(modelSaveItem);
+        }
     }
 }

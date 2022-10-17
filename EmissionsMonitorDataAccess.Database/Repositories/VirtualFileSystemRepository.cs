@@ -2,6 +2,7 @@
 using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorModel.VirtualFileSystem;
 using Microsoft.EntityFrameworkCore;
+using UnitsNet;
 
 namespace EmissionsMonitorDataAccess.Database.Repositories
 {
@@ -124,14 +125,25 @@ namespace EmissionsMonitorDataAccess.Database.Repositories
             return saveItem;
         }
 
-        public Task<ModelSaveItem> GetModelSaveItemAsync(int id)
+        public async Task<ModelSaveItem> GetModelSaveItemAsync(int id)
         {
-            throw new NotImplementedException();
+            var item = await _context.Set<ModelSaveItem>().AsNoTracking()
+                .Where(x => x.SaveItemId == id)
+                .FirstAsync();
+            return item;
         }
 
-        public Task<ModelSaveItem> SaveModelSaveItemAsync(ModelSaveItem saveItem)
+        public async Task<ModelSaveItem> SaveModelSaveItemAsync(ModelSaveItem source)
         {
-            throw new NotImplementedException();
+            ModelSaveItem existing = await _context.Set<ModelSaveItem>().FirstOrDefaultAsync(x => x.SaveItemId == source.SaveItemId);
+            if (existing == null) _context.Set<ModelSaveItem>().Add(source);
+            else
+            {
+                _context.Set<ModelSaveItem>().Remove(existing);
+                _context.Set<ModelSaveItem>().Add(source);
+            }
+            await _context.SaveChangesAsync();
+            return source;
         }
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
 using DotNetCommon.Extensions;
@@ -37,6 +32,8 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
                 _model = _saveItem.ProcessModelJsonDetails.ConvertJsonToObject<ProcessModel>();
             }
             else _model = new ProcessModel();
+
+            NodesNavigationViewModel.Load(_model);
         }
 
         public NodesNavigationViewModel NodesNavigationViewModel { get; }

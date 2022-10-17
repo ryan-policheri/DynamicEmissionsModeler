@@ -11,11 +11,22 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         private const string EXCHANGE_NODE = "Exchange Node";
         private const string LIKE_TERM_AGGREGATOR = "Like Term Aggregator Node";
 
+        private ProcessModel _model;
+
         public NodesNavigationViewModel(RobustViewModelDependencies facade) : base(facade)
         {
             AddOptions = new ObservableCollection<string>();
             ProcessNodes = new ObservableCollection<ProcessNodeViewModel>();
             ResetAddOptions();
+        }
+
+        public void Load(ProcessModel model)
+        {
+            _model = model;
+            foreach (ProcessNode node in _model.ProcessNodes)
+            {
+                //ProcessNodes.Add(node);
+            }
         }
 
         public ObservableCollection<string> AddOptions { get; }
@@ -43,8 +54,10 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 
         private void AddExchangeNode()
         {
+            ExchangeNode node = new ExchangeNode();
+            _model.AddProcessNode(node);
             ExchangeNodeViewModel vm = this.Resolve<ExchangeNodeViewModel>();
-            vm.Load(new ExchangeNode());
+            vm.Load(node);
             vm.NodeName = "New Exchange Node";
             ProcessNodes.Add(vm);
             SelectedProcessNode = vm;
@@ -55,8 +68,10 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 
         private void AddLikeTermAggregator()
         {
+            LikeTermsAggregatorNode node = new LikeTermsAggregatorNode();
+            _model.AddProcessNode(node);
             LikeTermAggregatorNodeViewModel vm = this.Resolve<LikeTermAggregatorNodeViewModel>();
-            vm.Load(new LikeTermsAggregatorNode());
+            vm.Load(node);
             vm.NodeName = "New Like Term Aggregator Node";
             ProcessNodes.Add(vm);
             SelectedProcessNode = vm;

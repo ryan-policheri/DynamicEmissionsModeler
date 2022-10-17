@@ -96,10 +96,12 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
             this.DialogService.ShowModalWindow<DataSourceManagerViewModel>(viewModel);
         }
 
-        private void OnCreateEnergyModel()
+        private async void OnCreateEnergyModel()
         {
             ProcessModelMainViewModel viewModel = this.Resolve<ProcessModelMainViewModel>();
+            await viewModel.LoadAsync(-1);
             this.DialogService.OpenSecondaryWindow<ProcessModelMainViewModel>(viewModel);
+            
         }
 
         private async void OnSaveViewModelEvent(SaveViewModelEvent args)

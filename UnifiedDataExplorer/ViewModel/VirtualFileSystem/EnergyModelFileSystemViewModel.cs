@@ -2,7 +2,7 @@
 using EmissionsMonitorModel.VirtualFileSystem;
 using System.Threading.Tasks;
 using UnifiedDataExplorer.ViewModel.Base;
-using UnifiedDataExplorer.Events;
+using UnifiedDataExplorer.ViewModel.ProcessModeling;
 
 namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
 {
@@ -30,13 +30,9 @@ namespace UnifiedDataExplorer.ViewModel.VirtualFileSystem
 
         protected override async Task OnOpenSaveItemAsync(int id)
         {
-            ModelSaveItem modelSave = await Repo.GetModelSaveItemAsync(id);
-            MessageHub.Publish(new OpenSaveItemEvent
-            {
-                Sender = this,
-                SenderTypeName = nameof(EnergyModelFileSystemViewModel),
-                SaveItem = modelSave
-            });
+            ProcessModelMainViewModel viewModel = this.Resolve<ProcessModelMainViewModel>();
+            await viewModel.LoadAsync(id);
+            this.DialogService.OpenSecondaryWindow<ProcessModelMainViewModel>(viewModel);
         }
     }
 }
