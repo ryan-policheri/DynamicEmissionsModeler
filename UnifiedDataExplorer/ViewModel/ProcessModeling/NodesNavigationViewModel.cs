@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using EmissionsMonitorModel.ProcessModeling;
 using UnifiedDataExplorer.ViewModel.Base;
@@ -23,10 +24,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         public void Load(ProcessModel model)
         {
             _model = model;
-            foreach (ProcessNode node in _model.ProcessNodes)
-            {
-                //ProcessNodes.Add(node);
-            }
+            foreach (ProcessNode node in _model.ProcessNodes) WrapAndAddNode(node);
         }
 
         public ObservableCollection<string> AddOptions { get; }
@@ -37,8 +35,8 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             set
             {
                 SetField(ref _selectedAddOption, value);
-                if (value == EXCHANGE_NODE) AddExchangeNode();
-                if (value == LIKE_TERM_AGGREGATOR) AddLikeTermAggregator();
+                if (value == EXCHANGE_NODE) CreateAndWrapNode<ExchangeNode>();
+                if (value == LIKE_TERM_AGGREGATOR) CreateAndWrapNode<LikeTermsAggregatorNode>();
             }
         }
 
@@ -52,30 +50,32 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             set { SetField(ref _selectedProcessNode, value); }
         }
 
-        private void AddExchangeNode()
+        private void CreateAndWrapNode<T>() where T : ProcessNode
         {
-            ExchangeNode node = new ExchangeNode();
-            _model.AddProcessNode(node);
-            ExchangeNodeViewModel vm = this.Resolve<ExchangeNodeViewModel>();
-            vm.Load(node);
-            vm.NodeName = "New Exchange Node";
-            ProcessNodes.Add(vm);
-            SelectedProcessNode = vm;
-            SelectedAddOption = AddOptions.First(x => x == UNSELECTED);
+            T node = Activator.CreateInstance<T>();
+            node.Name = "New " + typeof(T).Name;
+            WrapAndAddNode(node);
             ResetAddOptions();
         }
 
-
-        private void AddLikeTermAggregator()
+        private void WrapAndAddNode(ProcessNode node)
         {
-            LikeTermsAggregatorNode node = new LikeTermsAggregatorNode();
-            _model.AddProcessNode(node);
-            LikeTermAggregatorNodeViewModel vm = this.Resolve<LikeTermAggregatorNodeViewModel>();
+            ProcessNodeViewModel vm;
+            switch (node.GetType().Name)
+            {
+                case nameof(ExchangeNode):
+                    vm = this.Resolve<ExchangeNodeViewModel>();
+                    break;
+                case nameof(LikeTermsAggregatorNode):
+                    vm = this.Resolve<LikeTermAggregatorNodeViewModel>();
+                    break;
+                default:
+                    throw new NotImplementedException(
+                        $"Do not know what viewmodel to use for the given node of type {node.GetType().Name}");
+            }
+
             vm.Load(node);
-            vm.NodeName = "New Like Term Aggregator Node";
             ProcessNodes.Add(vm);
-            SelectedProcessNode = vm;
-            ResetAddOptions();
         }
 
         private void ResetAddOptions()

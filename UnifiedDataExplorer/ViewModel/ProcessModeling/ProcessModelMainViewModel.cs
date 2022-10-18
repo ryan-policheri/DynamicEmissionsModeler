@@ -55,15 +55,15 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             if (_saveItem == null || saveAs.Value)
             {
                 var vm = this.Resolve<EnergyModelFileSystemViewModel>();
-                _saveItem = new ModelSaveItem { ProcessModelJsonDetails = _model.ToJson() };
+                _saveItem = new ModelSaveItem { ProcessModelJsonDetails = _model.ToJson<ProcessModel>() };
                 vm.SaveData = _saveItem;
                 await vm.LoadAsync(FileSystemMode.SaveOrManage);
                 this.DialogService.ShowModalWindow(vm);
             }
             else
             {
-                _saveItem.ProcessModelJsonDetails = _model.ToJson();
-                await _repo.SaveModelSaveItemAsync(_saveItem);
+                _saveItem.ProcessModelJsonDetails = _model.ToJson<ProcessModel>();
+                _saveItem = await _repo.SaveModelSaveItemAsync(_saveItem);
             }
         }
     }

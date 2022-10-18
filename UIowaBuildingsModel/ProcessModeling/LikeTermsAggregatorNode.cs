@@ -1,4 +1,5 @@
 ﻿using EmissionsMonitorModel.TimeSeries;
+using System.Text.Json.Serialization;
 
 namespace EmissionsMonitorModel.ProcessModeling
 {
