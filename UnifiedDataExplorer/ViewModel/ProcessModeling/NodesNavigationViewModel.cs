@@ -54,6 +54,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         {
             T node = Activator.CreateInstance<T>();
             node.Name = "New " + typeof(T).Name;
+            _model.AddProcessNode(node);
             WrapAndAddNode(node);
             ResetAddOptions();
         }

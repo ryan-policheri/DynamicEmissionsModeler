@@ -107,24 +107,45 @@
                 </StackPanel>
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
                     <Button ToolTip="Confirm adding this function" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
-                            Command="{Binding DoneCommand}" CommandParameter="{x:Static vmBase:ViewModelDataStatus.Saved}">
+                            Command="{Binding DoneCommand}" CommandParameter="{x:Static vmBase:ViewModelDataStatus.Added}"
+                            Visibility="{Binding IsNew, Converter={StaticResource BoolToVisibility}}">
                         <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="ContentSave" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
-                            <TextBlock Text="Save" />
+                            <materialDesign:PackIcon Kind="Add" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Add" />
                         </StackPanel>
                     </Button>
+                    <Button ToolTip="Update changes to this function" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
+                            Command="{Binding DoneCommand}" CommandParameter="{x:Static vmBase:ViewModelDataStatus.Updated}"
+                            Visibility="{Binding IsInModel, Converter={StaticResource BoolToVisibility}}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Update" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Update" />
+                        </StackPanel>
+                    </Button>
+
                     <Button ToolTip="Cancel changes to this function" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
                             Command="{Binding DoneCommand}" CommandParameter="{x:Static vmBase:ViewModelDataStatus.Canceled}">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsNew}" Value="{StaticResource TrueValue}">
+                                        <Setter Property="ToolTip" Value="Cancel the addition of this function"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Cancel" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
                             <TextBlock Text="Cancel"/>
                         </StackPanel>
                     </Button>
-                    <Button ToolTip="Delete this function" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
-                            Command="{Binding DoneCommand}" CommandParameter="{x:Static vmBase:ViewModelDataStatus.Deleted}">
+
+                    <Button ToolTip="Remove this function" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
+                            Command="{Binding DoneCommand}" CommandParameter="{x:Static vmBase:ViewModelDataStatus.Deleted}"
+                            Visibility="{Binding IsInModel, Converter={StaticResource BoolToVisibility}}">
                         <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Delete" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
-                            <TextBlock Text="Delete"/>
+                            <materialDesign:PackIcon Kind="Remove" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Remove"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>

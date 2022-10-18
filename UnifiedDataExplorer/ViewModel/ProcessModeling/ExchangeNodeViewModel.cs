@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
+using DotNetCommon.Extensions;
 using EmissionsMonitorModel.ProcessModeling;
 using UnifiedDataExplorer.ViewModel.Base;
 
@@ -14,50 +14,72 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         public ExchangeNodeViewModel(RobustViewModelDependencies facade) : base(facade)
         {
 
-            CostFunctions = new ObservableCollection<DataFunctionViewModel>();
+            CostFunctions = new ObservableCollection<DataFunction>();
             AddCostFunction = new DelegateCommand(OnAddCostFunction);
         }
 
         public override string NodeTypeName => "Exchange Node";
 
-        public ObservableCollection<DataFunctionViewModel> CostFunctions { get; }
+        public ObservableCollection<DataFunction> CostFunctions { get; }
 
-        private DataFunctionViewModel _selectedCostFunction;
-        public DataFunctionViewModel SelectedCostFunction
+        private DataFunction _selectedCostFunction;
+        public DataFunction SelectedCostFunction
         {
             get { return _selectedCostFunction; }
-            set { SetField(ref _selectedCostFunction, value); }
+            set
+            {
+                SetField(ref _selectedCostFunction, value);
+                OnCostFunctionSelected(value);
+            }
         }
-        
+
+        private DataFunctionViewModel _currentCostFunctionViewModel;
+        public DataFunctionViewModel CurrentCostFunctionViewModel
+        {
+            get { return _currentCostFunctionViewModel; }
+            set
+            {
+                SetField(ref _currentCostFunctionViewModel, value);
+            }
+        }
+
         public ICommand AddCostFunction { get; }
 
-        public void Load(ExchangeNode exchangeNode)
+        public override void Load(ProcessNode exchangeNode)
         {
             base.Load(exchangeNode);
-            _model = exchangeNode;
+            _model = (ExchangeNode)exchangeNode;
 
-            foreach (DataFunction function in exchangeNode.Costs)
+            CostFunctions.Clear();
+            foreach (DataFunction function in _model.Costs)
             {
-                var vm = this.Resolve<DataFunctionViewModel>();
-                vm.Load(function, (status) =>
-                {
-                    if (status == ViewModelDataStatus.Deleted) this.CostFunctions.Remove(vm);
-                    this.SelectedCostFunction = null;
-                });
-                CostFunctions.Add(vm);
+                CostFunctions.Add(function);
             }
+        }
+
+        private void OnCostFunctionSelected(DataFunction function)
+        {
+            DataFunction copy = function?.Copy();
+            DataFunctionViewModel vm = this.Resolve<DataFunctionViewModel>();
+
+            vm.Load(copy, (status) =>
+            {
+                if (status == ViewModelDataStatus.Added) { this._model.Costs.Add(vm.GetBackingModel()); }
+                if (status == ViewModelDataStatus.Updated) { this._model.Costs.Remove(function); this._model.Costs.Add(vm.GetBackingModel()); }
+                if (status == ViewModelDataStatus.Removed) { this._model.Costs.Remove(function); }
+                if (status == ViewModelDataStatus.Canceled) { /*Do nothing*/ }
+
+                Load(_model);
+                this.SelectedCostFunction = null;
+                this.CurrentCostFunctionViewModel = null;
+            });
+
+            this.CurrentCostFunctionViewModel = vm;
         }
 
         private void OnAddCostFunction()
         {
-            var vm = this.Resolve<DataFunctionViewModel>();
-            vm.Load(null, (status) =>
-            {
-                if (status == ViewModelDataStatus.Deleted) this.CostFunctions.Remove(vm);
-                this.SelectedCostFunction = null;
-            });
-            CostFunctions.Add(vm);
-            SelectedCostFunction = vm;
+            OnCostFunctionSelected(null);
         }
     }
 }

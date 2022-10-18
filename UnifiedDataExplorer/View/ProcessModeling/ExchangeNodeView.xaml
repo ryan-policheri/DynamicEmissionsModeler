@@ -56,7 +56,7 @@
                             </Border>
 
                             <Border Grid.Column="1" BorderThickness="1" BorderBrush="LightGray" Padding="10">
-                                <ContentControl Content="{Binding SelectedCostFunction}" Margin="10 0 0 0"/>
+                                <ContentControl Content="{Binding CurrentCostFunctionViewModel}" Margin="10 0 0 0"/>
                             </Border>
                         </Grid>
                     </DataTemplate>

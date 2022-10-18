@@ -36,9 +36,26 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 
         public void Load(DataFunction func, Action<ViewModelDataStatus> callback)
         {
+            if (func != null)
+            {
+                IsInModel = true;
+                SelectedUnitType = UnitTypes.First(x => x == func.FunctionUnit);
+                SelectedUnitForm = UnitForms.First(x => x == func.FunctionUnitForm);
+            }
             _model = func;
             _onDoneCallback = callback;
         }
+
+        public DataFunction GetBackingModel() => _model;
+
+        private bool _isInModel;
+        public bool IsInModel
+        {
+            get { return _isInModel; }
+            set { SetField(ref _isInModel, value); OnPropertyChanged(nameof(IsNew)); }
+        }
+
+        public bool IsNew => !IsInModel;
 
         public ObservableCollection<string> UnitTypes { get; }
 
@@ -126,7 +143,6 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
                 _onDoneCallback(obj.Value);
             }
         }
-
 
         private void PopulateUnitForms(string selectedUnit)
         {
