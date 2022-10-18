@@ -9,6 +9,10 @@ using UnitsNet;
 
 namespace EmissionsMonitorModel.ProcessModeling
 {
+    //TODO: dynamically add/use GetAllFunctionTypeMappings()
+    [JsonDerivedType(typeof(SteamEnergyFunction), "steam_energy")]
+    [JsonDerivedType(typeof(MoneyFunction), "money_currency")]
+    [JsonDerivedType(typeof(Co2MassFunction), "co2_mass")]
     public abstract class DataFunction
     {
         public string FunctionName { get; set; }
