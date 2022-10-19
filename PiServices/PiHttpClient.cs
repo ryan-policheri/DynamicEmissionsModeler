@@ -168,6 +168,7 @@ namespace PiServices
         public async Task LoadInterpolatedValues(IHaveTimeSeriesData item, DateTimeOffset startDate, DateTimeOffset endDate, string filterExpression = null)
         {
             string url = item.TimeSeriesLinks.InterpolatedData;
+            
             string startDateString = startDate.ToStringWithNoOffset();
             string endDateString = endDate.ToStringWithNoOffset();
 
@@ -177,6 +178,13 @@ namespace PiServices
 
             if(!String.IsNullOrWhiteSpace(filterExpression)) url = url.WithParameter("filterExpression", filterExpression);
 
+            item.InterpolatedDataPoints = await this.GetAllAsync<InterpolatedDataPoint>(url, ITEMS_PROPERTY);
+        }
+
+        public async Task LoadInterpolatedValues(IHaveTimeSeriesData item, IBuildPiTimeSeriesQueryString queryStringBuilder)
+        {
+            string url = item.TimeSeriesLinks.InterpolatedData;
+            url += queryStringBuilder.BuildPiQueryString();
             item.InterpolatedDataPoints = await this.GetAllAsync<InterpolatedDataPoint>(url, ITEMS_PROPERTY);
         }
 

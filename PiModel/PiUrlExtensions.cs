@@ -1,6 +1,6 @@
-﻿namespace PiServices
+﻿namespace PiModel
 {
-    internal static class UrlExtensions
+    public static class PiUrlExtensions
     {
         public static string WithParameter(this string url, string parameterName, string parameterValue)
         {

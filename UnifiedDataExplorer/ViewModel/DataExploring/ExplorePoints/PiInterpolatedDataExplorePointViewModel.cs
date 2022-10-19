@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using System.Threading.Tasks;
 using DotNetCommon.EventAggregation;
 using EmissionsMonitorServices.DataSourceWrappers;
@@ -9,43 +8,13 @@ using UnifiedDataExplorer.ModelWrappers;
 
 namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
 {
-    public class PiInterpolatedDataExplorePointViewModel : ExplorePointViewModel
+    public class PiInterpolatedDataExplorePointViewModel : TimeSeriesExplorePointViewModel
     {
         private readonly DataSourceServiceFactory _clientFactory;
 
         public PiInterpolatedDataExplorePointViewModel(DataSourceServiceFactory clientFactory, IMessageHub messageHub) : base(messageHub)
         {
             _clientFactory = clientFactory;
-        }
-
-        private string _messge;
-        public string Message
-        {
-            get { return _messge; }
-            set { SetField(ref _messge, value); OnPropertyChanged(nameof(HasMessage)); }
-        }
-
-        public bool HasMessage => !string.IsNullOrWhiteSpace(Message);
-
-        private string _assetName;
-        public string AssetName
-        {
-            get { return _assetName; }
-            private set { SetField(ref _assetName, value); }
-        }
-
-        private string _valueName;
-        public string ValueName
-        {
-            get { return _valueName; }
-            private set { SetField(ref _valueName, value); }
-        }
-
-        private DataTable _dataSet;
-        public DataTable DataSet
-        {
-            get { return _dataSet; }
-            private set { SetField(ref _dataSet, value); }
         }
 
         public async Task LoadAsync(IPiDetailLoadingInfo loadingInfo)
@@ -58,8 +27,8 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
                 Asset asset = await client.GetByDirectLink<Asset>(value.Links.Element);
                 Header = asset.Name + " - " + value.Name;
                 HeaderDetail = $"Interpolated {value.Name} data for {asset.Name}";
-                AssetName = asset.Name;
-                ValueName = value.Name;
+                SeriesName = asset.Name + " - " + value.Name;
+                UnitsSummary = value.DefaultUnitsName;
                 await client.LoadInterpolatedValues(value, 30);
                 DataSet = value.RenderDataPointsAsTable();
             }
@@ -70,8 +39,9 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
                 await client.LoadInterpolatedValues(piPoint, 30);
                 Header = piPoint.Name;
                 HeaderDetail = $"Interpolated {piPoint.Name} data for {piPoint.Name}";
-                AssetName = piPoint.Name;
-                ValueName = piPoint.Descriptor;
+                SeriesName = piPoint.Name;
+                UnitsSummary = piPoint.EngineeringUnits;
+                //ValueName = piPoint.Descriptor;
                 await client.LoadInterpolatedValues(piPoint, 30);
                 DataSet = piPoint.RenderDataPointsAsTable();
             }

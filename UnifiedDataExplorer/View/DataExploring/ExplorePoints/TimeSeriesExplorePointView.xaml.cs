@@ -5,11 +5,11 @@ using UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints;
 
 namespace UnifiedDataExplorer.View.DataExploring.ExplorePoints
 {
-    public partial class PiInterpolatedDataExplorePointView : UserControl
+    public partial class TimeSeriesExplorePointView : UserControl
     {
-        private PiInterpolatedDataExplorePointViewModel ViewModel => this.DataContext as PiInterpolatedDataExplorePointViewModel;
+        private TimeSeriesExplorePointViewModel ViewModel => this.DataContext as TimeSeriesExplorePointViewModel;
 
-        public PiInterpolatedDataExplorePointView()
+        public TimeSeriesExplorePointView()
         {
             InitializeComponent();
         }
@@ -18,18 +18,18 @@ namespace UnifiedDataExplorer.View.DataExploring.ExplorePoints
         {
             ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-            DataContextChanged += PiDataPointsView_DataContextChanged;
+            DataContextChanged += DataPointsView_DataContextChanged;
             OnDataChanged();
         }
 
-        private void PiDataPointsView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void DataPointsView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             OnDataChanged();
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(PiInterpolatedDataExplorePointViewModel.DataSet) && ViewModel != null)
+            if (e.PropertyName == nameof(TimeSeriesExplorePointViewModel.DataSet) && ViewModel != null)
             {
                 OnDataChanged();
             }
