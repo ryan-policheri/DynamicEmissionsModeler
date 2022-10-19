@@ -15,6 +15,11 @@ namespace EmissionsMonitorModel.ProcessModeling
     [JsonDerivedType(typeof(Co2MassFunction), "co2_mass")]
     public abstract class DataFunction
     {
+        public DataFunction()
+        {
+            FunctionFactors = new List<FunctionFactor>();
+        }
+
         public string FunctionName { get; set; }
 
         public string FunctionCode { get; set; }

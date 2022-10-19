@@ -15,10 +15,12 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 
         public string FactorName
         {
-            get { return _model?.FactorName; }
-            set { if(_model != null) _model.FactorName = value; OnPropertyChanged(); }
+            get { return _model.FactorName; }
+            set { _model.FactorName = value; OnPropertyChanged(); }
         }
 
         public ViewModelDataStatus Status { get; set; }
+
+        public FunctionFactor GetBackingModel() => _model;
     }
 }

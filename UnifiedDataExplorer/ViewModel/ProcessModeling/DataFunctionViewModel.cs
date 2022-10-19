@@ -41,6 +41,11 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
                 IsInModel = true;
                 SelectedUnitType = UnitTypes.First(x => x == func.FunctionUnit);
                 SelectedUnitForm = UnitForms.First(x => x == func.FunctionUnitForm);
+                foreach (FunctionFactor factor in func.FunctionFactors)
+                {
+                    FunctionFactorViewModel vm = new FunctionFactorViewModel(factor);
+                    this.FunctionFactors.Add(vm);
+                }
             }
             _model = func;
             _onDoneCallback = callback;
@@ -108,50 +113,64 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             set { if(_model != null) _model.FunctionCode = value; OnPropertyChanged(); }
         }
 
-        public ObservableCollection<FunctionFactorViewModel> FunctionFactors { get; }
-
-        public ICommand OpenFactor { get; }
-        private void OnOpenFactor(FunctionFactorViewModel obj)
-        {
-            FunctionFactorViewModel copy = obj.Copy();
-            this.DialogService.ShowModalWindow(obj, () =>
-            {
-                if (obj.Status == ViewModelDataStatus.Deleted) FunctionFactors.Remove(obj);
-                if (obj.Status == ViewModelDataStatus.Canceled)
-                {
-                    FunctionFactors.Remove(obj);
-                    FunctionFactors.Add(copy);
-                }
-            }, ModalOptions.SaveCancelDeleteOption);
-        }
-
-        public ICommand AddFactor { get; }
-        private void OnAddFactor()
-        {
-            FunctionFactorViewModel factorVm = new FunctionFactorViewModel(new FunctionFactor());
-            this.DialogService.ShowModalWindow(factorVm, () =>
-            {
-                if (factorVm.Status == ViewModelDataStatus.Saved) FunctionFactors.Add(factorVm);
-            }, ModalOptions.SaveCancelOption);
-        }
-
         public ICommand DoneCommand { get; }
         private void OnDoneCommand(ViewModelDataStatus? obj)
         {
-            if (obj != null)
-            {
-                _onDoneCallback(obj.Value);
-            }
+            if (obj != null) _onDoneCallback(obj.Value);
         }
 
         private void PopulateUnitForms(string selectedUnit)
         {
             this.UnitForms.Clear();
-            foreach (string form in _functionTypes.Where(x => x.FunctionUnit == selectedUnit)
-                         .Select(x => x.FunctionUnitForm))
+            foreach (string form in _functionTypes.Where(x => x.FunctionUnit == selectedUnit).Select(x => x.FunctionUnitForm))
             {
                 this.UnitForms.Add(form);
             }
+        }
+
+        public ObservableCollection<FunctionFactorViewModel> FunctionFactors { get; }
+
+        public ICommand OpenFactor { get; }
+        private void OnOpenFactor(FunctionFactorViewModel obj) => OnFactorSelected(obj);
+
+        public ICommand AddFactor { get; }
+        private void OnAddFactor() => OnFactorSelected(null);
+
+        private void OnFactorSelected(FunctionFactorViewModel factorVm)
+        {
+            bool isNew = false;
+            if (factorVm == null)
+            {
+                isNew = true;
+                FunctionFactor backingModel = new FunctionFactor();
+                factorVm = new FunctionFactorViewModel(backingModel);
+            }
+
+            FunctionFactor factor = factorVm.GetBackingModel();
+            FunctionFactor factorCopy = factor.Copy();
+
+            ModalOptions options = ModalOptions.SaveCancelOption; if (!isNew) { options.ShowDelete = true; }
+            
+            this.DialogService.ShowModalWindow(factorVm, () =>
+            {
+                if (factorVm.Status == ViewModelDataStatus.Saved)
+                {
+                    if(isNew) { _model.FunctionFactors.Add(factor); this.FunctionFactors.Add(factorVm); }
+                    else { /*do nothing*/ }
+                }
+                if (factorVm.Status == ViewModelDataStatus.Deleted) { this._model.FunctionFactors.Remove(factor); this.FunctionFactors.Remove(factorVm); }
+                if (factorVm.Status == ViewModelDataStatus.Canceled)
+                {
+                    if(isNew) { /*do nothing*/ }
+                    else 
+                    { 
+                        _model.FunctionFactors.Remove(factor);
+                        _model.FunctionFactors.Add(factorCopy);
+                        this.FunctionFactors.Remove(factorVm);
+                        this.FunctionFactors.Add(new FunctionFactorViewModel(factorCopy));
+                    }
+                }
+            }, options);
         }
     }
 }
