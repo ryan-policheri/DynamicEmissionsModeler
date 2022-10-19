@@ -1,4 +1,6 @@
-﻿namespace PiModel
+﻿using System.Data;
+
+namespace PiModel
 {
     public interface IHaveTimeSeriesData
     {

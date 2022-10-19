@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="UnifiedDataExplorer.Controls.MaterialDateTimePicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UnifiedDataExplorer.Controls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="MaterialDateTimePicker_OnLoaded">
+    <Grid>
+        <!--https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit/issues/830-->
+        <Button Name="DialogButton" Margin="8 0 0 0" Background="Transparent"
+                IsEnabled="True"
+                Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                CommandTarget="{Binding ElementName=PopupAddCustom}">
+        </Button>
+
+        <materialDesign:DialogHost Name="PopupAddCustom" HorizontalAlignment="Center" VerticalAlignment="Center" IsOpen="False"
+                                   materialDesign:DialogHost.DialogOpenedCallback="CalendarDialogOpenedEventHandler"
+                                   materialDesign:DialogHost.DialogClosingCallback="CalendarDialogClosingEventHandler">
+            <materialDesign:DialogHost.DialogContent>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Border Background="{DynamicResource PrimaryHueMidBrush}" Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="0" VerticalAlignment="Top" />
+                    <Calendar x:Name="Calendar" Grid.Column="0" Grid.Row="0"/>
+                    <materialDesign:Clock DisplayAutomation="Cycle" x:Name="Clock2" Grid.Column="1" Grid.Row="0"/>
+                    <StackPanel Grid.Row="1" Margin="8" HorizontalAlignment="Right" Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="2">
+                        <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="1" Style="{DynamicResource MaterialDesignFlatButton}">OK</Button>
+                        <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="0" Style="{DynamicResource MaterialDesignFlatButton}">CANCEL</Button>
+                    </StackPanel>
+                </Grid>
+            </materialDesign:DialogHost.DialogContent>
+        </materialDesign:DialogHost>
+    </Grid>
+</UserControl>

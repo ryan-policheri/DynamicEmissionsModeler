@@ -11,6 +11,8 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
     public class PiInterpolatedDataExplorePointViewModel : TimeSeriesExplorePointViewModel
     {
         private readonly DataSourceServiceFactory _clientFactory;
+        private PiHttpClient _client;
+        private IHaveTimeSeriesData _dataHost;
 
         public PiInterpolatedDataExplorePointViewModel(DataSourceServiceFactory clientFactory, IMessageHub messageHub) : base(messageHub)
         {
@@ -20,6 +22,8 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
         public async Task LoadAsync(IPiDetailLoadingInfo loadingInfo)
         {
             PiHttpClient client = _clientFactory.GetDataSourceServiceById<PiHttpClient>(loadingInfo.DataSourceId);
+            _client = client;
+
             if (loadingInfo.TypeTag == nameof(AssetValue))
             {
                 CurrentLoadingInfo = loadingInfo;
@@ -29,8 +33,8 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
                 HeaderDetail = $"Interpolated {value.Name} data for {asset.Name}";
                 SeriesName = asset.Name + " - " + value.Name;
                 UnitsSummary = value.DefaultUnitsName;
-                await client.LoadInterpolatedValues(value, 30);
-                DataSet = value.RenderDataPointsAsTable();
+                _dataHost = value;
+                await RenderDataSet();
             }
             else if (loadingInfo.TypeTag == PiPoint.PI_POINT_TYPE)
             {
@@ -41,9 +45,8 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
                 HeaderDetail = $"Interpolated {piPoint.Name} data for {piPoint.Name}";
                 SeriesName = piPoint.Name;
                 UnitsSummary = piPoint.EngineeringUnits;
-                //ValueName = piPoint.Descriptor;
-                await client.LoadInterpolatedValues(piPoint, 30);
-                DataSet = piPoint.RenderDataPointsAsTable();
+                _dataHost = piPoint;
+                await RenderDataSet();
             }
             else
             {
@@ -51,6 +54,13 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
                 HeaderDetail = $"Did not know how to render value for a {loadingInfo.TypeTag}";
                 throw new ArgumentException(nameof(PiInterpolatedDataExplorePointViewModel) + " can only render values of an asset");
             }
+        }
+
+        protected override async Task RenderDataSet()
+        {
+            await _client.LoadInterpolatedValues(_dataHost, 30);
+            if(_dataHost is AssetValue) DataSet = (_dataHost as AssetValue).RenderDataPointsAsTable();
+            if(_dataHost is PiPoint) DataSet = (_dataHost as PiPoint).RenderDataPointsAsTable();
         }
     }
 }

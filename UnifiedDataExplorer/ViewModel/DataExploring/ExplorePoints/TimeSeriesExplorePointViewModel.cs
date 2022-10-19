@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Data;
+using System.Threading.Tasks;
 using DotNetCommon.EventAggregation;
 
 namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
 {
-    public class TimeSeriesExplorePointViewModel : ExplorePointViewModel
+    public abstract class TimeSeriesExplorePointViewModel : ExplorePointViewModel
     {
         public TimeSeriesExplorePointViewModel(IMessageHub messageHub) : base(messageHub)
         {
+            StartDateTime = DateTime.Today.AddDays(-1);
+            EndDateTime = DateTime.Today.AddMinutes(-1);
         }
 
         private string _seriesName;
@@ -25,18 +28,18 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
             set { SetField(ref _unitsSummary, value); }
         }
 
-        private DateTimeOffset _startDateTime;
-        public DateTimeOffset StartDateTimeOffset
+        private DateTime _startDateTime;
+        public DateTime StartDateTime
         {
             get { return _startDateTime; }
             set { SetField(ref _startDateTime, value); }
         }
 
-        private DateTimeOffset _endDateTimeOffset;
-        public DateTimeOffset EndDateTimeOffset
+        private DateTime _endDateTime;
+        public DateTime EndDateTime
         {
-            get { return _endDateTimeOffset; }
-            set { SetField(ref _endDateTimeOffset, value); }
+            get { return _endDateTime; }
+            set { SetField(ref _endDateTime, value); }
         }
 
         private string _unit;
@@ -59,5 +62,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
             get { return _dataSet; }
             set { SetField(ref _dataSet, value); }
         }
+
+        protected abstract Task RenderDataSet();
     }
 }

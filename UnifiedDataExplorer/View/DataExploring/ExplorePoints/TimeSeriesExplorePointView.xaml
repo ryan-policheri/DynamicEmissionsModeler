@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UnifiedDataExplorer.View.DataExploring.ExplorePoints"
+             xmlns:controls="clr-namespace:UnifiedDataExplorer.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
     <Grid>
@@ -23,7 +24,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="0  10 0 0">
+            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="0  10 0 20">
                 <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
                     <Label Content="Series Name: "/>
                     <TextBlock Text="{Binding SeriesName, Mode=OneWay}" Background="Transparent" Margin="0 3 0 0"/>
@@ -33,12 +34,12 @@
                     <TextBlock Text="{Binding UnitsSummary, Mode=OneWay}" Background="Transparent" Margin="0 3 0 0"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="25  0 0 0">
-                    <Label Content="Start Date (utc): "/>
-                    <DatePicker Text="{Binding UnitsSummary, Mode=OneWay}" Background="Transparent" Margin="0 3 0 0"/>
+                    <Label Content="Start Date/Time (utc): "/>
+                    <controls:MaterialDateTimePicker SelectedDateTime="{Binding StartDateTime}"  Background="Transparent"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="25  0 0 0">
-                    <Label Content="End Date (utc): "/>
-                    <TextBlock Text="{Binding UnitsSummary, Mode=OneWay}" Background="Transparent" Margin="0 3 0 0"/>
+                    <Label Content="End Date/Time (utc): "/>
+                    <controls:MaterialDateTimePicker SelectedDateTime="{Binding EndDateTime}"  Background="Transparent"/>
                 </StackPanel>
             </StackPanel>
         </Grid>
