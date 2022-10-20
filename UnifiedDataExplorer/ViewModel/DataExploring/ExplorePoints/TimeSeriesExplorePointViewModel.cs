@@ -5,6 +5,7 @@ using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
 using DotNetCommon.EventAggregation;
 using DotNetCommon.SystemHelpers;
+using EmissionsMonitorModel.DataSources;
 using UIowaBuildingsServices;
 using UnifiedDataExplorer.Services.DataPersistence;
 
@@ -81,5 +82,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
             _exporter.ExportDataSetToExcel(fullPath, DataSet, HeaderDetail);
             SystemFunctions.OpenFile(fullPath);
         }
+
+        public abstract DataSourceSeriesUri BuildSeriesUri();
     }
 }

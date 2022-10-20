@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using DotNetCommon.EventAggregation;
 using DotNetCommon.SystemHelpers;
+using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorModel.TimeSeries;
 using EmissionsMonitorServices.DataSourceWrappers;
 using PiModel;
@@ -69,6 +70,19 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
             await _client.LoadInterpolatedValues(_dataHost, settings);
             if(_dataHost is AssetValue) DataSet = (_dataHost as AssetValue).RenderDataPointsAsTable();
             if(_dataHost is PiPoint) DataSet = (_dataHost as PiPoint).RenderDataPointsAsTable();
+        }
+
+        public override DataSourceSeriesUri BuildSeriesUri()
+        {
+            var loadingInfo = (this.CurrentLoadingInfo as IPiDetailLoadingInfo);
+            var uri = new DataSourceSeriesUri
+            {
+                DataSourceId = loadingInfo.DataSourceId,
+                Prefix = loadingInfo.TypeTag,
+                SeriesName = SeriesName,
+                Uri = loadingInfo.Id
+            };
+            return uri;
         }
     }
 }

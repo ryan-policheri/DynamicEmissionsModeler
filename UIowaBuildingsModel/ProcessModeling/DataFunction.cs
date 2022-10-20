@@ -158,7 +158,7 @@ namespace EmissionsMonitorModel.ProcessModeling
         public DataSourceSeriesUri FactorUri { get; set; }
 
         [NotMapped] 
-        public string ParameterName => FactorName + "Point";
+        public string ParameterName => FactorName.ToValidVariableName() + "Point";
     }
 
     public class FunctionTypeMapping

@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Media;
 using UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints;
 
 namespace UnifiedDataExplorer.View.DataExploring.ExplorePoints
@@ -43,6 +45,15 @@ namespace UnifiedDataExplorer.View.DataExploring.ExplorePoints
                 CollectionViewSource collection = new CollectionViewSource();
                 collection.Source = ViewModel.DataSet;
                 MainDataGrid.ItemsSource = collection.View;
+            }
+        }
+
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed && sender as Border != null)
+            {
+                DataObject obj = new DataObject(ViewModel.BuildSeriesUri());
+                DragDrop.DoDragDrop(sender as Border, obj, DragDropEffects.Move);
             }
         }
     }

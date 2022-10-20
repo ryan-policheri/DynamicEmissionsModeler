@@ -1,4 +1,5 @@
 ﻿using DotNetCommon.MVVM;
+using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorModel.ProcessModeling;
 using UnifiedDataExplorer.ViewModel.Base;
 
@@ -19,8 +20,22 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             set { _model.FactorName = value; OnPropertyChanged(); }
         }
 
+        public string SeriesName => _model.FactorUri?.SeriesName;
+
+        public bool ShowDropZone => _model.FactorUri == null;
+
+        public bool ShowSeriesInfo => _model.FactorUri != null;
+
         public ViewModelDataStatus Status { get; set; }
 
         public FunctionFactor GetBackingModel() => _model;
+
+        public void SetSeries(DataSourceSeriesUri seriesUri)
+        {
+            _model.FactorUri = seriesUri;
+            OnPropertyChanged(nameof(SeriesName));
+            OnPropertyChanged(nameof(ShowDropZone));
+            OnPropertyChanged(nameof(ShowSeriesInfo));
+        }
     }
 }

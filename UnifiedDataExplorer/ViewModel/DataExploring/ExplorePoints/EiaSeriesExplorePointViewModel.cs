@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using DotNetCommon.EventAggregation;
 using EIA.Services.Clients;
+using EmissionsMonitorModel.DataSources;
 using UnifiedDataExplorer.ModelWrappers;
 using UnifiedDataExplorer.Services.DataPersistence;
 using UIowaBuildingsServices;
@@ -43,6 +44,11 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
             //TODO, make this work better
             _series = await _client.GetSeriesByIdAsync(_series.Id, -30);
             DataSet = _series.RenderDataPointsAsTable();
+        }
+
+        public override DataSourceSeriesUri BuildSeriesUri()
+        {
+            return new DataSourceSeriesUri();//TODO
         }
     }
 }

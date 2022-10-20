@@ -1,28 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using EmissionsMonitorModel.DataSources;
+using UnifiedDataExplorer.ViewModel.ProcessModeling;
+using UnifiedDataExplorer.ViewModel.VirtualFileSystem;
 
 namespace UnifiedDataExplorer.View.ProcessModeling
 {
-    /// <summary>
-    /// Interaction logic for FunctionFactorView.xaml
-    /// </summary>
     public partial class FunctionFactorView : UserControl
     {
+        public FunctionFactorViewModel ViewModel => DataContext as FunctionFactorViewModel;
+
         public FunctionFactorView()
         {
             InitializeComponent();
+        }
+
+        private void OnDragOver(object sender, DragEventArgs e)
+        {
+            Border element = sender as Border;
+            if (element != null) element.Background = new SolidColorBrush(Colors.Gray);
+        }
+
+        private void OnDragLeave(object sender, DragEventArgs e)
+        {
+            Border element = sender as Border;
+            if (element != null) element.Background = new SolidColorBrush(Colors.White);
+        }
+
+        private void OnDrop(object sender, DragEventArgs e)
+        {
+            Border element = sender as Border;
+            DataSourceSeriesUri source = e.Data.GetData(typeof(DataSourceSeriesUri)) as DataSourceSeriesUri;
+
+            if (source != null)
+            {
+                ViewModel.SetSeries(source);
+            }
+            if (element != null) element.Background = new SolidColorBrush(Colors.White);
         }
     }
 }
