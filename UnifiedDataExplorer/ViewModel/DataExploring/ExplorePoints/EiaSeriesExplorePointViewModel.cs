@@ -41,7 +41,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
                 EndDateTime = new DateTimeOffset(this.EndDateTime.ToUniversalTime())
             };
             //TODO, make this work better
-            _series = await _client.GetSeriesByIdAsync(_series.Id, settings);
+            _series = await _client.GetSeriesByIdAsync(_series.Id, -30);
             DataSet = _series.RenderDataPointsAsTable();
         }
     }
