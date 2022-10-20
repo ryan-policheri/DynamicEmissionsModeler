@@ -25,24 +25,33 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="0  10 0 20">
-                <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+            <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="0  10 0 20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0 0 0 0">
                     <Label Content="Series Name: "/>
                     <TextBlock Text="{Binding SeriesName, Mode=OneWay}" Background="Transparent" Margin="0 3 0 0"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="25  0 0 0">
+                <StackPanel Grid.Column="1"  Orientation="Horizontal" Margin="25  0 0 0">
                     <Label Content="Units Summary: "/>
                     <TextBlock Text="{Binding UnitsSummary, Mode=OneWay}" Background="Transparent" Margin="0 3 0 0"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="25  0 0 0">
+                <StackPanel Grid.Column="2"  Orientation="Horizontal" Margin="25  0 0 0">
                     <Label Content="Start Date/Time: "/>
                     <controls:MaterialDateTimePicker SelectedDateTime="{Binding StartDateTime, Mode=TwoWay}"  Background="Transparent"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="25  0 0 0">
+                <StackPanel Grid.Column="3" Orientation="Horizontal" Margin="25  0 0 0">
                     <Label Content="End Date/Time: "/>
                     <controls:MaterialDateTimePicker SelectedDateTime="{Binding EndDateTime, Mode=TwoWay}"  Background="Transparent"/>
                 </StackPanel>
-                <Button Background="Transparent" Command="{Binding RenderDataSetCommand}" Margin="50 0 0 0">
+                <Button Grid.Column="5" Background="Transparent" Command="{Binding RenderDataSetCommand}">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Build" Width="20" Height="15" Padding="0" Margin="0"/>
@@ -50,7 +59,15 @@
                         </StackPanel>
                     </Button.Content>
                 </Button>
-            </StackPanel>
+                <Button Grid.Column="6" Background="Transparent" Command="{Binding ExcelExportCommand}" Margin="5 0 0 0">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="MicrosoftExcel" Width="20" Height="15" Padding="0" Margin="0"/>
+                            <TextBlock Text="Export to Excel"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+            </Grid>
         </Grid>
 
         <DataGrid Grid.Row="1" Name="MainDataGrid" BorderThickness="1" BorderBrush="Gray" AutoGenerateColumns="True"

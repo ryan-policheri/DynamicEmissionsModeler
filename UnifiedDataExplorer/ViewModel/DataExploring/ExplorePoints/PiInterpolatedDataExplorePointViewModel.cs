@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DotNetCommon.EventAggregation;
+using DotNetCommon.SystemHelpers;
 using EmissionsMonitorModel.TimeSeries;
 using EmissionsMonitorServices.DataSourceWrappers;
 using PiModel;
 using PiServices;
+using UIowaBuildingsServices;
 using UnifiedDataExplorer.ModelWrappers;
+using UnifiedDataExplorer.Services.DataPersistence;
 
 namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
 {
@@ -15,7 +18,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
         private PiHttpClient _client;
         private IHaveTimeSeriesData _dataHost;
 
-        public PiInterpolatedDataExplorePointViewModel(DataSourceServiceFactory clientFactory, IMessageHub messageHub) : base(messageHub)
+        public PiInterpolatedDataExplorePointViewModel(DataSourceServiceFactory clientFactory, DataFileProvider dataFileProvider, ExcelExportService exporter, IMessageHub messageHub) : base(dataFileProvider, exporter, messageHub)
         {
             _clientFactory = clientFactory;
         }

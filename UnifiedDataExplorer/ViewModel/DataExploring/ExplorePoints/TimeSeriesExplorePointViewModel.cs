@@ -4,16 +4,25 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
 using DotNetCommon.EventAggregation;
+using DotNetCommon.SystemHelpers;
+using UIowaBuildingsServices;
+using UnifiedDataExplorer.Services.DataPersistence;
 
 namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
 {
     public abstract class TimeSeriesExplorePointViewModel : ExplorePointViewModel
     {
-        public TimeSeriesExplorePointViewModel(IMessageHub messageHub) : base(messageHub)
+        private readonly DataFileProvider _dataFileProvider;
+        private readonly ExcelExportService _exporter;
+
+        public TimeSeriesExplorePointViewModel(DataFileProvider dataFileProvider, ExcelExportService exporter, IMessageHub messageHub) : base(messageHub)
         {
+            _dataFileProvider = dataFileProvider;
+            _exporter = exporter;
             StartDateTime = DateTime.Today.AddDays(-1);
             EndDateTime = DateTime.Today.AddMinutes(-1);
             RenderDataSetCommand = new DelegateCommand(OnRenderDataSetCommand);
+            ExcelExportCommand = new DelegateCommand(OnExcelExport);
         }
 
         private string _seriesName;
@@ -45,8 +54,6 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
             set { SetField(ref _endDateTime, value); }
         }
 
-        public ICommand RenderDataSetCommand { get; }
-
         private DataTable _dataSet;
         public DataTable DataSet
         {
@@ -54,11 +61,25 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
             set { SetField(ref _dataSet, value); }
         }
 
+        public ICommand RenderDataSetCommand { get; }
+
         private async void OnRenderDataSetCommand()
         {
             await RenderDataSet();
         }
 
         protected abstract Task RenderDataSet();
+
+        public ICommand ExcelExportCommand { get; }
+
+        private void OnExcelExport()
+        {
+            string exportDirectory = _dataFileProvider.GetExportsDirectory();
+            string fileName = "temp" + DateTime.Now.Second.ToString() + ".xlsx";
+            string fullPath = SystemFunctions.CombineDirectoryComponents(exportDirectory, fileName);
+
+            _exporter.ExportDataSetToExcel(fullPath, DataSet, HeaderDetail);
+            SystemFunctions.OpenFile(fullPath);
+        }
     }
 }

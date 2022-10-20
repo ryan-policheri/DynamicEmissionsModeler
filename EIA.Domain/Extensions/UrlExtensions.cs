@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EIA.Services.Clients
+namespace EIA.Domain.Extensions
 {
     public static class UrlExtensions
     {

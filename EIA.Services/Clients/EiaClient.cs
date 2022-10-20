@@ -100,6 +100,16 @@ namespace EIA.Services.Clients
             return series;
         }
 
+        public async Task<Series> GetSeriesByIdAsync(string seriesId, IBuildEiaTimeSeriesQueryString settings)
+        {
+            //TODO, make this work better
+            string preUserQuery = "series/".WithQueryString("api_key", SubscriptionKey).WithQueryString("series_id", seriesId);
+            string queryString = settings.BuildEiaQueryString();
+            string path = preUserQuery + "&" + queryString.TrimStart('?');
+            Series series = await this.GetFirstAsync<Series>(path, "series");
+            return series;
+        }
+
         public async Task<Series> GetHourlySeriesByIdAsync(string seriesId, DateTimeOffset startDate, DateTimeOffset endDate, TimeSpan seriesDataOffset)
         {//This method assumes you know the offset of your series data. It is hourly data after all.
             if (seriesDataOffset.Hours != 0) throw new NotImplementedException("Have not implemented querying of non-utc data yet");

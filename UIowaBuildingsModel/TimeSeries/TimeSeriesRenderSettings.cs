@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DotNetCommon.Extensions;
+using EIA.Domain.Extensions;
+using EIA.Domain.Model;
 using PiModel;
 
 namespace EmissionsMonitorModel.TimeSeries
 {
-    public class TimeSeriesRenderSettings : IBuildPiTimeSeriesQueryString
+    public class TimeSeriesRenderSettings : IBuildPiTimeSeriesQueryString, IBuildEiaTimeSeriesQueryString
     {
         public DateTimeOffset StartDateTime { get; set; }
 
@@ -36,6 +38,14 @@ namespace EmissionsMonitorModel.TimeSeries
                 case Interval.PerDay: return "1d";
                 default: throw new NotImplementedException($"need to implement interval {interval.ToDescription()}");
             }
+        }
+
+        public string BuildEiaQueryString()
+        {
+            string queryString = ""
+                .WithQueryString("start", StartDateTime.ToString("yyyyMMddTHHZ"))
+                .WithQueryString("end", EndDateTime.ToString("yyyyMMddTHHZ"));
+            return queryString;
         }
     }
 }
