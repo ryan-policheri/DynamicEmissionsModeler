@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Data;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using DotNetCommon.DelegateCommand;
 using DotNetCommon.EventAggregation;
 
 namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
@@ -11,6 +13,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
         {
             StartDateTime = DateTime.Today.AddDays(-1);
             EndDateTime = DateTime.Today.AddMinutes(-1);
+            RenderDataSetCommand = new DelegateCommand(OnRenderDataSetCommand);
         }
 
         private string _seriesName;
@@ -42,25 +45,18 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
             set { SetField(ref _endDateTime, value); }
         }
 
-        private string _unit;
-        public string Unit
-        {
-            get { return _unit; }
-            set { SetField(ref _unit, value); }
-        }
-
-        private string _unitRate;
-        public string UnitRate
-        {
-            get { return _unit; }
-            set { SetField(ref _unit, value); }
-        }
+        public ICommand RenderDataSetCommand { get; }
 
         private DataTable _dataSet;
         public DataTable DataSet
         {
             get { return _dataSet; }
             set { SetField(ref _dataSet, value); }
+        }
+
+        private async void OnRenderDataSetCommand()
+        {
+            await RenderDataSet();
         }
 
         protected abstract Task RenderDataSet();

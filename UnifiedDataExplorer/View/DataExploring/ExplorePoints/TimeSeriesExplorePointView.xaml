@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UnifiedDataExplorer.View.DataExploring.ExplorePoints"
              xmlns:controls="clr-namespace:UnifiedDataExplorer.Controls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
     <Grid>
@@ -34,13 +35,21 @@
                     <TextBlock Text="{Binding UnitsSummary, Mode=OneWay}" Background="Transparent" Margin="0 3 0 0"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="25  0 0 0">
-                    <Label Content="Start Date/Time (utc): "/>
-                    <controls:MaterialDateTimePicker SelectedDateTime="{Binding StartDateTime}"  Background="Transparent"/>
+                    <Label Content="Start Date/Time: "/>
+                    <controls:MaterialDateTimePicker SelectedDateTime="{Binding StartDateTime, Mode=TwoWay}"  Background="Transparent"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="25  0 0 0">
-                    <Label Content="End Date/Time (utc): "/>
-                    <controls:MaterialDateTimePicker SelectedDateTime="{Binding EndDateTime}"  Background="Transparent"/>
+                    <Label Content="End Date/Time: "/>
+                    <controls:MaterialDateTimePicker SelectedDateTime="{Binding EndDateTime, Mode=TwoWay}"  Background="Transparent"/>
                 </StackPanel>
+                <Button Background="Transparent" Command="{Binding RenderDataSetCommand}" Margin="50 0 0 0">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Build" Width="20" Height="15" Padding="0" Margin="0"/>
+                            <TextBlock Text="Render Time Series"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
             </StackPanel>
         </Grid>
 

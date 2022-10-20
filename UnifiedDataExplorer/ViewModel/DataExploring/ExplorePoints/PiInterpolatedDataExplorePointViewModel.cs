@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DotNetCommon.EventAggregation;
+using EmissionsMonitorModel.TimeSeries;
 using EmissionsMonitorServices.DataSourceWrappers;
 using PiModel;
 using PiServices;
@@ -31,7 +32,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
                 Asset asset = await client.GetByDirectLink<Asset>(value.Links.Element);
                 Header = asset.Name + " - " + value.Name;
                 HeaderDetail = $"Interpolated {value.Name} data for {asset.Name}";
-                SeriesName = asset.Name + " - " + value.Name;
+                SeriesName = asset.Name + " - " + value.Name; 
                 UnitsSummary = value.DefaultUnitsName;
                 _dataHost = value;
                 await RenderDataSet();
@@ -40,7 +41,6 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
             {
                 CurrentLoadingInfo = loadingInfo;
                 PiPoint piPoint = await client.GetByDirectLink<PiPoint>(loadingInfo.Id);
-                await client.LoadInterpolatedValues(piPoint, 30);
                 Header = piPoint.Name;
                 HeaderDetail = $"Interpolated {piPoint.Name} data for {piPoint.Name}";
                 SeriesName = piPoint.Name;
@@ -58,7 +58,12 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
 
         protected override async Task RenderDataSet()
         {
-            await _client.LoadInterpolatedValues(_dataHost, 30);
+            TimeSeriesRenderSettings settings = new TimeSeriesRenderSettings
+            {
+                StartDateTime = new DateTimeOffset(this.StartDateTime.ToUniversalTime()),
+                EndDateTime = new DateTimeOffset(this.EndDateTime.ToUniversalTime())
+            };
+            await _client.LoadInterpolatedValues(_dataHost, settings);
             if(_dataHost is AssetValue) DataSet = (_dataHost as AssetValue).RenderDataPointsAsTable();
             if(_dataHost is PiPoint) DataSet = (_dataHost as PiPoint).RenderDataPointsAsTable();
         }
