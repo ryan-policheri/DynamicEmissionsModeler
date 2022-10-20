@@ -44,11 +44,11 @@
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal">
                 <Label Content="Data Source: "/>
-                <TextBlock Text="{Binding DataSource}"/>
+                <TextBlock Text="{Binding DataSourceName}" Margin="0 6 0 0"/>
             </StackPanel>
             <StackPanel Grid.Row="1" Orientation="Horizontal">
                 <Label Content="Time Series Id: "/>
-                <TextBlock Text="{Binding SeriesName}"/>
+                <TextBlock Text="{Binding SeriesName}"  Margin="0 6 0 0"/>
             </StackPanel>
         </Grid>
     </Grid>

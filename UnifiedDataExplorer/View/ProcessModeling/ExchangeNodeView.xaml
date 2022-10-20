@@ -62,7 +62,20 @@
                     </DataTemplate>
                 </TabItem.ContentTemplate>
             </TabItem>
-            <TabItem Header="Product"/>
+            <TabItem Header="Product" Content="{Binding}">
+                <TabItem.ContentTemplate>
+                    <DataTemplate DataType="{x:Type vm:ExchangeNodeViewModel}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Border BorderThickness="1" BorderBrush="LightGray" Padding="10">
+                                <ContentControl Content="{Binding ProductFunctionViewModel}" Margin="10 0 0 0"/>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </TabItem.ContentTemplate>
+            </TabItem>
             <TabItem Header="Data Streams"/>
         </TabControl>
     </Grid>

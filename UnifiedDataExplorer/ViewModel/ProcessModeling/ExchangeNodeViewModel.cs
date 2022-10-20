@@ -37,13 +37,18 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         public DataFunctionViewModel CurrentCostFunctionViewModel
         {
             get { return _currentCostFunctionViewModel; }
-            set
-            {
-                SetField(ref _currentCostFunctionViewModel, value);
-            }
+            set { SetField(ref _currentCostFunctionViewModel, value); }
         }
 
         public ICommand AddCostFunction { get; }
+
+
+        private DataFunctionViewModel _productFunctionViewModel;
+        public DataFunctionViewModel ProductFunctionViewModel
+        {
+            get { return _productFunctionViewModel; }
+            set { SetField(ref _productFunctionViewModel, value); }
+        }
 
         public override void Load(ProcessNode exchangeNode)
         {
@@ -55,6 +60,14 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             {
                 CostFunctions.Add(function);
             }
+
+            DataFunctionViewModel vm = this.Resolve<DataFunctionViewModel>();
+            vm.Load(_model.Product, (status) =>
+            {
+                _model.Product = vm.GetBackingModel();
+                //TODO
+            });
+            ProductFunctionViewModel = vm;
         }
 
         private void OnCostFunctionSelected(DataFunction function)

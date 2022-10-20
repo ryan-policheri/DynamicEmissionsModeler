@@ -74,7 +74,7 @@ namespace UnifiedDataExplorer.View.VirtualFileSystem
                 if (senderVm != null)
                 {
                     Folder parent = senderVm.GetBackingModel() as Folder;
-                    Folder child = new Folder { ParentFolderId = parent.ParentFolderId, FolderName = "New Folder" };
+                    Folder child = new Folder { ParentFolderId = parent.FolderId, FolderName = "New Folder" };
                     Folder savedFolder = await ViewModel.SaveFolder(child);
                     senderVm.AddChild(new FolderSaveItemViewModel(savedFolder, senderVm));
                 }
