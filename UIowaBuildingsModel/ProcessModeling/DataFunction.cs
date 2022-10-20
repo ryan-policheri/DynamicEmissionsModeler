@@ -22,6 +22,8 @@ namespace EmissionsMonitorModel.ProcessModeling
 
         public string FunctionName { get; set; }
 
+        public string FunctionDescription { get; set; }
+
         public string FunctionCode { get; set; }
 
         public ICollection<FunctionFactor> FunctionFactors { get; set; }
@@ -158,7 +160,7 @@ namespace EmissionsMonitorModel.ProcessModeling
         public DataSourceSeriesUri FactorUri { get; set; }
 
         [NotMapped] 
-        public string ParameterName => FactorName.ToValidVariableName() + "Point";
+        public string ParameterName => FactorName?.ToValidVariableName() + "Point";
     }
 
     public class FunctionTypeMapping

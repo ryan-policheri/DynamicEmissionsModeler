@@ -46,23 +46,35 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Text="Description" Margin="0 20 0 0" FontWeight="Bold"/>
-            <TextBox Grid.Row="1" Text="Start" Margin="0 0 0 0" 
+            <TextBox Grid.Row="1" Text="{Binding FunctionDescription}" Margin="0 0 0 0" 
                  TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" SpellCheck.IsEnabled="True" MinLines="3" BorderThickness="1"/>
 
             <TextBlock Grid.Row="2" FontSize="16">
-                <Run Text="public " Foreground="Blue"/>
+                <Run Text="public " Foreground="Blue" />
                 <Run Text="{Binding ReturnType, Mode=OneWay}" Foreground="#2B91AF"/>
                 <Run Text="{Binding MethodName, Mode=OneWay}" Foreground="#74531F"/>
                 <Run Text="("/>
-                <ListBox ItemsSource="{Binding FunctionFactors}">
+                <ListBox ItemsSource="{Binding FunctionFactors}" Padding="0 10 0 0" >
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <VirtualizingStackPanel IsItemsHost="True" Orientation="Horizontal"/>
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="Margin" Value="0 "/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="VerticalAlignment" Value="Bottom"/>
+                            <Setter Property="VerticalContentAlignment" Value="Bottom"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type vm:FunctionFactorViewModel}">
-                            <TextBlock Text="{Binding FactorName}" MouseDown="OnDoubleClick"/>
+                            <TextBlock MouseDown="OnDoubleClick" Margin="0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                                <Run Text="double " Foreground="Blue"/>
+                                <Run Text="{Binding ParameterName, Mode=OneWay}"/>
+                                <Run Text=", "/>
+                            </TextBlock>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

@@ -103,6 +103,12 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             set { if (_model != null) _model.FunctionName = value; OnPropertyChanged(); OnPropertyChanged(nameof(MethodName)); }
         }
 
+        public string FunctionDescription
+        {
+            get { return _model?.FunctionDescription; }
+            set { if (_model != null) _model.FunctionDescription = value; OnPropertyChanged(); }
+        }
+
         public string ReturnType => _model?.GetReturnType().Name;
 
         public string MethodName => _model?.FunctionName.ToValidMethodName();

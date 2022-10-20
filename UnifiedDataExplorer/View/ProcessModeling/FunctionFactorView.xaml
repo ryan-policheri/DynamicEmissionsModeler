@@ -38,7 +38,18 @@
         </Border>
 
         <Grid Grid.Row="1" Visibility="{Binding ShowSeriesInfo, Converter={StaticResource BoolToVisibility}}">
-            <Label Content="{Binding SeriesName}"/>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Data Source: "/>
+                <TextBlock Text="{Binding DataSource}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <Label Content="Time Series Id: "/>
+                <TextBlock Text="{Binding SeriesName}"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>

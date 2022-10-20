@@ -17,9 +17,12 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         public string FactorName
         {
             get { return _model.FactorName; }
-            set { _model.FactorName = value; OnPropertyChanged(); }
+            set { _model.FactorName = value; OnPropertyChanged(); OnPropertyChanged(nameof(ParameterName)); }
         }
 
+        public string ParameterName => _model.ParameterName;
+
+        public string DataSourceName => "UIowa Energy System"; //TODO
         public string SeriesName => _model.FactorUri?.SeriesName;
 
         public bool ShowDropZone => _model.FactorUri == null;
