@@ -49,6 +49,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             }
             _model = func;
             _onDoneCallback = callback;
+            ShowDoneOptions = _onDoneCallback != null;
         }
 
         public DataFunction GetBackingModel() => _model;
@@ -117,6 +118,13 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         {
             get { return _model?.FunctionCode; }
             set { if(_model != null) _model.FunctionCode = value; OnPropertyChanged(); }
+        }
+
+        private bool _showDoneOptions;
+        public bool ShowDoneOptions
+        {
+            get { return _showDoneOptions; }
+            set { SetField(ref _showDoneOptions, value); }
         }
 
         public ICommand DoneCommand { get; }

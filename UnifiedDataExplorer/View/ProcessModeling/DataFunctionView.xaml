@@ -117,7 +117,7 @@
                         </StackPanel>
                     </Button>
                 </StackPanel>
-                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Visibility="{Binding ShowDoneOptions, Converter={StaticResource BoolToVisibility}}">
                     <Button ToolTip="Confirm adding this function" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
                             Command="{Binding DoneCommand}" CommandParameter="{x:Static vmBase:ViewModelDataStatus.Added}"
                             Visibility="{Binding IsNew, Converter={StaticResource BoolToVisibility}}">
@@ -153,7 +153,7 @@
                     </Button>
 
                     <Button ToolTip="Remove this function" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
-                            Command="{Binding DoneCommand}" CommandParameter="{x:Static vmBase:ViewModelDataStatus.Deleted}"
+                            Command="{Binding DoneCommand}" CommandParameter="{x:Static vmBase:ViewModelDataStatus.Removed}"
                             Visibility="{Binding IsInModel, Converter={StaticResource BoolToVisibility}}">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Remove" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>

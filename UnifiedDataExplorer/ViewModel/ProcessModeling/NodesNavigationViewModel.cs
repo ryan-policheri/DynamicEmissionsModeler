@@ -50,6 +50,13 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             set { SetField(ref _selectedProcessNode, value); }
         }
 
+        public void RemoveProcessNode(ProcessNodeViewModel processNode)
+        {
+            this._model.ProcessNodes.Remove(processNode.GetBackingModel());
+            this.ProcessNodes.Remove(processNode);
+            this.SelectedProcessNode = null;
+        }
+
         private void CreateAndWrapNode<T>() where T : ProcessNode
         {
             T node = Activator.CreateInstance<T>();

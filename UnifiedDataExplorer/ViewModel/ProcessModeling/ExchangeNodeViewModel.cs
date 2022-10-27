@@ -62,11 +62,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             }
 
             DataFunctionViewModel vm = this.Resolve<DataFunctionViewModel>();
-            vm.Load(_model.Product, (status) =>
-            {
-                _model.Product = vm.GetBackingModel();
-                //TODO
-            });
+            vm.Load(_model.Product, null);
             ProductFunctionViewModel = vm;
         }
 
@@ -79,6 +75,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             {
                 if (status == ViewModelDataStatus.Added) { this._model.Costs.Add(vm.GetBackingModel()); }
                 if (status == ViewModelDataStatus.Updated) { this._model.Costs.Remove(function); this._model.Costs.Add(vm.GetBackingModel()); }
+
                 if (status == ViewModelDataStatus.Removed) { this._model.Costs.Remove(function); }
                 if (status == ViewModelDataStatus.Canceled) { /*Do nothing*/ }
 

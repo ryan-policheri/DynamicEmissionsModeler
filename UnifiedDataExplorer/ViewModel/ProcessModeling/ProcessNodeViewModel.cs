@@ -23,5 +23,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         {
             _model = node;
         }
+
+        public virtual ProcessNode GetBackingModel() => _model;
     }
 }

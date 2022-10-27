@@ -22,7 +22,13 @@
         <ListBox Grid.Row="2" ItemsSource="{Binding ProcessNodes}" SelectedItem="{Binding SelectedProcessNode}">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type vm:ProcessNodeViewModel}">
-                    <TextBlock Text="{Binding NodeName}"/>
+                    <TextBlock Text="{Binding NodeName}" FontWeight="Bold" FontSize="14">
+                        <TextBlock.ContextMenu>
+                            <ContextMenu Padding="0">
+                                <MenuItem Header="Remove" FontSize="12" Padding="10 0 10 0" Margin="0" Click="MenuItem_OnClick"/>
+                            </ContextMenu>
+                        </TextBlock.ContextMenu>
+                    </TextBlock>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
