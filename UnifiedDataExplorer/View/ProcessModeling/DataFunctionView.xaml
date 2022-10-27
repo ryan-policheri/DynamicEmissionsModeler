@@ -110,7 +110,7 @@
                         </StackPanel>
                     </Button>
                     <Button ToolTip="Test the function with sample data" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
-                        Command="{Binding OpenEiaExplorer}">
+                        Command="{Binding TestCommand}">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="TestTube" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
                             <TextBlock Text="Test"/>

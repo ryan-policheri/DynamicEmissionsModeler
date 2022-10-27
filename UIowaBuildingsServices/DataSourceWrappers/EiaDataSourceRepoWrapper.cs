@@ -37,7 +37,7 @@ namespace EmissionsMonitorDataAccess.DataSourceWrappers
                 Series = series,
                 Timestamp = x.Timestamp,
                 Value = x.Value.Value
-            });
+            }).ToList();
             return series;
         }
     }

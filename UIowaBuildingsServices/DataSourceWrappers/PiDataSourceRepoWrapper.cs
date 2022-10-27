@@ -35,7 +35,7 @@ namespace EmissionsMonitorDataAccess.DataSourceWrappers
                     Series = series,
                     Timestamp = x.Timestamp,
                     Value = x.Value
-                });
+                }).ToList();
                 return series;
             }
             else if (uri.Prefix == PiDataSource.PI_AF_PREFIX)

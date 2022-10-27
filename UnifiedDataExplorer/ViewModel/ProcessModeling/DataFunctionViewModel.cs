@@ -37,6 +37,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             OpenFactor = new DelegateCommand<FunctionFactorViewModel>(OnOpenFactor);
             AddFactor = new DelegateCommand(OnAddFactor);
             CompileCommand = new DelegateCommand(OnCompileCommand);
+            TestCommand = new DelegateCommand(OnTest);
             DoneCommand = new DelegateCommand<ViewModelDataStatus?>(OnDoneCommand);
         }
 
@@ -128,6 +129,8 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 
         public ICommand CompileCommand { get; }
 
+        public ICommand TestCommand { get; }
+
         private async void OnCompileCommand()
         {
             await CompileCode(true);
@@ -143,9 +146,17 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             catch (RuntimeBinderInternalCompilerException ex) //TODO better exception
             {
                 DialogService.ShowErrorMessage(ex.Message);
+                _model.FunctionHostObject = null;
             }
         }
 
+        private async void OnTest()
+        {
+            await CompileCode(false);
+            if (_model.FunctionHostObject == null) return;
+            DynamicTestingViewModel vm = new DynamicTestingViewModel(_model);
+            DialogService.ShowModalWindow(vm, null, ModalOptions.DefaultModalOptions);
+        }
 
         private bool _showDoneOptions;
         public bool ShowDoneOptions
