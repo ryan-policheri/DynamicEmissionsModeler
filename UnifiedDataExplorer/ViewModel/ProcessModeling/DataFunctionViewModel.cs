@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
 using DotNetCommon.DynamicCompilation;
 using DotNetCommon.Extensions;
+using EmissionsMonitorDataAccess;
 using EmissionsMonitorModel.ProcessModeling;
+using Microsoft.CSharp.RuntimeBinder;
 using UnifiedDataExplorer.Services.WindowDialog;
 using UnifiedDataExplorer.ViewModel.Base;
 
@@ -14,12 +17,14 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 {
     public class DataFunctionViewModel : RobustViewModelBase
     {
+        private readonly ModelInitializationService _compilationService;
         private readonly ICollection<FunctionTypeMapping> _functionTypes;
         private DataFunction _model;
         private Action<ViewModelDataStatus> _onDoneCallback;
 
-        public DataFunctionViewModel(RobustViewModelDependencies facade) : base(facade)
+        public DataFunctionViewModel(ModelInitializationService compilationService, RobustViewModelDependencies facade) : base(facade)
         {
+            _compilationService = compilationService;
             _functionTypes = DataFunction.GetAllFunctionTypeMappings().ToList();
             UnitTypes = new ObservableCollection<string>();
             UnitForms = new ObservableCollection<string>();
@@ -31,6 +36,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             FunctionFactors = new ObservableCollection<FunctionFactorViewModel>();
             OpenFactor = new DelegateCommand<FunctionFactorViewModel>(OnOpenFactor);
             AddFactor = new DelegateCommand(OnAddFactor);
+            CompileCommand = new DelegateCommand(OnCompileCommand);
             DoneCommand = new DelegateCommand<ViewModelDataStatus?>(OnDoneCommand);
         }
 
@@ -119,6 +125,27 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             get { return _model?.FunctionCode; }
             set { if(_model != null) _model.FunctionCode = value; OnPropertyChanged(); }
         }
+
+        public ICommand CompileCommand { get; }
+
+        private async void OnCompileCommand()
+        {
+            await CompileCode(true);
+        }
+
+        private async Task CompileCode(bool showSucessMessage = true)
+        {
+            try
+            {
+                await _compilationService.InitializeFunction(this._model);
+                if(showSucessMessage) DialogService.ShowInfoMessage("Function compiled successfully!");
+            }
+            catch (RuntimeBinderInternalCompilerException ex) //TODO better exception
+            {
+                DialogService.ShowErrorMessage(ex.Message);
+            }
+        }
+
 
         private bool _showDoneOptions;
         public bool ShowDoneOptions

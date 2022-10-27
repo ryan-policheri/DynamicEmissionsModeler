@@ -6,6 +6,7 @@ using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorModel.TimeSeries;
 using EmissionsMonitorModel.Units;
 using UnitsNet;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EmissionsMonitorModel.ProcessModeling
 {
@@ -85,6 +86,21 @@ namespace EmissionsMonitorModel.ProcessModeling
             yield return new SteamEnergyFunction().ToTypeMapping();
             yield return new Co2MassFunction().ToTypeMapping();
             yield return new MoneyFunction().ToTypeMapping();
+        }
+
+        public CSharpMethod ToCSharpMethod()
+        {
+            return new CSharpMethod
+            {
+                MethodName = this.FunctionName.ToValidMethodName(),
+                ReturnType = this.GetReturnType(),
+                MethodBody = this.FunctionCode,
+                MethodParameters = this.FunctionFactors.Select(x => new CSharpMethodParameter
+                {
+                    ParameterName = x.ParameterName.ToValidVariableName(),
+                    ParameterType = typeof(DataPoint)
+                }).ToList()
+            };
         }
     }
 

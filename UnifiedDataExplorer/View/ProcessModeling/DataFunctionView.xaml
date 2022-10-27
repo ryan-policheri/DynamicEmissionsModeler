@@ -71,7 +71,7 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type vm:FunctionFactorViewModel}">
                             <TextBlock MouseDown="OnDoubleClick" Margin="0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                <Run Text="double " Foreground="Blue"/>
+                                <Run Text="DataPoint " Foreground="#2B91AF"/>
                                 <Run Text="{Binding ParameterName, Mode=OneWay}"/>
                                 <Run Text=", "/>
                             </TextBlock>
@@ -103,7 +103,7 @@
                         </StackPanel>
                     </Button>
                     <Button ToolTip="Test that the function code compiles successfully" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
-                        Command="{Binding OpenEiaExplorer}">
+                        Command="{Binding CompileCommand}">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="CodeBraces" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
                             <TextBlock Text="Compile"/>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using DotNetCommon;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -9,6 +10,7 @@ using DotNetCommon.Logging.File;
 using DotNetCommon.SystemHelpers;
 using DotNetCommon.PersistenceHelpers;
 using EIA.Services.Clients;
+using EmissionsMonitorDataAccess;
 using PiServices;
 using UIowaBuildingsServices;
 using UnifiedDataExplorer.ViewModel;
@@ -131,6 +133,8 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<LikeTermAggregatorNodeViewModel>();
             services.AddTransient<DataFunctionViewModel>();
             services.AddTransient<EnergyModelFileSystemViewModel>();
+            services.AddTransient<ModelInitializationService>();
+            services.AddTransient<DynamicCompilerService>();
 
             //EMISSIONS MONITOR SERVICES
             services.AddTransient<IDataSourceRepository, DataSourceClient>((provider =>

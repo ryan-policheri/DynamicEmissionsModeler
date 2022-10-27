@@ -1,5 +1,6 @@
 ﻿using DotNetCommon;
 using DotNetCommon.DynamicCompilation;
+using DotNetCommon.Extensions;
 using EmissionsMonitorModel.ProcessModeling;
 using EmissionsMonitorModel.TimeSeries;
 using Microsoft.CSharp.RuntimeBinder;
@@ -17,12 +18,7 @@ namespace EmissionsMonitorDataAccess
 
         public async Task InitializeModel(ProcessModel model)
         {
-            CSharpAssemblyBuilder builder = new CSharpAssemblyBuilder();
-            builder.AddUsing("UnitsNet");
-            builder.AddUsing("EmissionsMonitorModel.Units");
-            builder.AddUsing("EmissionsMonitorModel.TimeSeries");
-            builder.AddUsing("EmissionsMonitorModel.ConversionMethods");
-            builder.SetNamespace(model.ModelName);
+            CSharpAssemblyBuilder builder = SetupAssemblyBuilder(model.ModelName);
 
             foreach (ProcessNode node in model.ProcessNodes)
             {
@@ -30,23 +26,13 @@ namespace EmissionsMonitorDataAccess
                 {
                     foreach (DataFunction function in node.GetUserDefinedFunctions())
                     {
-                        builder.AddMethod(new CSharpMethod
-                        {
-                            MethodName = function.FunctionName.ToValidMethodName(),
-                            ReturnType = function.GetReturnType(),
-                            MethodBody = function.FunctionCode,
-                            MethodParameters = function.FunctionFactors.Select(x => new CSharpMethodParameter
-                            {
-                                ParameterName = x.ParameterName.ToValidVariableName(),
-                                ParameterType = typeof(DataPoint)
-                            }).ToList()
-                        });
+                        builder.AddMethod(function.ToCSharpMethod());
                     }
                 });
             }
 
             DynamicCompilationResult result = await _compilerService.CompileCSharpAsync(builder, _compilerService.GetAppAssemblies());
-            if (!result.IsValid) throw new RuntimeBinderInternalCompilerException(result.CompilationErrors.ToString());
+            if (!result.IsValid) throw new RuntimeBinderInternalCompilerException(result.CompilationErrors.ToDelimitedList(Environment.NewLine));
 
             foreach (ProcessNode node in model.ProcessNodes)
             {
@@ -57,6 +43,32 @@ namespace EmissionsMonitorDataAccess
                     function.FunctionHostObject = hostInstance;
                 }
             }
+        }
+
+        public async Task InitializeFunction(DataFunction function)
+        {
+            CSharpAssemblyBuilder builder = SetupAssemblyBuilder("TEMP_ASSEMBLY_FOR_FUNC_TEST");
+
+            builder.AddClass("TEMP_CLASS_FOR_FUNC_TEST", (builder) =>
+            {
+                builder.AddMethod(function.ToCSharpMethod());
+            });
+
+            DynamicCompilationResult result = await _compilerService.CompileCSharpAsync(builder, _compilerService.GetAppAssemblies());
+            if (!result.IsValid) throw new RuntimeBinderInternalCompilerException(result.CompilationErrors.ToDelimitedList(Environment.NewLine));
+
+            function.FunctionHostObject = result.GetClassInstance("TEMP_CLASS_FOR_FUNC_TEST");
+        }
+
+        private CSharpAssemblyBuilder SetupAssemblyBuilder(string assemblyNamespace)
+        {
+            CSharpAssemblyBuilder builder = new CSharpAssemblyBuilder();
+            builder.AddUsing("UnitsNet");
+            builder.AddUsing("EmissionsMonitorModel.Units");
+            builder.AddUsing("EmissionsMonitorModel.TimeSeries");
+            builder.AddUsing("EmissionsMonitorModel.ConversionMethods");
+            builder.SetNamespace(assemblyNamespace);
+            return builder;
         }
     }
 }
