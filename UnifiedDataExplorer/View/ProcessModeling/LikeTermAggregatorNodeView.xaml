@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UnifiedDataExplorer.View.ProcessModeling"
+             xmlns:model="clr-namespace:EmissionsMonitorModel.ProcessModeling;assembly=EmissionsMonitorModel"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -22,6 +23,12 @@
                      Padding="5 0 5 0" FontSize="14" Margin="0 4 0 0" />
         </StackPanel>
 
-        <Label Grid.Row="1" Content="I add things"></Label>
+        <ListBox Grid.Row="1" ItemsSource="{Binding AvailableNodeOutputSpecs}">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type model:NodeOutputSpec}">
+                    <TextBlock Text="{Binding NodeName}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </UserControl>

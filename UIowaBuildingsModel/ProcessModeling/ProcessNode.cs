@@ -14,5 +14,14 @@ namespace EmissionsMonitorModel.ProcessModeling
         public abstract ICollection<DataFunction> GetUserDefinedFunctions();
 
         public abstract ProductCostResults RenderProductAndCosts(ICollection<DataPoint> dataPoints);
+
+        public virtual NodeOutputSpec ToSpec()
+        {
+            return new NodeOutputSpec
+            {
+                NodeName = this.Name,
+                Node = this
+            };
+        }
     }
 }

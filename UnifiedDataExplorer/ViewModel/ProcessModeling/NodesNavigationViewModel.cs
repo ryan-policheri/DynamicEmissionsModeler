@@ -73,16 +73,18 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             {
                 case nameof(ExchangeNode):
                     vm = this.Resolve<ExchangeNodeViewModel>();
+                    vm.Load(node);
                     break;
                 case nameof(LikeTermsAggregatorNode):
-                    vm = this.Resolve<LikeTermAggregatorNodeViewModel>();
+                    LikeTermAggregatorNodeViewModel ltvm = this.Resolve<LikeTermAggregatorNodeViewModel>();
+                    ltvm.Load(node, _model.CalculateDerivedSeries());
+                    vm = ltvm;
                     break;
                 default:
                     throw new NotImplementedException(
                         $"Do not know what viewmodel to use for the given node of type {node.GetType().Name}");
             }
 
-            vm.Load(node);
             ProcessNodes.Add(vm);
         }
 

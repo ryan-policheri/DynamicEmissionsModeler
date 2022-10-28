@@ -42,5 +42,15 @@ namespace EmissionsMonitorModel.ProcessModeling
 
             return seriesUris;
         }
+
+        public ICollection<NodeOutputSpec> CalculateDerivedSeries()
+        {
+            List<NodeOutputSpec> results = new List<NodeOutputSpec>();
+            foreach (ProcessNode node in ProcessNodes)
+            {
+                results.Add(node.ToSpec());
+            }
+            return results;
+        }
     }
 }
