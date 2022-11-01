@@ -10,6 +10,8 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -23,12 +25,8 @@
                      Padding="5 0 5 0" FontSize="14" Margin="0 4 0 0" />
         </StackPanel>
 
-        <ListBox Grid.Row="1" ItemsSource="{Binding AvailableNodeOutputSpecs}">
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type model:NodeOutputSpec}">
-                    <TextBlock Text="{Binding NodeName}"/>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <TextBlock Grid.Row="1" Text="Select nodes to be aggregated at this like term aggregation node" Margin="0 20 0 0 "/>
+        <Label Grid.Row="2" Content="Available Nodes:" Margin="0 20 0 0"/>
+        <ListBox Grid.Row="3" ItemsSource="{Binding AvailableNodeOutputSpecs}" ItemTemplate="{StaticResource CheckableItemTemplate}"/>
     </Grid>
 </UserControl>

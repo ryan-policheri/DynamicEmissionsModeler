@@ -77,7 +77,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
                     break;
                 case nameof(LikeTermsAggregatorNode):
                     LikeTermAggregatorNodeViewModel ltvm = this.Resolve<LikeTermAggregatorNodeViewModel>();
-                    ltvm.Load(node, _model.CalculateDerivedSeries());
+                    ltvm.Load(node, _model);
                     vm = ltvm;
                     break;
                 default:

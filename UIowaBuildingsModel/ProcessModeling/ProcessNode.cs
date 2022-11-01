@@ -8,6 +8,7 @@ namespace EmissionsMonitorModel.ProcessModeling
     [JsonDerivedType(typeof(ExchangeNode), typeDiscriminator: "exchange_node")]
     public abstract class ProcessNode
     {
+        public int Id { get; set; }
 
         public string Name { get; set; }
 
@@ -19,7 +20,8 @@ namespace EmissionsMonitorModel.ProcessModeling
         {
             return new NodeOutputSpec
             {
-                NodeName = this.Name,
+                Id = this.Id,
+                Name = this.Name,
                 Node = this
             };
         }

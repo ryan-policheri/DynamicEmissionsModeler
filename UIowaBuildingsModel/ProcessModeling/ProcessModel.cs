@@ -16,6 +16,7 @@ namespace EmissionsMonitorModel.ProcessModeling
 
         public void AddProcessNode(ProcessNode node)
         {
+            if (node.Id < 1) node.Id = ProcessNodes.Count == 0 ? 1 : ProcessNodes.Max(x => x.Id) + 1;
             ProcessNodes.Add(node);
         }
 

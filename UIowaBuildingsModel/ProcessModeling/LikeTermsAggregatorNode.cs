@@ -5,6 +5,14 @@ namespace EmissionsMonitorModel.ProcessModeling
 {
     public class LikeTermsAggregatorNode : ProcessNode
     {
+        public LikeTermsAggregatorNode()
+        {
+            PrecedingNodeIds = new List<int>();
+        }
+
+        public List<int> PrecedingNodeIds { get; set; }
+
+        [JsonIgnore]
         public List<ExchangeNode> PrecedingNodes { get; set; }
 
         public override ProductCostResults RenderProductAndCosts(ICollection<DataPoint> dataPoints)

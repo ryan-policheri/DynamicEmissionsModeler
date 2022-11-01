@@ -18,6 +18,7 @@ namespace EmissionsMonitorDataAccess
 
         public async Task InitializeModel(ProcessModel model)
         {
+            //Compile code
             CSharpAssemblyBuilder builder = SetupAssemblyBuilder(model.ModelName);
 
             foreach (ProcessNode node in model.ProcessNodes)
@@ -41,6 +42,19 @@ namespace EmissionsMonitorDataAccess
                 foreach (DataFunction function in node.GetUserDefinedFunctions())
                 {
                     function.FunctionHostObject = hostInstance;
+                }
+            }
+
+            //Populate Preceding Nodes
+            foreach (var node in model.ProcessNodes)
+            {
+                if (node is LikeTermsAggregatorNode)
+                {
+                    LikeTermsAggregatorNode ltn = node as LikeTermsAggregatorNode;
+                    foreach (int id in ltn.PrecedingNodeIds)
+                    {
+                        ltn.PrecedingNodes.Add(model.ProcessNodes.First(x => x.Id == id) as ExchangeNode);
+                    }
                 }
             }
         }
