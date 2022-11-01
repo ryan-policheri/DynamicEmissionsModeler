@@ -11,6 +11,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -18,26 +19,54 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="0" Grid.Column="0" BorderThickness="1" BorderBrush="LightGray" Padding="10">
-            <StackPanel>
-                <Button ToolTip="Save Process Model" Margin="0 0 0 10" Padding="5" Height="Auto" Background="Transparent"
-                        Command="{Binding SaveCommand}" CommandParameter="{StaticResource FalseValue}">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="ContentSaveAll" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
-                        <TextBlock Text="Save" />
-                    </StackPanel>
-                </Button>
-                <Button ToolTip="Save Process Model" Margin="0 0 0 10" Padding="5" Height="Auto" Background="Transparent"
-                        Command="{Binding SaveCommand}" CommandParameter="{StaticResource TrueValue}">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="ContentSaveEdit" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
-                        <TextBlock Text="Save As" />
-                    </StackPanel>
-                </Button>
-                <ContentControl Content="{Binding NodesNavigationViewModel}"/>
-            </StackPanel>
+        <Menu IsMainMenu="True" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+            <MenuItem Header="File">
+                <MenuItem Header="Save" ToolTip="Save Process Model" Command="{Binding SaveCommand}" CommandParameter="{StaticResource FalseValue}">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="ContentSaveAll"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Save As" ToolTip="Save as new Process Model" Command="{Binding SaveCommand}" CommandParameter="{StaticResource TrueValue}">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="ContentSaveEdit"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="View">
+                <MenuItem Header="Process Nodes" ToolTip="Design and view process nodes for this model">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="Graph" RenderTransformOrigin=".5,.5">
+                            <!--<materialDesign:PackIcon.RenderTransformOrigin>
+                                <RotateTransform x:Name="AnimatedRotateTransform" Angle="90" />
+                            </materialDesign:PackIcon.RenderTransformOrigin>-->
+                        </materialDesign:PackIcon>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Data Streams" ToolTip="View all mapped data streams for this model">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="SqlQuery"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Run">
+                <MenuItem Header="Execute Live" ToolTip="Execute the model using real system data">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="RunFast"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Execute Test" ToolTip="Execute the model using supplied test data">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="TestTube"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+
+        <Border Grid.Row="1" Grid.Column="0" BorderThickness="1" BorderBrush="LightGray" Padding="10">
+            <ContentControl Content="{Binding NodesNavigationViewModel}"/>
         </Border>
-        <Border Grid.Row="0" Grid.Column="1" BorderThickness="1" BorderBrush="LightGray" Padding="10">
+
+        <Border Grid.Row="1" Grid.Column="1" BorderThickness="1" BorderBrush="LightGray" Padding="10">
             <ContentControl Content="{Binding SelectedProcessNode}" />
         </Border>
     </Grid>
