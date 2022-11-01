@@ -15,11 +15,10 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Menu IsMainMenu="True" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+        <Menu IsMainMenu="True" Grid.Row="0" Grid.Column="0">
             <MenuItem Header="File">
                 <MenuItem Header="Save" ToolTip="Save Process Model" Command="{Binding SaveCommand}" CommandParameter="{StaticResource FalseValue}">
                     <MenuItem.Icon>
@@ -62,12 +61,8 @@
             </MenuItem>
         </Menu>
 
-        <Border Grid.Row="1" Grid.Column="0" BorderThickness="1" BorderBrush="LightGray" Padding="10">
-            <ContentControl Content="{Binding NodesNavigationViewModel}"/>
-        </Border>
-
-        <Border Grid.Row="1" Grid.Column="1" BorderThickness="1" BorderBrush="LightGray" Padding="10">
-            <ContentControl Content="{Binding SelectedProcessNode}" />
-        </Border>
+        <ContentControl Grid.Row="1">
+            <ContentControl Content="{Binding CurrentChild}" />
+        </ContentControl>
     </Grid>
 </UserControl>

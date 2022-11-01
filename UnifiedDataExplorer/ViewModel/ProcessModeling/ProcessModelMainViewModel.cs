@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
 using DotNetCommon.Extensions;
+using DotNetCommon.MVVM;
 using EmissionsMonitorDataAccess.Abstractions;
 using EmissionsMonitorModel.ProcessModeling;
 using EmissionsMonitorModel.VirtualFileSystem;
@@ -12,15 +13,15 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 {
     public class ProcessModelMainViewModel : RobustViewModelBase
     {
+        private readonly ProcessNodesViewModel _processNodesVm;
         private readonly IVirtualFileSystemRepository _repo;
         private ModelSaveItem _saveItem;
         private ProcessModel _model;
 
-        public ProcessModelMainViewModel(IVirtualFileSystemRepository repo, NodesNavigationViewModel nodeNavViewModel, RobustViewModelDependencies facade) : base(facade)
+        public ProcessModelMainViewModel(ProcessNodesViewModel processNodesVm, IVirtualFileSystemRepository repo, RobustViewModelDependencies facade) : base(facade)
         {
+            _processNodesVm = processNodesVm;
             _repo = repo;
-            NodesNavigationViewModel = nodeNavViewModel;
-            NodesNavigationViewModel.PropertyChanged += NodesNavigationViewModel_PropertyChanged;
             SaveCommand = new DelegateCommand<bool?>(OnSave);
         }
 
@@ -33,22 +34,13 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             }
             else _model = new ProcessModel();
 
-            NodesNavigationViewModel.Load(_model);
+            _processNodesVm.Load(_model);
+            CurrentChild = _processNodesVm;
         }
-
-        public NodesNavigationViewModel NodesNavigationViewModel { get; }
-
-        public ProcessNodeViewModel SelectedProcessNode { get; private set; }
 
         public ICommand SaveCommand { get; }
 
-        private void NodesNavigationViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName == nameof(NodesNavigationViewModel.SelectedProcessNode))
-            {
-                SelectedProcessNode = NodesNavigationViewModel.SelectedProcessNode; OnPropertyChanged(nameof(SelectedProcessNode));
-            }
-        }
+        public ViewModelBase CurrentChild { get; private set; }
 
         private async void OnSave(bool? saveAs)
         {
