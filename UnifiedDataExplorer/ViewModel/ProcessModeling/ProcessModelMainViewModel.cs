@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
 using DotNetCommon.Extensions;
@@ -22,7 +23,10 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         {
             _processNodesVm = processNodesVm;
             _repo = repo;
-            SaveCommand = new DelegateCommand<bool?>(OnSave);
+            SaveCommand = new DelegateCommand<bool?>(OnSaveCommand);
+            ExecuteCommand = new DelegateCommand<bool?>(OnExecuteCommand);
+            ViewProcessNodesCommand = new DelegateCommand(() => this.CurrentChild = processNodesVm);
+            ViewDataStreamsCommand = new DelegateCommand(() => throw new NotImplementedException());
         }
 
         public async Task LoadAsync(int id = -1)
@@ -38,13 +42,21 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             CurrentChild = _processNodesVm;
         }
 
-        public ICommand SaveCommand { get; }
-
-        public ViewModelBase CurrentChild { get; private set; }
-
-        private async void OnSave(bool? saveAs)
+        private ViewModelBase _currentChild;
+        public ViewModelBase CurrentChild
         {
-            if (_saveItem == null || saveAs.Value)
+            get { return _currentChild; }
+            private set { SetField(ref _currentChild, value); }
+        }
+
+        public ICommand SaveCommand { get; }
+        private async void OnSaveCommand(bool? saveAs)
+        {
+            await SaveAsync(saveAs.Value);
+        }
+        private async Task SaveAsync(bool saveAs)
+        {
+            if (_saveItem == null || saveAs)
             {
                 var vm = this.Resolve<EnergyModelFileSystemViewModel>();
                 _saveItem = new ModelSaveItem { ProcessModelJsonDetails = _model.ToJson<ProcessModel>() };
@@ -58,5 +70,28 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
                 _saveItem = await _repo.SaveModelSaveItemAsync(_saveItem);
             }
         }
+
+        public ICommand ExecuteCommand { get; }
+        private async void OnExecuteCommand(bool? live)
+        {
+            await ExecuteAsync(live.Value);
+        }
+        private async Task ExecuteAsync(bool live)
+        {
+            await SaveAsync(false);
+            if (live)
+            {
+                ExecutionViewModel vm = this.Resolve<ExecutionViewModel>();
+                this.CurrentChild = vm;
+            }
+            else
+            {
+
+            }
+        }
+
+        public ICommand ViewProcessNodesCommand { get; }
+
+        public ICommand ViewDataStreamsCommand { get; }
     }
 }

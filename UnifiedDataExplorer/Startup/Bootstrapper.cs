@@ -136,6 +136,7 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<EnergyModelFileSystemViewModel>();
             services.AddTransient<ModelInitializationService>();
             services.AddTransient<DynamicCompilerService>();
+            services.AddTransient<ExecutionViewModel>();
 
             //EMISSIONS MONITOR SERVICES
             services.AddTransient<IDataSourceRepository, DataSourceClient>((provider =>
