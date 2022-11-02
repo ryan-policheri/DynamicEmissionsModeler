@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.ObjectModel;
 using DotNetCommon.MVVM;
 using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorModel.ProcessModeling;
@@ -8,16 +9,17 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 {
     public class FunctionFactorViewModel : ViewModelBase, IHaveDataStatus
     {
-        private FunctionFactor _model;
+        private readonly Func<int, DataSourceBase> _dataSourceNameResolver;
+        private readonly FunctionFactor _model;
 
-        public FunctionFactorViewModel(FunctionFactor factor)
+        public FunctionFactorViewModel(Func<int, DataSourceBase> dataSourceNameResolver, FunctionFactor factor)
         {
+            _dataSourceNameResolver = dataSourceNameResolver;
             _model = factor;
-        }
-
-        public async Task Load(FunctionFactor factor)
-        {
-            _model = factor;
+            AvailableUnitRates = new ObservableCollection<string>();
+            foreach(var r in UnitRates.ToListing()) { AvailableUnitRates.Add(r); }
+            AvailableDataResolutions = new ObservableCollection<string>();
+            foreach (var r in DataResolutionPlusVariable.ToListing()) { AvailableDataResolutions.Add(r); }
         }
 
         public string FactorName
@@ -27,11 +29,23 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         }
 
         public string ParameterName => _model.ParameterName;
-
-        public string DataSourceName => "UIowa Energy System"; //TODO
+        public string DataSourceName => _dataSourceNameResolver(_model.FactorUri.DataSourceId).SourceName;
         public string SeriesName => _model.FactorUri?.SeriesName;
+        public string UnitsSummary => _model.FactorUri?.SeriesUnitsSummary;
+        public ObservableCollection<string> AvailableUnitRates { get; }
+        public string SelectedUnitRate
+        {
+            get { return _model.FactorUri?.SeriesUnitRate; }
+            set { if (_model.FactorUri != null) _model.FactorUri.SeriesUnitRate = value; OnPropertyChanged(); }
+        }
 
-        //public string UnitsSummary => _model.FactorUri?.UnitsSummary;
+        public ObservableCollection<string> AvailableDataResolutions { get; }
+        public string SelectedDataResolution
+        {
+            get { return _model.FactorUri?.SeriesDataResolution; }
+            set { if (_model.FactorUri != null) _model.FactorUri.SeriesDataResolution = value; OnPropertyChanged(); }
+        }
+
 
         public bool ShowDropZone => _model.FactorUri == null;
 
@@ -44,19 +58,11 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         public void SetSeries(DataSourceSeriesUri seriesUri)
         {
             _model.FactorUri = seriesUri;
+            OnPropertyChanged(nameof(DataSourceName));
             OnPropertyChanged(nameof(SeriesName));
+            OnPropertyChanged(nameof(UnitsSummary));
             OnPropertyChanged(nameof(ShowDropZone));
             OnPropertyChanged(nameof(ShowSeriesInfo));
-        }
-
-        public async Task SetSeriesAsync(DataSourceSeriesUri seriesUri)
-        {
-            _model.FactorUri = seriesUri;
-            OnPropertyChanged(nameof(SeriesName));
-            OnPropertyChanged(nameof(ShowDropZone));
-            OnPropertyChanged(nameof(ShowSeriesInfo));
-
-            
         }
     }
 }

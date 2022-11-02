@@ -132,7 +132,12 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<NodesNavigationViewModel>();
             services.AddTransient<ExchangeNodeViewModel>();
             services.AddTransient<LikeTermAggregatorNodeViewModel>();
-            services.AddTransient<DataFunctionViewModel>();
+            services.AddTransient<DataFunctionViewModel>(x => 
+                new DataFunctionViewModel(
+                    x.GetService<ModelInitializationService>(),
+                    x.GetService<DataSourceServiceFactory>().GetDataSourceInfo,
+                    x.GetService<RobustViewModelDependencies>()
+                ));
             services.AddTransient<EnergyModelFileSystemViewModel>();
             services.AddTransient<ModelInitializationService>();
             services.AddTransient<DynamicCompilerService>();

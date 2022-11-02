@@ -19,7 +19,7 @@
 
         public static List<string> ToListing()
         {
-            var result = ToListing();
+            var result = DataResolution.ToListing();
             result.Add(Variable);
             return result;
         }

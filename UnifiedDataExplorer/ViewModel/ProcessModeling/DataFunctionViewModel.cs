@@ -8,6 +8,7 @@ using DotNetCommon.DelegateCommand;
 using DotNetCommon.DynamicCompilation;
 using DotNetCommon.Extensions;
 using EmissionsMonitorDataAccess;
+using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorModel.ProcessModeling;
 using Microsoft.CSharp.RuntimeBinder;
 using UnifiedDataExplorer.Services.WindowDialog;
@@ -18,13 +19,15 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
     public class DataFunctionViewModel : RobustViewModelBase
     {
         private readonly ModelInitializationService _compilationService;
+        private readonly Func<int, DataSourceBase> _dataSourceNameResolver;
         private readonly ICollection<FunctionTypeMapping> _functionTypes;
         private DataFunction _model;
         private Action<ViewModelDataStatus> _onDoneCallback;
 
-        public DataFunctionViewModel(ModelInitializationService compilationService, RobustViewModelDependencies facade) : base(facade)
+        public DataFunctionViewModel(ModelInitializationService compilationService, Func<int, DataSourceBase> dataSourceNameResolver, RobustViewModelDependencies facade) : base(facade)
         {
             _compilationService = compilationService;
+            _dataSourceNameResolver = dataSourceNameResolver;;
             _functionTypes = DataFunction.GetAllFunctionTypeMappings().ToList();
             UnitTypes = new ObservableCollection<string>();
             UnitForms = new ObservableCollection<string>();
@@ -50,7 +53,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
                 SelectedUnitForm = UnitForms.First(x => x == func.FunctionUnitForm);
                 foreach (FunctionFactor factor in func.FunctionFactors)
                 {
-                    FunctionFactorViewModel vm = new FunctionFactorViewModel(factor);
+                    FunctionFactorViewModel vm = new FunctionFactorViewModel(_dataSourceNameResolver, factor);
                     this.FunctionFactors.Add(vm);
                 }
             }
@@ -195,7 +198,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             {
                 isNew = true;
                 FunctionFactor backingModel = new FunctionFactor();
-                factorVm = new FunctionFactorViewModel(backingModel);
+                factorVm = new FunctionFactorViewModel(_dataSourceNameResolver, backingModel);
             }
 
             FunctionFactor factor = factorVm.GetBackingModel();
@@ -219,7 +222,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
                         _model.FunctionFactors.Remove(factor);
                         _model.FunctionFactors.Add(factorCopy);
                         this.FunctionFactors.Remove(factorVm);
-                        this.FunctionFactors.Add(new FunctionFactorViewModel(factorCopy));
+                        this.FunctionFactors.Add(new FunctionFactorViewModel(_dataSourceNameResolver, factorCopy));
                     }
                 }
             }, options);

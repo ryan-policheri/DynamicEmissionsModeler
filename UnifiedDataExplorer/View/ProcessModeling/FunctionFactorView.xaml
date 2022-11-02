@@ -55,15 +55,15 @@
             </StackPanel>
             <StackPanel Grid.Row="2" Orientation="Horizontal">
                 <Label Content="Units Summary: "/>
-                <TextBlock Text="{Binding SeriesName}"  Margin="0 6 0 0"/>
+                <TextBlock Text="{Binding UnitsSummary}"  Margin="0 6 0 0"/>
             </StackPanel>
             <StackPanel Grid.Row="3" Orientation="Horizontal">
                 <Label Content="Unit Rate: "/>
-                <TextBlock Text="{Binding SeriesName}"  Margin="0 6 0 0"/>
+                <ComboBox ItemsSource="{Binding AvailableUnitRates}" SelectedItem="{Binding SelectedUnitRate}" Margin="0 6 0 0" MinWidth="100"/>
             </StackPanel>
             <StackPanel Grid.Row="4" Orientation="Horizontal">
                 <Label Content="Data Resolution: "/>
-                <TextBlock Text="{Binding SeriesName}"  Margin="0 6 0 0"/>
+                <ComboBox ItemsSource="{Binding AvailableDataResolutions}" SelectedItem="{Binding SelectedDataResolution}"  Margin="0 6 0 0" MinWidth="100"/>
             </StackPanel>
         </Grid>
     </Grid>
