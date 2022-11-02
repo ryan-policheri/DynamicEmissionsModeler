@@ -69,7 +69,7 @@
             <Button Grid.Row="4" Background="Transparent" BorderThickness="0" HorizontalAlignment="Left" Padding="0 5 5 5" Margin="0 10 0 0"
                     Command="{Binding CreateEnergyModel}">
                 <Button.Content>
-                    <TextBlock Text="Create New Energy Model" FontSize="16" Foreground="Blue" TextDecorations="Underline" />
+                    <TextBlock Text="Create New Process Model" FontSize="16" Foreground="Blue" TextDecorations="Underline" />
                 </Button.Content>
             </Button>
         </Grid>
