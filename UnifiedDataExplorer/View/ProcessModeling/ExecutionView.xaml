@@ -23,17 +23,17 @@
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0"  Orientation="Horizontal" Margin="25  0 0 0">
                 <Label Content="Start Date/Time: "/>
-                <controls:MaterialDateTimePicker SelectedDateTime="{Binding StartDateTime, Mode=TwoWay}"  Background="Transparent"/>
+                <controls:MaterialDateTimePicker SelectedDateTime="{Binding StartTime, Mode=TwoWay}"  Background="Transparent"/>
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="25  0 0 0">
                 <Label Content="End Date/Time: "/>
-                <controls:MaterialDateTimePicker SelectedDateTime="{Binding EndDateTime, Mode=TwoWay}"  Background="Transparent"/>
+                <controls:MaterialDateTimePicker SelectedDateTime="{Binding EndTime, Mode=TwoWay}"  Background="Transparent"/>
             </StackPanel>
             <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="25  0 0 0">
                 <Label Content="Resolution: "/>
-                <ComboBox MinWidth="100"/>
+                <ComboBox MinWidth="100" ItemsSource="{Binding AvailableDataResolutions}" SelectedItem="{Binding Resolution}"/>
             </StackPanel>
-            <Button Grid.Column="4" Content="Execute" Background="Transparent">
+            <Button Grid.Column="4" Content="Execute" Background="Transparent" Command="{Binding ExecuteCommand}">
 
             </Button>
         </Grid>

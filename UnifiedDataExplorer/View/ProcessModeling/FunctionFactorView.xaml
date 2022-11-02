@@ -41,6 +41,9 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal">
                 <Label Content="Data Source: "/>
@@ -48,6 +51,18 @@
             </StackPanel>
             <StackPanel Grid.Row="1" Orientation="Horizontal">
                 <Label Content="Time Series Id: "/>
+                <TextBlock Text="{Binding SeriesName}"  Margin="0 6 0 0"/>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <Label Content="Units Summary: "/>
+                <TextBlock Text="{Binding SeriesName}"  Margin="0 6 0 0"/>
+            </StackPanel>
+            <StackPanel Grid.Row="3" Orientation="Horizontal">
+                <Label Content="Unit Rate: "/>
+                <TextBlock Text="{Binding SeriesName}"  Margin="0 6 0 0"/>
+            </StackPanel>
+            <StackPanel Grid.Row="4" Orientation="Horizontal">
+                <Label Content="Data Resolution: "/>
                 <TextBlock Text="{Binding SeriesName}"  Margin="0 6 0 0"/>
             </StackPanel>
         </Grid>

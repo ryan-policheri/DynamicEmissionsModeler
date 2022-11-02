@@ -82,6 +82,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             if (live)
             {
                 ExecutionViewModel vm = this.Resolve<ExecutionViewModel>();
+                vm.Load(_saveItem.SaveItemId);
                 this.CurrentChild = vm;
             }
             else

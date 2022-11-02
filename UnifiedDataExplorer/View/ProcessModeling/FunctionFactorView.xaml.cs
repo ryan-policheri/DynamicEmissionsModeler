@@ -29,7 +29,7 @@ namespace UnifiedDataExplorer.View.ProcessModeling
             if (element != null) element.Background = new SolidColorBrush(Colors.White);
         }
 
-        private void OnDrop(object sender, DragEventArgs e)
+        private async void OnDrop(object sender, DragEventArgs e)
         {
             Border element = sender as Border;
             DataSourceSeriesUri source = e.Data.GetData(typeof(DataSourceSeriesUri)) as DataSourceSeriesUri;
