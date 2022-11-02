@@ -31,7 +31,7 @@
             <ComboBox Grid.Column="3" ItemsSource="{Binding UnitForms}" SelectedItem="{Binding SelectedUnitForm}" Margin="5 0 10 0" MinWidth="75" FontWeight="Bold"/>
 
             <TextBlock Grid.Column="4" Text="and name: " Margin="0 5 0 0"/>
-            <TextBox Grid.Column="5" Text="{Binding FunctionName, Mode=TwoWay}" Visibility="{Binding UnitAndTypeSelected, Converter={StaticResource BoolToVisibility}}" Margin="5 0 0 0" FontWeight="Bold"/>
+            <TextBox Grid.Column="5" Text="{Binding FunctionName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding UnitAndTypeSelected, Converter={StaticResource BoolToVisibility}}" Margin="5 0 0 0" FontWeight="Bold"/>
         </Grid>
 
         <Grid Grid.Row="1" Visibility="{Binding UnitAndTypeSelected, Converter={StaticResource BoolToVisibility}}">
@@ -46,7 +46,7 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Text="Description" Margin="0 20 0 0" FontWeight="Bold"/>
-            <TextBox Grid.Row="1" Text="{Binding FunctionDescription}" Margin="0 0 0 0" 
+            <TextBox Grid.Row="1" Text="{Binding FunctionDescription,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 0" 
                  TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" SpellCheck.IsEnabled="True" MinLines="3" BorderThickness="1"/>
 
             <TextBlock Grid.Row="2" FontSize="16">
@@ -83,7 +83,7 @@
 
             <TextBlock Grid.Row="3" Text="{}{"/>
 
-            <TextBox Grid.Row="4" Text="{Binding FunctionCode, Mode=TwoWay}" Margin="15 0 0 0" 
+            <TextBox Grid.Row="4" Text="{Binding FunctionCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="15 0 0 0" 
                  TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" SpellCheck.IsEnabled="False" MinLines="3" BorderThickness="0.5" VerticalScrollBarVisibility="Auto" />
 
             <TextBlock Grid.Row="5" Text="{}}"/>

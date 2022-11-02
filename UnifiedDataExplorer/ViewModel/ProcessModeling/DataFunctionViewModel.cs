@@ -23,11 +23,12 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         private readonly ICollection<FunctionTypeMapping> _functionTypes;
         private DataFunction _model;
         private Action<ViewModelDataStatus> _onDoneCallback;
+        private bool _loading = false;
 
         public DataFunctionViewModel(ModelInitializationService compilationService, Func<int, DataSourceBase> dataSourceNameResolver, RobustViewModelDependencies facade) : base(facade)
         {
             _compilationService = compilationService;
-            _dataSourceNameResolver = dataSourceNameResolver;;
+            _dataSourceNameResolver = dataSourceNameResolver; ;
             _functionTypes = DataFunction.GetAllFunctionTypeMappings().ToList();
             UnitTypes = new ObservableCollection<string>();
             UnitForms = new ObservableCollection<string>();
@@ -46,6 +47,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 
         public void Load(DataFunction func, Action<ViewModelDataStatus> callback)
         {
+            _loading = true;
             if (func != null)
             {
                 IsInModel = true;
@@ -60,6 +62,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             _model = func;
             _onDoneCallback = callback;
             ShowDoneOptions = _onDoneCallback != null;
+            _loading = false;
         }
 
         public DataFunction GetBackingModel() => _model;
@@ -83,6 +86,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             {
                 SetField(ref _selectedUnitType, value);
                 PopulateUnitForms(_selectedUnitType);
+                Reset();
             }
         }
 
@@ -94,15 +98,19 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             get { return _selectedUnitForm; }
             set
             {
-                SetField(ref _selectedUnitForm, value);
-                if (_selectedUnitForm != null)
+                _selectedUnitForm = value;
+                if (!_loading && _selectedUnitForm != null)
                 {
                     _model = (DataFunction)Activator.CreateInstance(_functionTypes.Where(x => x.FunctionUnit == SelectedUnitType && x.FunctionUnitForm == _selectedUnitForm).First().TypeRep);
                     if (String.IsNullOrWhiteSpace(FunctionName)) FunctionName = $"New {SelectedUnitForm} {SelectedUnitType} Function";
                     OnPropertyChanged(nameof(UnitAndTypeSelected));
+                    OnPropertyChanged(nameof(FunctionName));
                     OnPropertyChanged(nameof(ReturnType));
                     OnPropertyChanged(nameof(MethodName));
+                    OnPropertyChanged(nameof(FunctionDescription));
+                    OnPropertyChanged(nameof(FunctionCode));
                 }
+                OnPropertyChanged(nameof(SelectedUnitForm));
             }
         }
 
@@ -127,7 +135,21 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         public string FunctionCode
         {
             get { return _model?.FunctionCode; }
-            set { if(_model != null) _model.FunctionCode = value; OnPropertyChanged(); }
+            set { if (_model != null) _model.FunctionCode = value; OnPropertyChanged(); }
+        }
+
+        private void Reset()
+        {
+            if (!_loading)
+            {
+                _model = null;
+                OnPropertyChanged(nameof(UnitAndTypeSelected));
+                OnPropertyChanged(nameof(FunctionName));
+                OnPropertyChanged(nameof(ReturnType));
+                OnPropertyChanged(nameof(MethodName));
+                OnPropertyChanged(nameof(FunctionDescription));
+                OnPropertyChanged(nameof(FunctionCode));
+            }
         }
 
         public ICommand CompileCommand { get; }
@@ -144,7 +166,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             try
             {
                 await _compilationService.InitializeFunction(this._model);
-                if(showSucessMessage) DialogService.ShowInfoMessage("Function compiled successfully!");
+                if (showSucessMessage) DialogService.ShowInfoMessage("Function compiled successfully!");
             }
             catch (RuntimeBinderInternalCompilerException ex) //TODO better exception
             {
@@ -205,20 +227,20 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             FunctionFactor factorCopy = factor.Copy();
 
             ModalOptions options = ModalOptions.SaveCancelOption; if (!isNew) { options.ShowDelete = true; }
-            
+
             this.DialogService.ShowModalWindow(factorVm, () =>
             {
                 if (factorVm.Status == ViewModelDataStatus.Saved)
                 {
-                    if(isNew) { _model.FunctionFactors.Add(factor); this.FunctionFactors.Add(factorVm); }
+                    if (isNew) { _model.FunctionFactors.Add(factor); this.FunctionFactors.Add(factorVm); }
                     else { /*do nothing*/ }
                 }
                 if (factorVm.Status == ViewModelDataStatus.Deleted) { this._model.FunctionFactors.Remove(factor); this.FunctionFactors.Remove(factorVm); }
                 if (factorVm.Status == ViewModelDataStatus.Canceled)
                 {
-                    if(isNew) { /*do nothing*/ }
-                    else 
-                    { 
+                    if (isNew) { /*do nothing*/ }
+                    else
+                    {
                         _model.FunctionFactors.Remove(factor);
                         _model.FunctionFactors.Add(factorCopy);
                         this.FunctionFactors.Remove(factorVm);

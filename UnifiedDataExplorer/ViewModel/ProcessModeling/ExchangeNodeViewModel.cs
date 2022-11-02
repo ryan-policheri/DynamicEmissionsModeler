@@ -63,6 +63,13 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 
             DataFunctionViewModel vm = this.Resolve<DataFunctionViewModel>();
             vm.Load(_model.Product, null);
+            vm.PropertyChanged += (sender, args) =>
+            {
+                if (args.PropertyName == nameof(DataFunctionViewModel.SelectedUnitForm))
+                {
+                    _model.Product = vm.GetBackingModel();
+                }
+            };
             ProductFunctionViewModel = vm;
         }
 

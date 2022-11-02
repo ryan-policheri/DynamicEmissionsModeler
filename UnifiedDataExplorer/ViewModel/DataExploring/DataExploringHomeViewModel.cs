@@ -19,7 +19,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring
     public class DataExploringHomeViewModel : RobustViewModelBase
     {
         private const string EXPLORE_SET = "Explore Set";
-        private const string ENERGY_MODEL = "Energy Model";
+        private const string ENERGY_MODEL = "Process Model";
 
         private readonly IDataSourceRepository _repo;
         private readonly DataSourceServiceFactory _serviceFactory;

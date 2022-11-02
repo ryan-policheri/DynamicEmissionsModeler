@@ -81,7 +81,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
                 Prefix = loadingInfo.TypeTag,
                 SeriesName = SeriesName,
                 Uri = loadingInfo.Id,
-                //UnitSummary = UnitsSummary,
+                SeriesUnitsSummary = UnitsSummary,
             };
             return uri;
         }

@@ -29,7 +29,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         }
 
         public string ParameterName => _model.ParameterName;
-        public string DataSourceName => _dataSourceNameResolver(_model.FactorUri.DataSourceId).SourceName;
+        public string DataSourceName => _model?.FactorUri != null ? _dataSourceNameResolver(_model.FactorUri.DataSourceId).SourceName : null;
         public string SeriesName => _model.FactorUri?.SeriesName;
         public string UnitsSummary => _model.FactorUri?.SeriesUnitsSummary;
         public ObservableCollection<string> AvailableUnitRates { get; }
