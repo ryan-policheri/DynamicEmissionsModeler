@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace EmissionsMonitorModel.ProcessModeling
@@ -14,6 +15,7 @@ namespace EmissionsMonitorModel.ProcessModeling
 
         public string UnitForm { get; set; }
 
+        [JsonIgnore]
         public Func<object, double> ValueRenderFunction { get; set; }
 
         public bool IsLikeResult(DataFunctionResult other)
