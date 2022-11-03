@@ -8,6 +8,7 @@ namespace EmissionsMonitorModel.ProcessModeling
         public LikeTermsAggregatorNode()
         {
             PrecedingNodeIds = new List<int>();
+            PrecedingNodes = new List<ExchangeNode>();
         }
 
         public List<int> PrecedingNodeIds { get; set; }

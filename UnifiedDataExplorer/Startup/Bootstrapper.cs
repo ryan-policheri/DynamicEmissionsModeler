@@ -158,6 +158,13 @@ namespace UnifiedDataExplorer.Startup
                 return client;
             }));
 
+            services.AddTransient<ModelExecutionClient>((provider =>
+            {
+                var client = new ModelExecutionClient();
+                client.Initialize(config);
+                return client;
+            }));
+
             services.AddTransient<ExcelExportService>();
             services.AddSingleton<ReportProcessor>(x => new ReportProcessor(
                 x.GetRequiredService<ReportingService>(),

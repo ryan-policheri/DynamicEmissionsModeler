@@ -2,6 +2,11 @@
 {
     public static class Extensions
     {
+        public static string ToValidNamespace(this string source)
+        {
+            return source.ToValidClassName();
+        }
+
         public static string ToValidClassName(this string source, string spaceReplaceChar = "")
         {
             if (String.IsNullOrEmpty(source)) return source;

@@ -13,7 +13,7 @@ namespace EmissionsMonitorDataAccess.Database.Repositories
         public async Task<IEnumerable<DataSourceBase>> GetAllDataSourcesAsync()
         {
             IEnumerable<DataSourceBase> dataSources = await Context.Set<DataSourceBase>().ToListAsync();
-            return dataSources;
+            return dataSources.Select(x => x.FromSourceDetails());
         }
 
         public async Task<DataSourceBase> SaveDataSource(DataSourceBase dataSource) => await UpsertDataSource(dataSource);

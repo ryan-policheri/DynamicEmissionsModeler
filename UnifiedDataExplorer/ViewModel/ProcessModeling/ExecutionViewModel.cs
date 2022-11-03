@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using DotNetCommon.DelegateCommand;
+using EmissionsMonitorDataAccess.Http;
 using EmissionsMonitorModel.ProcessModeling;
 using UnifiedDataExplorer.ViewModel.Base;
 
@@ -9,14 +10,18 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 {
     public class ExecutionViewModel : RobustViewModelBase
     {
-        private ExecutionSpec _spec;
+        private readonly ModelExecutionClient _client;
+        private ModelExecutionSpec _spec;
 
-        public ExecutionViewModel(RobustViewModelDependencies facade) : base(facade)
+        public ExecutionViewModel(ModelExecutionClient client, RobustViewModelDependencies facade) : base(facade)
         {
-            _spec = new ExecutionSpec();
+            _client = client;
+            _spec = new ModelExecutionSpec();
             AvailableDataResolutions = new ObservableCollection<string>();
             foreach(string r in DataResolution.ToListing()){ AvailableDataResolutions.Add(r); }
             ExecuteCommand = new DelegateCommand(OnExecute);
+            StartTime = DateTime.Today.AddDays(-1);
+            EndTime = DateTime.Today.AddSeconds(-1);
         }
 
         public void Load(int modelId)
@@ -46,9 +51,9 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 
         public ICommand ExecuteCommand { get; }
 
-        private void OnExecute()
+        private async void OnExecute()
         {
-            //throw new NotImplementedException();
+            var stuff = await _client.RemoteExecuteAsync(this._spec);
         }
     }
 }

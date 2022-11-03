@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace EmissionsMonitorModel.ProcessModeling
 {
     public class ModelExecutionSpec
     {
-        public ProcessModel Model { get; set; }
+        public int ModelId { get; set; }
+        [JsonIgnore]
+        public ProcessModel? Model { get; set; }
         public DateTimeOffset StartTime { get; set; }
         public DateTimeOffset EndTime { get; set; }
+        public string DataResolution { get; set; }
     }
 }

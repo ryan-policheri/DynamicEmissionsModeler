@@ -35,7 +35,6 @@ namespace EmissionsMonitorDataAccess
                         monitorSeries.SeriesName = leaf.Name;
                         monitorSeries.DataPoints = new List<MonitorDataPoint>();
                         monitorSeriesList.Add(monitorSeries);
-                        first = false;
                     }
 
                     MonitorSeries monitorSeries2 = monitorSeriesList.First(x => x.SeriesName == leaf.Name);
@@ -47,6 +46,7 @@ namespace EmissionsMonitorDataAccess
                     };
                     monitorSeries2.DataPoints.Add(monitorPoint);
                 }
+                first = false;
             }
 
             return monitorSeriesList;

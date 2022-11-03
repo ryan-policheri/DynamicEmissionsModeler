@@ -1,6 +1,8 @@
 ﻿using EIA.Services.Clients;
 using EmissionsMonitorDataAccess.Abstractions;
+using EmissionsMonitorDataAccess.DataSourceWrappers;
 using EmissionsMonitorModel.DataSources;
+using EmissionsMonitorModel.TimeSeries;
 using PiModel;
 using PiServices;
 
@@ -11,18 +13,21 @@ namespace EmissionsMonitorServices.DataSourceWrappers
         private readonly Func<EiaClient> _eiaClientBuilder;
         private readonly Func<PiHttpClient> _piClientBuilder;
         private readonly IDataSourceRepository _repo;
+        private readonly bool _wrap;
         private ICollection<DataSourceInfoAndService> _sources = new List<DataSourceInfoAndService>();
 
-        public DataSourceServiceFactory(Func<EiaClient> eiaClientBuilder, Func<PiHttpClient> piClientBuilder, IDataSourceRepository dataSourceRepo)
+        public DataSourceServiceFactory(Func<EiaClient> eiaClientBuilder, Func<PiHttpClient> piClientBuilder, IDataSourceRepository dataSourceRepo, bool wrap = false)
         {
             _eiaClientBuilder = eiaClientBuilder;
             _piClientBuilder = piClientBuilder;
             _repo = dataSourceRepo;
+            _wrap = wrap;
             _sources = new List<DataSourceInfoAndService>();
         }
 
         public async Task LoadAllDataSourceServices()
         {
+            _sources.Clear();
             IEnumerable<DataSourceBase> allDataSources = await _repo.GetAllDataSourcesAsync();
             foreach (DataSourceBase dataSource in allDataSources) UpdateDataSourceService(dataSource);
         }
@@ -62,6 +67,13 @@ namespace EmissionsMonitorServices.DataSourceWrappers
             return (T)existingSource.DataSourceService;
         }
 
+        public ITimeSeriesDataSource GetTimeSeriesDataSourceById(int dataSourceId)
+        {
+            if (!_wrap) throw new InvalidOperationException();
+            var existingSource = _sources.First(x => x.DataSourceInfo.SourceId == dataSourceId);
+            return (ITimeSeriesDataSource)existingSource.DataSourceService;
+        }
+
         public object BuildDataSourceService(DataSourceBase dataSourceInfo)
         {
             switch (dataSourceInfo.SourceType)
@@ -70,12 +82,14 @@ namespace EmissionsMonitorServices.DataSourceWrappers
                     IEiaConnectionInfo eiaConnInfo = (EiaDataSource)dataSourceInfo;
                     EiaClient eiaClient = _eiaClientBuilder();
                     eiaClient.Initialize(eiaConnInfo);
-                    return eiaClient;
+                    if (_wrap) return new EiaDataSourceRepoWrapper(eiaClient);
+                    else return eiaClient;
                 case DataSourceType.Pi:
                     IPiConnectionInfo piConnInfo = (PiDataSource)dataSourceInfo;
                     PiHttpClient piClient = _piClientBuilder();
                     piClient.Initialize(piConnInfo);
-                    return piClient;
+                    if (_wrap) return new PiDataSourceRepoWrapper(piClient);
+                    else return piClient;
                 default:
                     throw new NotImplementedException($"Building service for info type {dataSourceInfo.SourceType} not implemented");
             }

@@ -19,7 +19,7 @@ namespace EmissionsMonitorDataAccess
         public async Task InitializeModel(ProcessModel model)
         {
             //Compile code
-            CSharpAssemblyBuilder builder = SetupAssemblyBuilder(model.ModelName);
+            CSharpAssemblyBuilder builder = SetupAssemblyBuilder(model.ModelName.ToValidNamespace());
 
             foreach (ProcessNode node in model.ProcessNodes)
             {

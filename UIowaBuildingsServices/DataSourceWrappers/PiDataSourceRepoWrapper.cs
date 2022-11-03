@@ -23,9 +23,9 @@ namespace EmissionsMonitorDataAccess.DataSourceWrappers
 
         public async Task<Series> GetTimeSeriesAsync(DataSourceSeriesUri uri, DateTimeOffset startTime, DateTimeOffset endTime)
         {
-            if (uri.Prefix == PiDataSource.PI_TAG_PREFIX)
+            if (uri.Prefix == PiPoint.PI_POINT_TYPE)
             {
-                PiPoint inputPiPoint = await _client.SearchPiPoint(uri.Uri);
+                PiPoint inputPiPoint = await _client.GetByDirectLink<PiPoint>(uri.Uri);
                 await _client.LoadInterpolatedValues(inputPiPoint, startTime, endTime);
                 Series series = new Series();
                 series.SeriesUri = uri;

@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\EmissionsMonitorDataAccess.Abstractions\EmissionsMonitorDataAccess.Abstractions.csproj" />
     <ProjectReference Include="..\EmissionsMonitorDataAccess.Database\EmissionsMonitorDataAccess.Database.csproj" />
+    <ProjectReference Include="..\UIowaBuildingsServices\EmissionsMonitorServices.csproj" />
   </ItemGroup>
 
 </Project>
