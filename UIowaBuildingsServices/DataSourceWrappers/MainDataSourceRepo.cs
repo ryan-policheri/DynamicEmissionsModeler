@@ -23,5 +23,12 @@ namespace EmissionsMonitorServices.DataSourceWrappers
             Series data = await dataSource.GetTimeSeriesAsync(uri, startTime, endTime);
             return data;
         }
+
+        public async Task<Series> GetTimeSeriesAsync(DataSourceSeriesUri uri, TimeSeriesRenderSettings renderSettings)
+        {
+            ITimeSeriesDataSource dataSource = _dataSourceFactory.GetTimeSeriesDataSourceById(uri.DataSourceId);
+            Series data = await dataSource.GetTimeSeriesAsync(uri, renderSettings);
+            return data;
+        }
     }
 }

@@ -30,10 +30,12 @@ namespace EmissionsMonitorWebApi.Controllers
             spec.Model = (await _repo.GetModelSaveItemAsync(spec.ModelId)).ToProcessModel();
             await _modelInitService.InitializeModel(spec.Model);
             var stuff = await _executionService.ExecuteModelAsync(spec);
-            return new ModelExecutionResult
+            var blah = new ModelExecutionResult
             {
-                Stuff = stuff
+                Stuff = stuff.ToList()
             };
+            string test = blah.ToJson();
+            return blah;
         }
     }
 }

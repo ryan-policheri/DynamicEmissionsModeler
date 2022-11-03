@@ -40,5 +40,10 @@ namespace EmissionsMonitorDataAccess.DataSourceWrappers
             }).ToList();
             return series;
         }
+
+        public Task<Series> GetTimeSeriesAsync(DataSourceSeriesUri uri, TimeSeriesRenderSettings renderSettings)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

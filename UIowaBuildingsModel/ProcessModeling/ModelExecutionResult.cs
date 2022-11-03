@@ -10,6 +10,6 @@ namespace EmissionsMonitorModel.ProcessModeling
 {
     public class ModelExecutionResult
     {
-        public ICollection<MonitorSeries> Stuff = new List<MonitorSeries>();
+        public List<MonitorSeries> Stuff = new List<MonitorSeries>();
     }
 }

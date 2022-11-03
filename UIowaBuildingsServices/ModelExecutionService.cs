@@ -18,7 +18,13 @@ namespace EmissionsMonitorDataAccess
         {
             IEnumerable<ProcessNode> leafs = spec.Model.GetProcessLeafs();
             ICollection<DataSourceSeriesUri> neededSeriesUris = spec.Model.GetAllSeriesUris();
-            ICollection<Series> neededSeries = await QuerySeries(neededSeriesUris, spec.StartTime, spec.EndTime);
+            TimeSeriesRenderSettings renderSettings = new TimeSeriesRenderSettings
+            {
+                StartDateTime = spec.StartTime,
+                EndDateTime = spec.EndTime,
+                RenderResolution = spec.DataResolution
+            };
+            ICollection<Series> neededSeries = await QuerySeries(neededSeriesUris, renderSettings);
 
             ICollection<MonitorSeries> monitorSeriesList = new List<MonitorSeries>();
 
@@ -52,12 +58,12 @@ namespace EmissionsMonitorDataAccess
             return monitorSeriesList;
         }
 
-        public async Task<ICollection<Series>> QuerySeries(ICollection<DataSourceSeriesUri> seriesUris, DateTimeOffset start, DateTimeOffset end)
+        public async Task<ICollection<Series>> QuerySeries(ICollection<DataSourceSeriesUri> seriesUris, TimeSeriesRenderSettings renderSettings)
         {
             ICollection<Series> seriesList = new List<Series>();
             foreach (DataSourceSeriesUri uri in seriesUris)
             {
-                Series series = await _dataSource.GetTimeSeriesAsync(uri, start, end);
+                Series series = await _dataSource.GetTimeSeriesAsync(uri, renderSettings);
                 seriesList.Add(series);
             }
             return seriesList;
