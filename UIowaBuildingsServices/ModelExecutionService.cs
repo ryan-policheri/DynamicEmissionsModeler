@@ -24,12 +24,18 @@ namespace EmissionsMonitorDataAccess
                 EndDateTime = spec.EndTime,
                 RenderResolution = spec.DataResolution
             };
+
+            foreach (DataSourceSeriesUri seriesUri in neededSeriesUris.Where(x => x.SeriesDataResolution == DataResolutionPlusVariable.Variable))
+            {
+                seriesUri.FillVariableResolution(renderSettings.RenderResolution);
+            }
+
             ICollection<Series> neededSeries = await QuerySeries(neededSeriesUris, renderSettings);
 
             ICollection<MonitorSeries> monitorSeriesList = new List<MonitorSeries>();
 
             bool first = true;
-            foreach (DateTimeOffset offset in spec.StartTime.EnumerateSecondsUntil(spec.EndTime))
+            foreach (DateTimeOffset offset in renderSettings.BuildTimePoints())
             {
                 ICollection<DataPoint> timeData = neededSeries.SelectMany(x => x.DataPoints).Where(x => x.Timestamp == offset).ToList();
 
@@ -64,7 +70,8 @@ namespace EmissionsMonitorDataAccess
             foreach (DataSourceSeriesUri uri in seriesUris)
             {
                 Series series = await _dataSource.GetTimeSeriesAsync(uri, renderSettings);
-                seriesList.Add(series);
+                Series normalizedSeries = series.RenderSeriesAtTargetResolution(renderSettings);
+                seriesList.Add(normalizedSeries);
             }
             return seriesList;
         }

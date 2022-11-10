@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using EmissionsMonitorModel.ProcessModeling;
+using System.Text.Json.Serialization;
 
 namespace EmissionsMonitorModel.DataSources
 {
@@ -19,5 +20,11 @@ namespace EmissionsMonitorModel.DataSources
         public string SeriesUnitRate { get; set; }
 
         public string SeriesDataResolution { get; set; }
+
+        public void FillVariableResolution(string renderResolution)
+        {
+            if (this.SeriesDataResolution != DataResolutionPlusVariable.Variable) throw new InvalidOperationException("Can only replace variable resolution");
+            this.SeriesDataResolution = renderResolution;
+        }
     }
 }

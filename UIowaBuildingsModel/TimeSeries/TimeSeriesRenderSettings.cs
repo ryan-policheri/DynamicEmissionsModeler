@@ -63,5 +63,16 @@ namespace EmissionsMonitorModel.TimeSeries
                 .WithQueryString("end", EndDateTime.ToString("yyyyMMddTHHZ"));
             return queryString;
         }
+
+        public ICollection<DateTimeOffset> BuildTimePoints()
+        {
+            switch (this.RenderResolution)
+            {
+                case DataResolution.EverySecond: return this.StartDateTime.EnumerateSecondsUntil(this.EndDateTime);
+                case DataResolution.EveryMinute: return this.StartDateTime.EnumerateMinutesUntil(this.EndDateTime);
+                case DataResolution.Hourly: return this.StartDateTime.EnumerateHoursUntil(this.EndDateTime);
+                default: throw new NotImplementedException("render res " + this.RenderResolution + " not  implemented");
+            }
+        }
     }
 }

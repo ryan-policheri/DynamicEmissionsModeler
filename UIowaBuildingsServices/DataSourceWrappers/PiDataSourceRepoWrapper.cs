@@ -49,13 +49,10 @@ namespace EmissionsMonitorDataAccess.DataSourceWrappers
 
         public async Task<Series> GetTimeSeriesAsync(DataSourceSeriesUri uri, TimeSeriesRenderSettings renderSettings)
         {
-            var renderSettingsCopy = renderSettings.Copy();
-            if(uri.SeriesDataResolution != DataResolutionPlusVariable.Variable) renderSettingsCopy.RenderResolution = uri.SeriesDataResolution;
-
             if (uri.Prefix == PiPoint.PI_POINT_TYPE)
             {
                 PiPoint inputPiPoint = await _client.GetByDirectLink<PiPoint>(uri.Uri);
-                await _client.LoadInterpolatedValues(inputPiPoint, renderSettingsCopy);
+                await _client.LoadInterpolatedValues(inputPiPoint, renderSettings);
                 Series series = new Series();
                 series.SeriesUri = uri;
                 //TODO: Some error checking on the data points

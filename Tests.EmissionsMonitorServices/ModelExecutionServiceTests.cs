@@ -25,6 +25,7 @@ namespace Tests.EmissionsMonitorServices
             spec.Model = model;
             spec.StartTime = new DateTimeOffset(2022, 9, 18, 6, 5, 4, TimeZones.GetUtcOffset());
             spec.EndTime = new DateTimeOffset(2022, 9, 18, 6, 5, 13, TimeZones.GetUtcOffset());
+            spec.DataResolution = DataResolution.EverySecond;
 
             ICollection<MonitorSeries> monitorSeries = await service.ExecuteModelAsync(spec);
 
@@ -54,7 +55,9 @@ namespace Tests.EmissionsMonitorServices
                 DataSource = mockDataSource,
                 SeriesName = "Boiler 1 Natural Gas Flow",
                 Prefix = "Foobar",
-                Uri = "B1 NG Flow Tag"
+                Uri = "B1 NG Flow Tag",
+                SeriesDataResolution = DataResolution.EverySecond,
+                SeriesUnitRate = UnitRates.PerSecond,
             };
 
             DataSourceSeriesUri mockSteamSeries = new DataSourceSeriesUri
@@ -62,11 +65,13 @@ namespace Tests.EmissionsMonitorServices
                 DataSource = mockDataSource,
                 SeriesName = "Boiler 1 Steam Energy Flow",
                 Prefix = "Foobar",
-                Uri = "B1 Steam Output Tag"
+                Uri = "B1 Steam Output Tag",
+                SeriesDataResolution = DataResolution.EverySecond,
+                SeriesUnitRate = UnitRates.PerSecond,
             };
 
             Mock<ITimeSeriesDataSource> dataSource = new Mock<ITimeSeriesDataSource>();
-            dataSource.Setup(x => x.GetTimeSeriesAsync(It.Is<DataSourceSeriesUri>(x => x.Uri == "B1 NG Flow Tag"), It.IsAny<DateTimeOffset>(), It.IsAny<DateTimeOffset>()).Result)
+            dataSource.Setup(x => x.GetTimeSeriesAsync(It.Is<DataSourceSeriesUri>(x => x.Uri == "B1 NG Flow Tag"), It.IsAny<TimeSeriesRenderSettings>()).Result)
                 .Returns(() =>
                 {
                     Series series = new Series();
@@ -137,7 +142,7 @@ namespace Tests.EmissionsMonitorServices
                     return series;
                 });
 
-            dataSource.Setup(x => x.GetTimeSeriesAsync(It.Is<DataSourceSeriesUri>(x => x.Uri == "B1 Steam Output Tag"), It.IsAny<DateTimeOffset>(), It.IsAny<DateTimeOffset>()).Result)
+            dataSource.Setup(x => x.GetTimeSeriesAsync(It.Is<DataSourceSeriesUri>(x => x.Uri == "B1 Steam Output Tag"), It.IsAny<TimeSeriesRenderSettings>()).Result)
                 .Returns(() =>
                 {
                     Series series = new Series();
