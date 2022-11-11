@@ -36,6 +36,8 @@ namespace EmissionsMonitorModel.ProcessModeling
 
         public string FunctionUnitForm { get; set; }
 
+        public string FunctionDefaultReturnUnit { get; set; }
+
         public DataFunctionResult ExecuteFunction(IEnumerable<DataPoint> functionFactorValues)
         {
             Type type = this.FunctionHostObject.GetType();
@@ -68,6 +70,7 @@ namespace EmissionsMonitorModel.ProcessModeling
             {
                 Unit = FunctionUnit,
                 UnitForm = FunctionUnitForm,
+                DefaultValueUnit = FunctionDefaultReturnUnit, 
                 TotalValue = value,
                 ValueRenderFunction = this.ToDefaultValueRendering
             };
@@ -119,6 +122,7 @@ namespace EmissionsMonitorModel.ProcessModeling
         public SteamEnergyFunction() : base()
         {
             FunctionUnitForm = "Steam";
+            FunctionDefaultReturnUnit = "MMBTU";
         }
 
         public override double ToDefaultValueRendering(object value)
@@ -143,6 +147,7 @@ namespace EmissionsMonitorModel.ProcessModeling
         public Co2MassFunction() : base()
         {
             FunctionUnitForm = "CO2";
+            FunctionDefaultReturnUnit = "Kilograms";
         }
 
         public override double ToDefaultValueRendering(object value)
@@ -158,6 +163,7 @@ namespace EmissionsMonitorModel.ProcessModeling
         {
             FunctionUnit = "Currency";
             FunctionUnitForm = "Money";
+            FunctionDefaultReturnUnit = "";
         }
 
         public override Type GetReturnType() => typeof(Money);

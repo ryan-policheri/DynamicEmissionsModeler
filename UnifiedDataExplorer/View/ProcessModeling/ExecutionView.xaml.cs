@@ -1,28 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using UnifiedDataExplorer.ViewModel.ProcessModeling;
 
 namespace UnifiedDataExplorer.View.ProcessModeling
 {
-    /// <summary>
-    /// Interaction logic for ExecutionView.xaml
-    /// </summary>
     public partial class ExecutionView : UserControl
     {
+        private ExecutionViewModel ViewModel => this.DataContext as ExecutionViewModel;
+
         public ExecutionView()
         {
             InitializeComponent();
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            DataContextChanged += DataPointsView_DataContextChanged;
+            OnDataChanged();
+        }
+
+        private void DataPointsView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            OnDataChanged();
+        }
+
+        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ExecutionViewModel.SelectedStreamResults) && ViewModel != null)
+            {
+                OnDataChanged();
+            }
+        }
+
+        private void OnDataChanged()
+        {
+            if (ViewModel?.SelectedStreamResults != null)
+            {
+                MainDataGrid.Visibility = Visibility.Visible;
+                CollectionViewSource collection = new CollectionViewSource();
+                collection.Source = ViewModel.SelectedStreamResults;
+                MainDataGrid.ItemsSource = collection.View;
+            }
         }
     }
 }

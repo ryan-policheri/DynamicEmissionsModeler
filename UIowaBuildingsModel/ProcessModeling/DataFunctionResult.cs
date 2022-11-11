@@ -15,6 +15,8 @@ namespace EmissionsMonitorModel.ProcessModeling
 
         public string UnitForm { get; set; }
 
+        public string DefaultValueUnit { get; set; }
+
         [JsonIgnore]
         public Func<object, double> ValueRenderFunction { get; set; }
 
@@ -29,9 +31,15 @@ namespace EmissionsMonitorModel.ProcessModeling
             DataFunctionResult r3 = new DataFunctionResult();
             r3.Unit = r1.Unit;
             r3.UnitForm = r1.UnitForm;
+            r3.DefaultValueUnit = r1.DefaultValueUnit;
             r3.ValueRenderFunction = r1.ValueRenderFunction;
             r3.TotalValue = r1.TotalValue + r2.TotalValue;
             return r3;
+        }
+
+        public override string ToString()
+        {
+            return $"{this.UnitForm} {this.Unit} ({this.DefaultValueUnit})";
         }
     }
 }

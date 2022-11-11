@@ -6,9 +6,10 @@
              xmlns:local="clr-namespace:UnifiedDataExplorer.View.ProcessModeling"
              xmlns:controls="clr-namespace:UnifiedDataExplorer.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -33,9 +34,29 @@
                 <Label Content="Resolution: "/>
                 <ComboBox MinWidth="100" ItemsSource="{Binding AvailableDataResolutions}" SelectedItem="{Binding Resolution}"/>
             </StackPanel>
-            <Button Grid.Column="4" Content="Execute" Background="Transparent" Command="{Binding ExecuteCommand}">
-
-            </Button>
+            <Button Grid.Column="4" Content="Execute" Background="Transparent" Command="{Binding ExecuteCommand}"/>
         </Grid>
+
+        <Grid Grid.Row="1" Visibility="{Binding ResultsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 20 0 10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Column="0">
+                <Label Content="Select Stream: "/>
+                <ComboBox ItemsSource="{Binding Streams}" SelectedItem="{Binding SelectedStream}" MinWidth="100"/>
+            </StackPanel>
+            <Button Grid.Column="1" Content="Export Results" Background="Transparent" Margin="25 0 0 0"/>
+        </Grid>
+
+        <DataGrid Grid.Row="2" Name="MainDataGrid" BorderThickness="1" BorderBrush="Gray" AutoGenerateColumns="True"
+                    Visibility="{Binding ResultsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    CanUserDeleteRows="False" CanUserAddRows="False" IsReadOnly="true" CanUserResizeColumns="True"
+                    SelectionMode="Single" SelectionUnit="FullRow" MaxColumnWidth="900" Height="Auto" Width="Auto"
+                    Background="WhiteSmoke" VerticalScrollBarVisibility="Auto" GridLinesVisibility="All"
+                    HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" SnapsToDevicePixels="True" 
+                    ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
+                    CellStyle="{StaticResource CustomDataGridCellStyle}">
+        </DataGrid>
     </Grid>
 </UserControl>
