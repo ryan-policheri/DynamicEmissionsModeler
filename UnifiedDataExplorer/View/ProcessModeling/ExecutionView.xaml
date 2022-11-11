@@ -46,7 +46,7 @@
                 <Label Content="Select Stream: "/>
                 <ComboBox ItemsSource="{Binding Streams}" SelectedItem="{Binding SelectedStream}" MinWidth="100"/>
             </StackPanel>
-            <Button Grid.Column="1" Content="Export Results" Background="Transparent" Margin="25 0 0 0"/>
+            <Button Grid.Column="1" Content="Export Results" Background="Transparent" Margin="25 0 0 0" Command="{Binding ExcelExportCommand}"/>
         </Grid>
 
         <DataGrid Grid.Row="2" Name="MainDataGrid" BorderThickness="1" BorderBrush="Gray" AutoGenerateColumns="True"

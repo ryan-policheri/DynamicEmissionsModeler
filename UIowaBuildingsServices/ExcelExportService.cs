@@ -2,6 +2,7 @@
 using DotNetCommon.Extensions;
 using OfficeOpenXml;
 using EmissionsMonitorModel;
+using EmissionsMonitorModel.ProcessModeling;
 
 namespace UIowaBuildingsServices
 {
@@ -57,6 +58,30 @@ namespace UIowaBuildingsServices
 
                 ExcelWorksheet gridSummary = package.Workbook.Worksheets.Add("Electric Grid Summary");
                 row = 1; CreateTable(gridSummary, $"{snapshot.ElectricGridStrategy}", row, snapshot.BuildGridElectricTable());
+
+                FileInfo file = new FileInfo(filePath);
+                package.SaveAs(file);
+            }
+        }
+
+        public void ExportExecutionResult(string filePath, ModelExecutionResult executionResult)
+        {
+            using (ExcelPackage package = new ExcelPackage())
+            {
+                foreach(var ns in executionResult.NodeSeries)
+                {
+                    ExcelWorksheet ws = package.Workbook.Worksheets.Add(ns.SeriesName);
+                    var dt = ns.TransformToDataTable();
+                    ws.Cells["A1"].Value = "Stream Name:"; this.BoldenRange(ws, 1, 1);
+                    ws.Cells["B1"].Value = ns.SeriesName;
+                    ws.Cells["A2"].Value = "Stream Product: "; this.BoldenRange(ws, 2, 1);
+                    ws.Cells["B2"].Value = ns.ProductName;
+                    ws.Cells["A3"].Value = "Stream Costs: "; this.BoldenRange(ws, 3, 1);
+                    ws.Cells["B3"].Value = ns.CostNames;
+
+                    BuildDataSection(ws, ns.TransformToDataTable(), 5, true);
+                    this.AutoFitColumns(ws);
+                }
 
                 FileInfo file = new FileInfo(filePath);
                 package.SaveAs(file);

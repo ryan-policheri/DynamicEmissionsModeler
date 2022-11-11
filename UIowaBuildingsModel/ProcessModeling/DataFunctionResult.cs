@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace EmissionsMonitorModel.ProcessModeling
 {
     public class DataFunctionResult
     {
+        public string FunctionName { get; set; }
+
         public double TotalValue { get; set; }
 
         public string Unit { get; set; }
@@ -29,6 +26,7 @@ namespace EmissionsMonitorModel.ProcessModeling
         {
             if (!r1.IsLikeResult(r2)) throw new ArgumentException("Arguments are not of like units");
             DataFunctionResult r3 = new DataFunctionResult();
+            r3.FunctionName = r1.FunctionName;
             r3.Unit = r1.Unit;
             r3.UnitForm = r1.UnitForm;
             r3.DefaultValueUnit = r1.DefaultValueUnit;

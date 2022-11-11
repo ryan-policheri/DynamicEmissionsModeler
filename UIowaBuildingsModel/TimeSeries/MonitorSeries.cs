@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DotNetCommon.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -12,6 +13,10 @@ namespace EmissionsMonitorModel.TimeSeries
         public string SeriesName { get; set; }
 
         public ICollection<MonitorDataPoint> DataPoints { get; set; }
+
+        public string ProductName => this.DataPoints.FirstOrDefault()?.Values.Product.FunctionName;
+
+        public string CostNames => this.DataPoints.FirstOrDefault()?.Values.Costs?.Select(x => x.FunctionName).ToDelimitedList(',');
 
         public DataTable TransformToDataTable()
         {

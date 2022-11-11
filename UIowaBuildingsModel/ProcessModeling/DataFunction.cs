@@ -68,6 +68,7 @@ namespace EmissionsMonitorModel.ProcessModeling
 
             return new DataFunctionResult()
             {
+                FunctionName = this.FunctionName,
                 Unit = FunctionUnit,
                 UnitForm = FunctionUnitForm,
                 DefaultValueUnit = FunctionDefaultReturnUnit, 
