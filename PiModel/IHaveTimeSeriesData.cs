@@ -6,6 +6,8 @@ namespace PiModel
     {
         public IEnumerable<InterpolatedDataPoint> InterpolatedDataPoints { get; set; }
 
+        public IEnumerable<SummaryResult> SummaryDataPoints { get; set; }
+
         public IHaveTimeSeriesDataLinks TimeSeriesLinks { get; }
     }
 }

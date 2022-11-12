@@ -38,6 +38,7 @@ namespace PiModel
         public double? Zero { get; set; }
 
         public IEnumerable<InterpolatedDataPoint> InterpolatedDataPoints { get; set; }
+        public IEnumerable<SummaryResult> SummaryDataPoints { get; set; }
 
         public DataTable RenderDataPointsAsTable()
         {

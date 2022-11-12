@@ -29,6 +29,7 @@ namespace PiModel
         IHaveTimeSeriesDataLinks IHaveTimeSeriesData.TimeSeriesLinks => Links;
 
         public IEnumerable<InterpolatedDataPoint> InterpolatedDataPoints { get; set; }
+        public IEnumerable<SummaryResult> SummaryDataPoints { get; set; }
 
         public DataTable RenderDataPointsAsTable()
         {

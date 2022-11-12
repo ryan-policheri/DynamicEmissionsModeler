@@ -2,6 +2,7 @@
 {
     public interface IBuildPiTimeSeriesQueryString
     {
-        public string BuildPiQueryString();
+        public string BuildPiInterpolatedDataQueryString();
+        public string BuildPiSummaryDataQueryString();
     }
 }

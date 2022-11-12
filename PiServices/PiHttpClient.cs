@@ -184,8 +184,15 @@ namespace PiServices
         public async Task LoadInterpolatedValues(IHaveTimeSeriesData item, IBuildPiTimeSeriesQueryString queryStringBuilder)
         {
             string url = item.TimeSeriesLinks.InterpolatedData;
-            url += queryStringBuilder.BuildPiQueryString();
+            url += queryStringBuilder.BuildPiInterpolatedDataQueryString();
             item.InterpolatedDataPoints = await this.GetAllAsync<InterpolatedDataPoint>(url, ITEMS_PROPERTY);
+        }
+
+        public async Task LoadSummaryValues(IHaveTimeSeriesData item, IBuildPiTimeSeriesQueryString queryStringBuilder)
+        {
+            string url = item.TimeSeriesLinks.SummaryData;
+            url += queryStringBuilder.BuildPiSummaryDataQueryString();
+            item.SummaryDataPoints = await this.GetAllAsync<SummaryResult>(url, ITEMS_PROPERTY);
         }
 
         public async Task LoadSquareFootValue(IHaveTimeSeriesData squareFoot, DateTimeOffset startDateTime, DateTimeOffset endDateTime)

@@ -52,15 +52,15 @@ namespace EmissionsMonitorDataAccess.DataSourceWrappers
             if (uri.Prefix == PiPoint.PI_POINT_TYPE)
             {
                 PiPoint inputPiPoint = await _client.GetByDirectLink<PiPoint>(uri.Uri);
-                await _client.LoadInterpolatedValues(inputPiPoint, renderSettings);
+                await _client.LoadSummaryValues(inputPiPoint, renderSettings);
                 Series series = new Series();
                 series.SeriesUri = uri;
                 //TODO: Some error checking on the data points
-                series.DataPoints = inputPiPoint.InterpolatedDataPoints.Select(x => new DataPoint
+                series.DataPoints = inputPiPoint.SummaryDataPoints.Select(x => new DataPoint
                 {
                     Series = series,
-                    Timestamp = x.Timestamp,
-                    Value = x.Value
+                    Timestamp = x.DataPoint.Timestamp,
+                    Value = x.HasErrors ? 0 : double.Parse(x.DataPoint.Value.ToString())
                 }).ToList();
                 return series;
             }
