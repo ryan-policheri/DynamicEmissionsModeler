@@ -83,7 +83,7 @@
 
             <TextBlock Grid.Row="3" Text="{}{"/>
 
-            <TextBox Grid.Row="4" Text="{Binding FunctionCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="15 0 0 0" 
+            <TextBox Grid.Row="4" Text="{Binding FunctionCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="15 0 0 0" FontSize="16"
                  TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" SpellCheck.IsEnabled="False" MinLines="3" BorderThickness="0.5" VerticalScrollBarVisibility="Auto" />
 
             <TextBlock Grid.Row="5" Text="{}}"/>
