@@ -8,6 +8,8 @@ namespace EmissionsMonitorModel.ProcessModeling
 {
     public class Cost
     {
+        public string CostFunctionName { get; set; }
+
         public string Name { get; set; }
 
         public double Value { get; set; }

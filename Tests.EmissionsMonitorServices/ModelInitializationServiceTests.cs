@@ -124,7 +124,7 @@ namespace Tests.EmissionsMonitorServices
             //CO2 OF 2 MMBTU: 0.1 * 275.5 = 27.55
 
             ProductCostResults results = node.RenderProductAndCosts(dataPoints);
-            ICollection<Cost> costs = results.CalculateCostOfProductAmount(Energy.FromMegabritishThermalUnits(2));
+            ICollection<Cost> costs = results.CalculateCostOfAbstractProductAmount(Energy.FromMegabritishThermalUnits(2));
             double money = costs.First(x => x.Name == "Money Currency").Value;
             money.Should().Be(5);
             double co2 = costs.First(x => x.Name == "CO2 Mass").Value;
@@ -262,7 +262,7 @@ namespace Tests.EmissionsMonitorServices
             });
 
             ProductCostResults results = node3.RenderProductAndCosts(dataPoints);
-            ICollection<Cost> costs = results.CalculateCostOfProductAmount(Energy.FromMegabritishThermalUnits(5));
+            ICollection<Cost> costs = results.CalculateCostOfAbstractProductAmount(Energy.FromMegabritishThermalUnits(5));
 
             //BOILER 1 TOTAL COST: $50
             //BOILER 1 TOTAL CO2: 275.5 KG

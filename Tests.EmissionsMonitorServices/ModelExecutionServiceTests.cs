@@ -33,13 +33,13 @@ namespace Tests.EmissionsMonitorServices
             monitorSeries.First().DataPoints.ElementAt(2).Values.Product.TotalValue.Should().Be(3);
             monitorSeries.First().DataPoints.ElementAt(6).Values.Product.TotalValue.Should().Be(2.5);
 
-            monitorSeries.First().DataPoints.ElementAt(0).Values.Costs.First(x => x.Unit == "Currency").TotalValue.Should().Be(0.2);
-            monitorSeries.First().DataPoints.ElementAt(2).Values.Costs.First(x => x.Unit == "Currency").TotalValue.Should().Be(0.3);
-            monitorSeries.First().DataPoints.ElementAt(6).Values.Costs.First(x => x.Unit == "Currency").TotalValue.Should().Be(0.25);
+            monitorSeries.First().DataPoints.ElementAt(0).Values.Costs.First(x => x.UnitType == "Currency").TotalValue.Should().Be(0.2);
+            monitorSeries.First().DataPoints.ElementAt(2).Values.Costs.First(x => x.UnitType == "Currency").TotalValue.Should().Be(0.3);
+            monitorSeries.First().DataPoints.ElementAt(6).Values.Costs.First(x => x.UnitType == "Currency").TotalValue.Should().Be(0.25);
 
-            monitorSeries.First().DataPoints.ElementAt(0).Values.Costs.First(x => x.Unit == "Mass").TotalValue.Should().Be(1.102);
-            monitorSeries.First().DataPoints.ElementAt(2).Values.Costs.First(x => x.Unit == "Mass").TotalValue.Should().Be(1.653);
-            Math.Round(monitorSeries.First().DataPoints.ElementAt(6).Values.Costs.First(x => x.Unit == "Mass").TotalValue, 4).Should().Be(1.3775);
+            monitorSeries.First().DataPoints.ElementAt(0).Values.Costs.First(x => x.UnitType == "Mass").TotalValue.Should().Be(1.102);
+            monitorSeries.First().DataPoints.ElementAt(2).Values.Costs.First(x => x.UnitType == "Mass").TotalValue.Should().Be(1.653);
+            Math.Round(monitorSeries.First().DataPoints.ElementAt(6).Values.Costs.First(x => x.UnitType == "Mass").TotalValue, 4).Should().Be(1.3775);
         }
 
         private Mock<ITimeSeriesDataSource> DataSourceMock()

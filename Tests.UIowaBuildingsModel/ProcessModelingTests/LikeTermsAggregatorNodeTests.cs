@@ -46,7 +46,7 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
             });
 
             ProductCostResults results = node.RenderProductAndCosts(dataPoints);
-            ICollection<Cost> costs = results.CalculateCostOfProductAmount(Energy.FromMegabritishThermalUnits(5));
+            ICollection<Cost> costs = results.CalculateCostOfAbstractProductAmount(Energy.FromMegabritishThermalUnits(5));
 
             //BOILER 1 TOTAL COST: $50
             //BOILER 1 TOTAL CO2: 275.5 KG

@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 namespace EmissionsMonitorModel.ProcessModeling
 {
     [JsonPolymorphic]
+    [JsonDerivedType(typeof(StreamSplitterNode), typeDiscriminator: "stream_splitter")]
     [JsonDerivedType(typeof(LikeTermsAggregatorNode), typeDiscriminator: "like_term_aggregator")]
     [JsonDerivedType(typeof(ExchangeNode), typeDiscriminator: "exchange_node")]
     public abstract class ProcessNode

@@ -38,7 +38,7 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
             //CO2 OF 2 MMBTU: 0.1 * 275.5 = 27.55
 
             ProductCostResults results = boiler1ExchangeNode.RenderProductAndCosts(dataPoints);
-            ICollection<Cost> costs = results.CalculateCostOfProductAmount(Energy.FromMegabritishThermalUnits(2));
+            ICollection<Cost> costs = results.CalculateCostOfAbstractProductAmount(Energy.FromMegabritishThermalUnits(2));
             double money = costs.First(x => x.Name == "Money Currency").Value;
             money.Should().Be(5);
             double co2 = costs.First(x => x.Name == "CO2 Mass").Value;
@@ -75,7 +75,7 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
             //CO2 OF 5 MMBTU: 0.20 * 607.2181 = 121.44362
 
             ProductCostResults results = boiler2ExchangeNode.RenderProductAndCosts(dataPoints);
-            ICollection<Cost> costs = results.CalculateCostOfProductAmount(Energy.FromMegabritishThermalUnits(5));
+            ICollection<Cost> costs = results.CalculateCostOfAbstractProductAmount(Energy.FromMegabritishThermalUnits(5));
             double money = costs.First(x => x.Name == "Money Currency").Value;
             Math.Round(money, 2).Should().Be(20.42);
             double co2 = costs.First(x => x.Name == "CO2 Mass").Value;
@@ -112,7 +112,7 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
             //CO2 OF 5 MMBTU: 0.20 * 607.2181 = 121.44362
 
             ProductCostResults results = boiler2ExchangeNode.RenderProductAndCosts(dataPoints);
-            ICollection<Cost> costs = results.CalculateCostOfProductAmount(Energy.FromMegabritishThermalUnits(5));
+            ICollection<Cost> costs = results.CalculateCostOfAbstractProductAmount(Energy.FromMegabritishThermalUnits(5));
             double money = costs.First(x => x.Name == "Money Currency").Value;
             Math.Round(money, 2).Should().Be(20.42);
             double co2 = costs.First(x => x.Name == "CO2 Mass").Value;

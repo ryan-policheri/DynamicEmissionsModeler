@@ -6,7 +6,6 @@ using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorModel.TimeSeries;
 using EmissionsMonitorModel.Units;
 using UnitsNet;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EmissionsMonitorModel.ProcessModeling
 {
@@ -69,17 +68,17 @@ namespace EmissionsMonitorModel.ProcessModeling
             return new DataFunctionResult()
             {
                 FunctionName = this.FunctionName,
-                Unit = FunctionUnit,
+                UnitType = FunctionUnit,
                 UnitForm = FunctionUnitForm,
-                DefaultValueUnit = FunctionDefaultReturnUnit, 
-                TotalValue = value,
+                DefaultValueUnit = FunctionDefaultReturnUnit,
+                TotalValue = value, 
                 ValueRenderFunction = this.ToDefaultValueRendering
             };
         }
 
         public abstract Type GetReturnType();
 
-        public abstract double ToDefaultValueRendering(object value);
+        public abstract double ToDefaultValueRendering(object abstractValue);
 
         public FunctionTypeMapping ToTypeMapping() => 
             new FunctionTypeMapping { FunctionUnit = this.FunctionUnit, FunctionUnitForm = this.FunctionUnitForm, TypeRep = this.GetType(), BaseUnit = this.GetReturnType() };

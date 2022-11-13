@@ -6,20 +6,25 @@
 
         public DataFunctionResult Product { get; set; }
 
-        public ICollection<Cost> CalculateCostOfProductAmount(object productAmount)
+        public ICollection<Cost> CalculateCostOfAbstractProductAmount(object productAmount)
         {
             double desiredProductAmount = Product.ValueRenderFunction(productAmount);
+            return CalculateCostOfRawProductAmount(desiredProductAmount);
+        }
 
+        public ICollection<Cost> CalculateCostOfRawProductAmount(double desiredProductAmount)
+        {
             ICollection<Cost> costs = new List<Cost>();
             foreach (DataFunctionResult cost in Costs)
             {
                 double coefficient = cost.TotalValue / Product.TotalValue;
                 Cost partialCost = new Cost
                 {
-                    Name = cost.UnitForm + " " + cost.Unit,
+                    CostFunctionName = cost.FunctionName,
+                    Name = cost.UnitForm + " " + cost.UnitType,
                     Value = coefficient * desiredProductAmount
                 };
-                
+
                 costs.Add(partialCost);
             }
             return costs;
