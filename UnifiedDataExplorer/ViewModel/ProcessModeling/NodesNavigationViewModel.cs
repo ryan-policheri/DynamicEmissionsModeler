@@ -11,6 +11,8 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         private const string UNSELECTED = "(Select node to add)";
         private const string EXCHANGE_NODE = "Exchange Node";
         private const string LIKE_TERM_AGGREGATOR = "Like Term Aggregator Node";
+        private const string SPLITTER_NODE = "Splitter Node";
+        private const string PRODUCT_CONVERSION_NODE = "Product Converion Node";
 
         private ProcessModel _model;
 
@@ -37,6 +39,8 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
                 SetField(ref _selectedAddOption, value);
                 if (value == EXCHANGE_NODE) CreateAndWrapNode<ExchangeNode>();
                 if (value == LIKE_TERM_AGGREGATOR) CreateAndWrapNode<LikeTermsAggregatorNode>();
+                if (value == SPLITTER_NODE) CreateAndWrapNode<StreamSplitterNode>();
+                if (value == PRODUCT_CONVERSION_NODE) CreateAndWrapNode<ProductConversionNode>();
             }
         }
 
@@ -80,6 +84,12 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
                     ltvm.Load(node, _model);
                     vm = ltvm;
                     break;
+                case nameof(StreamSplitterNode):
+                    StreamSplitterNodeViewModel ssnvm = this.Resolve<StreamSplitterNodeViewModel>();
+                    ssnvm.Load(node, _model);
+                    vm = ssnvm;
+                    break;
+                case nameof(ProductConversionNode):
                 default:
                     throw new NotImplementedException(
                         $"Do not know what viewmodel to use for the given node of type {node.GetType().Name}");
@@ -91,7 +101,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         private void ResetAddOptions()
         {
             AddOptions.Clear();
-            AddOptions.Add(UNSELECTED); AddOptions.Add(EXCHANGE_NODE); AddOptions.Add(LIKE_TERM_AGGREGATOR);
+            AddOptions.Add(UNSELECTED); AddOptions.Add(EXCHANGE_NODE); AddOptions.Add(LIKE_TERM_AGGREGATOR); AddOptions.Add(SPLITTER_NODE); AddOptions.Add(PRODUCT_CONVERSION_NODE);
             SelectedAddOption = AddOptions.First();
         }
     }

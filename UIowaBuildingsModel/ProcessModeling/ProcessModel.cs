@@ -16,7 +16,17 @@ namespace EmissionsMonitorModel.ProcessModeling
 
         public void AddProcessNode(ProcessNode node)
         {
-            if (node.Id < 1) node.Id = ProcessNodes.Count == 0 ? 1 : ProcessNodes.Max(x => x.Id) + 1;
+            if (node.Id < 1)
+            {
+                node.Id = ProcessNodes.Count == 0 ? 1 : ProcessNodes.Max(x => x.Id) + 1;
+                if (node.GetType() == typeof(StreamSplitterNode))
+                {
+                    StreamSplitterNode splitterNode = (StreamSplitterNode)node;
+                    splitterNode.SplitResultNodeId = node.Id;
+                    splitterNode.RemainderResultNodeId = node.Id + 1;
+                    node.Id += 2; //Make this node id bigger than the other node ids so that the max statement above still works
+                }
+            }
             ProcessNodes.Add(node);
         }
 
