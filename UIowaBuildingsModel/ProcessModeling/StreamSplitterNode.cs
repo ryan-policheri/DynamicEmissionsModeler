@@ -12,8 +12,8 @@ namespace EmissionsMonitorModel.ProcessModeling
     {
         public StreamSplitterNode()
         {
-            PrecedingNodeId = 0;
-            PrecedingNode = new ExchangeNode();
+            PrecedingNodeId = -1;
+            PrecedingNode = null;
         }
 
         public int PrecedingNodeId { get; set; }

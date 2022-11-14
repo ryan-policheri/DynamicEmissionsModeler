@@ -5,12 +5,14 @@ using DotNetCommon.DynamicCompilation;
 using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorModel.TimeSeries;
 using EmissionsMonitorModel.Units;
+using PiModel;
 using UnitsNet;
 
 namespace EmissionsMonitorModel.ProcessModeling
 {
     //TODO: dynamically add/use GetAllFunctionTypeMappings()
     [JsonDerivedType(typeof(SteamEnergyFunction), "steam_energy")]
+    [JsonDerivedType(typeof(ElectricEnergyFunction), "electric_energy")]
     [JsonDerivedType(typeof(MoneyFunction), "money_currency")]
     [JsonDerivedType(typeof(Co2MassFunction), "co2_mass")]
     public abstract class DataFunction
@@ -87,6 +89,7 @@ namespace EmissionsMonitorModel.ProcessModeling
         {
             //TODO: don't hard code this. read from assembly instead
             yield return new SteamEnergyFunction().ToTypeMapping();
+            yield return new ElectricEnergyFunction().ToTypeMapping();
             yield return new Co2MassFunction().ToTypeMapping();
             yield return new MoneyFunction().ToTypeMapping();
         }
@@ -129,6 +132,21 @@ namespace EmissionsMonitorModel.ProcessModeling
         {
             Energy energy = (Energy)value;
             return energy.MegabritishThermalUnits;
+        }
+    }
+
+    public class ElectricEnergyFunction : EnergyFunction
+    {
+        public ElectricEnergyFunction() : base()
+        {
+            FunctionUnitForm = "Electric";
+            FunctionDefaultReturnUnit = "MJ";
+        }
+
+        public override double ToDefaultValueRendering(object abstractValue)
+        {
+            Energy energy = (Energy)abstractValue;
+            return energy.Megajoules;
         }
     }
 
