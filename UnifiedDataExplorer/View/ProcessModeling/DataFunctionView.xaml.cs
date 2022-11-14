@@ -37,5 +37,10 @@ namespace UnifiedDataExplorer.View.ProcessModeling
                 ViewModel.OpenFactor.Execute(senderVm);
             }
         }
+
+        private void ListBox_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
+        {
+            e.Handled = true;
+        }
     }
 }

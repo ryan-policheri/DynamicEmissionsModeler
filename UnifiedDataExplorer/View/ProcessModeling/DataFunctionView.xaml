@@ -49,12 +49,13 @@
             <TextBox Grid.Row="1" Text="{Binding FunctionDescription,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 0" 
                  TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" SpellCheck.IsEnabled="True" MinLines="3" BorderThickness="1"/>
 
-            <TextBlock Grid.Row="2" FontSize="16">
+            <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                <TextBlock FontSize="16">
                 <Run Text="public " Foreground="Blue" />
                 <Run Text="{Binding ReturnType, Mode=OneWay}" Foreground="#2B91AF"/>
                 <Run Text="{Binding MethodName, Mode=OneWay}" Foreground="#74531F"/>
                 <Run Text="("/>
-                <ListBox ItemsSource="{Binding FunctionFactors}" Padding="0 10 0 0" >
+                <ListBox ItemsSource="{Binding FunctionFactors}" Padding="0 10 0 0" RequestBringIntoView="ListBox_RequestBringIntoView">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <VirtualizingStackPanel IsItemsHost="True" Orientation="Horizontal"/>
@@ -80,6 +81,7 @@
                 </ListBox>
                 <Run Text=")"/>
             </TextBlock>
+            </ScrollViewer>
 
             <TextBlock Grid.Row="3" Text="{}{"/>
 
