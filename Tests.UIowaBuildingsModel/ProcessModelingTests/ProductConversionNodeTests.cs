@@ -6,10 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnitsNet;
-using static Tests.EmissionsMonitorModel.ProcessModelingTests.StreamSplitterNodeTests;
 
 namespace Tests.EmissionsMonitorModel.ProcessModelingTests
 {
@@ -71,6 +68,7 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
             results.Costs.First(x => x.UnitForm == "Money").TotalValue.Should().Be(50);
             results.Costs.First(x => x.UnitForm == "CO2").TotalValue.Should().Be(275.5);
 
+            //PER UNIT
             var costsPerUnit = results.CalculateCostOfAbstractProductAmount(Energy.FromMegajoules(1));
             double money = costsPerUnit.First(x => x.Name == "Money Currency").Value;
             Math.Round(money, 3).Should().Be(0.833);

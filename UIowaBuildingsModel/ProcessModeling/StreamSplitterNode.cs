@@ -1,10 +1,5 @@
 ﻿using EmissionsMonitorModel.TimeSeries;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace EmissionsMonitorModel.ProcessModeling
 {
@@ -14,12 +9,24 @@ namespace EmissionsMonitorModel.ProcessModeling
         {
             PrecedingNodeId = -1;
             PrecedingNode = null;
+            SplitResultNode = new StreamSplitResultNode { Id = this.SplitResultNodeId, OwningSplitterId = this.SplitResultNodeId, OwningSplitter = this, Name = this.Name + " (Split)" };
+            RemainderResultNode = new StreamSplitRemainderNode { Id = this.RemainderResultNodeId, OwningSplitterId = this.SplitResultNodeId, OwningSplitter = this, Name = this.Name + " (Remainder)" };
         }
 
         public int PrecedingNodeId { get; set; }
 
         [JsonIgnore]
         public ProcessNode PrecedingNode { get; set; }
+
+        public int SplitResultNodeId { get; set; }
+
+        [JsonIgnore]
+        public StreamSplitResultNode SplitResultNode { get; set; }
+
+        public int RemainderResultNodeId { get; set; }
+
+        [JsonIgnore]
+        public StreamSplitRemainderNode RemainderResultNode { get; set; }
 
         public DataFunction SplitFunction { get; set; }
 
