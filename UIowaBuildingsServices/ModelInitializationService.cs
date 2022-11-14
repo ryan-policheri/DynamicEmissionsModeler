@@ -4,6 +4,7 @@ using DotNetCommon.Extensions;
 using EmissionsMonitorModel.ProcessModeling;
 using EmissionsMonitorModel.TimeSeries;
 using Microsoft.CSharp.RuntimeBinder;
+using System.Runtime.Intrinsics.X86;
 
 namespace EmissionsMonitorDataAccess
 {
@@ -56,6 +57,21 @@ namespace EmissionsMonitorDataAccess
                         ltn.PrecedingNodes.Add(model.ProcessNodes.First(x => x.Id == id) as ExchangeNode);
                     }
                 }
+                if (node is StreamSplitterNode)
+                {
+                    StreamSplitterNode ssn = node as StreamSplitterNode;
+                    ssn.PrecedingNode = model.ProcessNodes.First(x => x.Id == ssn.PrecedingNodeId);
+                }
+            }
+
+            //Add Split Nodes
+            foreach(var ssn in model.ProcessNodes.Where(x=> x.GetType() == typeof(StreamSplitterNode)).Select(x => x as StreamSplitterNode).ToList())
+            {
+                ssn.SplitResultNode.Name = ssn.Name + " (Split)";
+                ssn.RemainderResultNode.Name = ssn.Name + " (Remainder)";
+                model.ProcessNodes.Add(ssn.SplitResultNode);
+                model.ProcessNodes.Add(ssn.RemainderResultNode);
+                ssn.Name += " (Total)";
             }
         }
 
