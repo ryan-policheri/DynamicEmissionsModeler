@@ -12,7 +12,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         private const string EXCHANGE_NODE = "Exchange Node";
         private const string LIKE_TERM_AGGREGATOR = "Like Term Aggregator Node";
         private const string SPLITTER_NODE = "Splitter Node";
-        private const string PRODUCT_CONVERSION_NODE = "Product Converion Node";
+        private const string PRODUCT_CONVERSION_NODE = "Product Conversion Node";
 
         private ProcessModel _model;
 
@@ -90,6 +90,10 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
                     vm = ssnvm;
                     break;
                 case nameof(ProductConversionNode):
+                    ProductConversionNodeViewModel pcnvm = this.Resolve<ProductConversionNodeViewModel>();
+                    pcnvm.Load(node, _model);
+                    vm = pcnvm;
+                    break;
                 default:
                     throw new NotImplementedException(
                         $"Do not know what viewmodel to use for the given node of type {node.GetType().Name}");

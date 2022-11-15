@@ -9,21 +9,62 @@ namespace EmissionsMonitorModel.ProcessModeling
         {
             PrecedingNodeId = -1;
             PrecedingNode = null;
-            SplitResultNode = new StreamSplitResultNode { Id = this.SplitResultNodeId, OwningSplitterId = this.SplitResultNodeId, OwningSplitter = this, Name = this.Name + " (Split)" };
-            RemainderResultNode = new StreamSplitRemainderNode { Id = this.RemainderResultNodeId, OwningSplitterId = this.SplitResultNodeId, OwningSplitter = this, Name = this.Name + " (Remainder)" };
+            SplitResultNode = new StreamSplitResultNode { OwningSplitter = this };
+            RemainderResultNode = new StreamSplitRemainderNode { OwningSplitter = this };
         }
+
+        public new int Id 
+        {
+            get { return base.Id; }
+            set
+            {
+                base.Id = value;
+                SplitResultNode.OwningSplitterId = this.Id;
+                RemainderResultNode.OwningSplitterId = this.Id;
+            }
+        }
+
+        public new string Name 
+        { 
+            get { return base.Name; }
+            set
+            {
+                base.Name = value;
+                SplitResultNode.Name = this.Name + " (Split)";
+                RemainderResultNode.Name = this.Name + " (Remainder)";
+            }
+        }
+
 
         public int PrecedingNodeId { get; set; }
 
         [JsonIgnore]
         public ProcessNode PrecedingNode { get; set; }
 
-        public int SplitResultNodeId { get; set; }
+        private int _splitResultNodeId;
+        public int SplitResultNodeId 
+        { 
+            get { return _splitResultNodeId; }
+            set
+            {
+                _splitResultNodeId = value;
+                SplitResultNode.Id = this.SplitResultNodeId;
+            }
+        }
 
         [JsonIgnore]
         public StreamSplitResultNode SplitResultNode { get; set; }
 
-        public int RemainderResultNodeId { get; set; }
+        private int _remainderResultNodeId;
+        public int RemainderResultNodeId
+        {
+            get { return _remainderResultNodeId; }
+            set
+            {
+                _remainderResultNodeId = value;
+                RemainderResultNode.Id = this.RemainderResultNodeId;
+            }
+        }
 
         [JsonIgnore]
         public StreamSplitRemainderNode RemainderResultNode { get; set; }

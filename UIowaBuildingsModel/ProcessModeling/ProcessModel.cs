@@ -59,7 +59,13 @@ namespace EmissionsMonitorModel.ProcessModeling
             List<NodeOutputSpec> results = new List<NodeOutputSpec>();
             foreach (ProcessNode node in ProcessNodes)
             {
-                results.Add(node.ToSpec());
+                if (node.GetType() != typeof(StreamSplitterNode)) results.Add(node.ToSpec());
+                else
+                {
+                    var splitterNode = (StreamSplitterNode)node;
+                    results.Add(splitterNode.SplitResultNode.ToSpec());
+                    results.Add(splitterNode.RemainderResultNode.ToSpec());
+                }
             }
             return results;
         }

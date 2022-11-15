@@ -133,6 +133,7 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<ExchangeNodeViewModel>();
             services.AddTransient<LikeTermAggregatorNodeViewModel>();
             services.AddTransient<StreamSplitterNodeViewModel>();
+            services.AddTransient<ProductConversionNodeViewModel>();
             services.AddTransient<DataFunctionViewModel>(x => 
                 new DataFunctionViewModel(
                     x.GetService<ModelInitializationService>(),

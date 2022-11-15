@@ -46,6 +46,13 @@ namespace EmissionsMonitorDataAccess
                 }
             }
 
+            //Add Split Nodes
+            foreach (var ssn in model.ProcessNodes.Where(x => x.GetType() == typeof(StreamSplitterNode)).Select(x => x as StreamSplitterNode).ToList())
+            {
+                model.ProcessNodes.Add(ssn.SplitResultNode);
+                model.ProcessNodes.Add(ssn.RemainderResultNode);
+            }
+
             //Populate Preceding Nodes
             foreach (var node in model.ProcessNodes)
             {
@@ -62,16 +69,11 @@ namespace EmissionsMonitorDataAccess
                     StreamSplitterNode ssn = node as StreamSplitterNode;
                     ssn.PrecedingNode = model.ProcessNodes.First(x => x.Id == ssn.PrecedingNodeId);
                 }
-            }
-
-            //Add Split Nodes
-            foreach(var ssn in model.ProcessNodes.Where(x=> x.GetType() == typeof(StreamSplitterNode)).Select(x => x as StreamSplitterNode).ToList())
-            {
-                ssn.SplitResultNode.Name = ssn.Name + " (Split)";
-                ssn.RemainderResultNode.Name = ssn.Name + " (Remainder)";
-                model.ProcessNodes.Add(ssn.SplitResultNode);
-                model.ProcessNodes.Add(ssn.RemainderResultNode);
-                ssn.Name += " (Total)";
+                if (node is ProductConversionNode)
+                {
+                    ProductConversionNode pcn = node as ProductConversionNode;
+                    pcn.PrecedingNode = model.ProcessNodes.First(x => x.Id == pcn.PrecedingNodeId);
+                }
             }
         }
 
