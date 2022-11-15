@@ -61,7 +61,7 @@ namespace EmissionsMonitorDataAccess
                     LikeTermsAggregatorNode ltn = node as LikeTermsAggregatorNode;
                     foreach (int id in ltn.PrecedingNodeIds)
                     {
-                        ltn.PrecedingNodes.Add(model.ProcessNodes.First(x => x.Id == id) as ExchangeNode);
+                        ltn.PrecedingNodes.Add(model.ProcessNodes.First(x => x.Id == id));
                     }
                 }
                 if (node is StreamSplitterNode)

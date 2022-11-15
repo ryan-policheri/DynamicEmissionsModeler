@@ -157,7 +157,7 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
         {
             LikeTermsAggregatorNode node = new LikeTermsAggregatorNode();
 
-            node.PrecedingNodes = new List<ExchangeNode>()
+            node.PrecedingNodes = new List<ProcessNode>()
             {
                 BuildBoiler1ExchangeNode(),
                 BuildBoiler2ExchangeNode()

@@ -8,19 +8,19 @@ namespace EmissionsMonitorModel.ProcessModeling
         public LikeTermsAggregatorNode()
         {
             PrecedingNodeIds = new List<int>();
-            PrecedingNodes = new List<ExchangeNode>();
+            PrecedingNodes = new List<ProcessNode>();
         }
 
         public List<int> PrecedingNodeIds { get; set; }
 
         [JsonIgnore]
-        public List<ExchangeNode> PrecedingNodes { get; set; }
+        public List<ProcessNode> PrecedingNodes { get; set; }
 
         public override ProductCostResults RenderProductAndCosts(ICollection<DataPoint> dataPoints)
         {
             ProductCostResults results = new ProductCostResults();
 
-            foreach (ExchangeNode precNode in PrecedingNodes)
+            foreach (ProcessNode precNode in PrecedingNodes)
             {
                 ProductCostResults precedingResult = precNode.RenderProductAndCosts(dataPoints);
                 if (results.Product == null) results.Product = precedingResult.Product;

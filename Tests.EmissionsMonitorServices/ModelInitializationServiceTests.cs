@@ -218,7 +218,7 @@ namespace Tests.EmissionsMonitorServices
 
             LikeTermsAggregatorNode node3 = new LikeTermsAggregatorNode();
             node3.Name = "Boiler 1, 2 Aggregate";
-            node3.PrecedingNodes = new List<ExchangeNode>()
+            node3.PrecedingNodes = new List<ProcessNode>()
             {
                 node1,
                 node2
