@@ -20,7 +20,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         public ObservableCollection<NodeOutputSpec> AvailableNodeOutputSpecs { get; }
 
         private NodeOutputSpec _selectedNodeToSplit;
-        public NodeOutputSpec SelectedNodeToSplit 
+        public NodeOutputSpec SelectedNodeToSplit
         {
             get { return _selectedNodeToSplit; }
             set 

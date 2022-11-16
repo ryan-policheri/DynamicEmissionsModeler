@@ -13,6 +13,8 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         private const string LIKE_TERM_AGGREGATOR = "Like Term Aggregator Node";
         private const string SPLITTER_NODE = "Splitter Node";
         private const string PRODUCT_CONVERSION_NODE = "Product Conversion Node";
+        private const string USAGE_ADJUSTER_NODE = "Usage Adjuster Node";
+        private const string PRODUCT_SUBTRACTOR_NODE = "Product Subtractor Node";
 
         private ProcessModel _model;
 
@@ -41,6 +43,8 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
                 if (value == LIKE_TERM_AGGREGATOR) CreateAndWrapNode<LikeTermsAggregatorNode>();
                 if (value == SPLITTER_NODE) CreateAndWrapNode<StreamSplitterNode>();
                 if (value == PRODUCT_CONVERSION_NODE) CreateAndWrapNode<ProductConversionNode>();
+                if (value == USAGE_ADJUSTER_NODE) CreateAndWrapNode<UsageAdjusterNode>();
+                if (value == PRODUCT_SUBTRACTOR_NODE) CreateAndWrapNode<ProductSubtractorNode>();
             }
         }
 
@@ -94,9 +98,18 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
                     pcnvm.Load(node, _model);
                     vm = pcnvm;
                     break;
+                case nameof(UsageAdjusterNode):
+                    UsageAdjusterNodeViewModel uanvm = this.Resolve<UsageAdjusterNodeViewModel>();
+                    uanvm.Load(node, _model);
+                    vm = uanvm;
+                    break;
+                case nameof(ProductSubtractorNode):
+                    ProductSubtractorNodeViewModel psnvm = this.Resolve<ProductSubtractorNodeViewModel>();
+                    psnvm.Load(node, _model);
+                    vm = psnvm;
+                    break;
                 default:
-                    throw new NotImplementedException(
-                        $"Do not know what viewmodel to use for the given node of type {node.GetType().Name}");
+                    throw new NotImplementedException($"Do not know what viewmodel to use for the given node of type {node.GetType().Name}");
             }
 
             ProcessNodes.Add(vm);
@@ -105,7 +118,9 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         private void ResetAddOptions()
         {
             AddOptions.Clear();
-            AddOptions.Add(UNSELECTED); AddOptions.Add(EXCHANGE_NODE); AddOptions.Add(LIKE_TERM_AGGREGATOR); AddOptions.Add(SPLITTER_NODE); AddOptions.Add(PRODUCT_CONVERSION_NODE);
+            AddOptions.Add(UNSELECTED); AddOptions.Add(EXCHANGE_NODE);
+            AddOptions.Add(LIKE_TERM_AGGREGATOR); AddOptions.Add(SPLITTER_NODE); AddOptions.Add(PRODUCT_CONVERSION_NODE);
+            AddOptions.Add(USAGE_ADJUSTER_NODE); AddOptions.Add(PRODUCT_SUBTRACTOR_NODE);
             SelectedAddOption = AddOptions.First();
         }
     }
