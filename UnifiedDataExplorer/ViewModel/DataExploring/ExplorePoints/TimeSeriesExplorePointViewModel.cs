@@ -41,6 +41,15 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
             set { SetField(ref _unitsSummary, value); }
         }
 
+
+        private string _seriesDescription;
+        public string SeriesDescription
+        {
+            get { return _seriesDescription; }
+            set { SetField(ref _seriesDescription, value); }
+        }
+
+
         private DateTime _startDateTime;
         public DateTime StartDateTime
         {

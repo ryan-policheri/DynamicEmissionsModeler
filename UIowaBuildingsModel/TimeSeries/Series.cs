@@ -12,22 +12,64 @@ namespace EmissionsMonitorModel.TimeSeries
         public Series RenderSeriesAtTargetResolution(TimeSeriesRenderSettings renderSettings)
         {
             Series newSeries = new Series { SeriesUri = this.SeriesUri };
-            ICollection<DataPoint> dataPoints = new List<DataPoint>();
+            ICollection<DataPoint> renderedDataPoints = new List<DataPoint>();
 
-            foreach(DateTimeOffset timePoint in renderSettings.BuildTimePoints())
+            foreach (DateTimeOffset timePoint in renderSettings.BuildTimePoints())
             {
-                if (SeriesUri.SeriesDataResolution == renderSettings.RenderResolution)
+                if (SeriesUri.SeriesDataResolution.IsSameResolutionAs(renderSettings.RenderResolution))
                 {
-                    DataPoint dataPoint = BuildDataPoint(newSeries, this.DataPoints.First(x => x.Timestamp == timePoint), renderSettings.RenderResolution, SeriesUri.SeriesUnitRate);
-                    dataPoints.Add(dataPoint);
+                    DataPoint matchingDataPoint = this.DataPoints.First(x => x.Timestamp == timePoint);
+                    matchingDataPoint = IntegrateRateAndBuildDataPoint(newSeries, matchingDataPoint, renderSettings.RenderResolution, SeriesUri.SeriesUnitRate);
+                    renderedDataPoints.Add(matchingDataPoint);
                 }
+                else if (SeriesUri.SeriesDataResolution.IsLessGranularThan(renderSettings.RenderResolution))
+                {
+                    DataPoint closestPoint = this.DataPoints.First(x => x.Timestamp == timePoint.TruncateTo(SeriesUri.SeriesDataResolution));
+                    DataPoint fabricatedPoint = new DataPoint { Timestamp = timePoint, Value = ChopValue(closestPoint.Value, SeriesUri.SeriesDataResolution, renderSettings.RenderResolution) };
+                    fabricatedPoint = IntegrateRateAndBuildDataPoint(newSeries, fabricatedPoint, renderSettings.RenderResolution, SeriesUri.SeriesUnitRate);
+                    renderedDataPoints.Add(fabricatedPoint);
+                }
+                else if (SeriesUri.SeriesDataResolution.IsMoreGranularThan(renderSettings.RenderResolution))
+                {
+                    var involvedPoints = this.DataPoints.Where(x => x.Timestamp.TruncateTo(SeriesUri.SeriesDataResolution) == timePoint);
+                    double sum = involvedPoints.Sum(x => x.Value);
+                    DataPoint encapsulatingPoint = new DataPoint
+                    {
+                        Timestamp = timePoint,
+                        Value = sum,
+                        Series = newSeries
+                    };
+                    encapsulatingPoint = IntegrateRateAndBuildDataPoint(newSeries, encapsulatingPoint, renderSettings.RenderResolution, SeriesUri.SeriesUnitRate);
+                    renderedDataPoints.Add(encapsulatingPoint);
+                }
+                else throw new InvalidOperationException("Unexecpected error");
             }
 
-            newSeries.DataPoints = dataPoints;
+            newSeries.DataPoints = renderedDataPoints;
             return newSeries;
         }
 
-        private DataPoint BuildDataPoint(Series newSeries, DataPoint dataPoint, string renderResolution, string unitRate)
+        private double ChopValue(double value, string currentResolution, string desiredResolution)
+        {
+            if (currentResolution == DataResolution.Hourly)
+            {
+                if (desiredResolution == DataResolution.Hourly) return value;
+                else if (desiredResolution == DataResolution.EveryMinute) return value / 60;
+                else if (desiredResolution == DataResolution.EverySecond) return value / 3600;
+            }
+            else if (currentResolution == DataResolution.EveryMinute)
+            {
+                if (desiredResolution == DataResolution.EveryMinute) return value;
+                else if (desiredResolution == DataResolution.EverySecond) return value / 60;
+            }
+            else if (currentResolution == DataResolution.EverySecond)
+            {
+                if (desiredResolution == DataResolution.EverySecond) return value;
+            }
+            throw new InvalidOperationException();
+        }
+
+        private DataPoint IntegrateRateAndBuildDataPoint(Series newSeries, DataPoint dataPoint, string renderResolution, string unitRate)
         {
             double value;
             if (renderResolution == DataResolution.Hourly)

@@ -28,8 +28,9 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
             _client = _clientFactory.GetDataSourceServiceById<EiaClient>(loadingInfo.DataSourceId);
             _series = await _client.GetSeriesByIdAsync(loadingInfo.Id, 2);
             Header = _series.Id;
-            HeaderDetail = SeriesName;
-            SeriesName = _series.Name;
+            HeaderDetail = _series.Name;
+            SeriesName = _series.Id;
+            SeriesDescription = _series.Description;
             UnitsSummary = _series.Units;
             await RenderDataSet();
         }
@@ -41,14 +42,22 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
                 StartDateTime = new DateTimeOffset(this.StartDateTime.ToUniversalTime()),
                 EndDateTime = new DateTimeOffset(this.EndDateTime.ToUniversalTime())
             };
-            //TODO, make this work better
-            _series = await _client.GetSeriesByIdAsync(_series.Id, -30);
+            _series = await _client.GetSeriesByIdAsync(_series.Id, 30);
             DataSet = _series.RenderDataPointsAsTable();
         }
 
         public override DataSourceSeriesUri BuildSeriesUri()
         {
-            return new DataSourceSeriesUri();//TODO
+            var loadingInfo = (this.CurrentLoadingInfo as IEiaDetailLoadingInfo);
+            var uri = new DataSourceSeriesUri
+            {
+                DataSourceId = loadingInfo.DataSourceId,
+                Prefix = null,
+                SeriesName = SeriesName,
+                Uri = loadingInfo.Id,
+                SeriesUnitsSummary = UnitsSummary,
+            };
+            return uri;
         }
     }
 }

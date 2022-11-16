@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using DotNetCommon.EventAggregation;
 using DotNetCommon.SystemHelpers;
+using EIA.Domain.Model;
 using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorModel.TimeSeries;
 using EmissionsMonitorServices.DataSourceWrappers;
@@ -36,7 +37,8 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
                 Asset asset = await client.GetByDirectLink<Asset>(value.Links.Element);
                 Header = asset.Name + " - " + value.Name;
                 HeaderDetail = $"Interpolated {value.Name} data for {asset.Name}";
-                SeriesName = asset.Name + " - " + value.Name; 
+                SeriesName = asset.Name + " - " + value.Name;
+                SeriesDescription = value.Description;
                 UnitsSummary = value.DefaultUnitsName;
                 _dataHost = value;
                 await RenderDataSet();
@@ -48,6 +50,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
                 Header = piPoint.Name;
                 HeaderDetail = $"Interpolated {piPoint.Name} data for {piPoint.Name}";
                 SeriesName = piPoint.Name;
+                SeriesDescription = piPoint.Descriptor;
                 UnitsSummary = piPoint.EngineeringUnits;
                 _dataHost = piPoint;
                 await RenderDataSet();
