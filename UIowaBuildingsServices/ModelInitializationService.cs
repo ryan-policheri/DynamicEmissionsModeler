@@ -74,6 +74,16 @@ namespace EmissionsMonitorDataAccess
                     ProductConversionNode pcn = node as ProductConversionNode;
                     pcn.PrecedingNode = model.ProcessNodes.First(x => x.Id == pcn.PrecedingNodeId);
                 }
+                if (node is UsageAdjusterNode)
+                {
+                    UsageAdjusterNode uan = node as UsageAdjusterNode;
+                    uan.PrecedingNode = model.ProcessNodes.First(x => x.Id == uan.PrecedingNodeId);
+                }
+                if (node is ProductSubtractorNode)
+                {
+                    ProductSubtractorNode psn = node as ProductSubtractorNode;
+                    psn.PrecedingNode = model.ProcessNodes.First(x => x.Id == psn.PrecedingNodeId);
+                }
             }
         }
 
