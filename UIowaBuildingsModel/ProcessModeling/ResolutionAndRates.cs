@@ -62,6 +62,7 @@ namespace EmissionsMonitorModel.ProcessModeling
 
     public class UnitRates
     {
+        public const string NoRate = "No Rate";
         public const string PerSecond = "Per Second";
         public const string PerMinute = "Per Minute";
         public const string PerHour = "Per Hour";
@@ -72,7 +73,7 @@ namespace EmissionsMonitorModel.ProcessModeling
 
         public static List<string> ToListing()
         {
-            return new List<string> { PerSecond, PerMinute, PerHour, PerDay, PerMonth, PerQuarter, PerYear };
+            return new List<string> { PerSecond, PerMinute, PerHour, PerDay, PerMonth, PerQuarter, PerYear, NoRate };
         }
     }
 }

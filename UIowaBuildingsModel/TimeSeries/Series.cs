@@ -72,7 +72,9 @@ namespace EmissionsMonitorModel.TimeSeries
         private DataPoint IntegrateRateAndBuildDataPoint(Series newSeries, DataPoint dataPoint, string renderResolution, string unitRate)
         {
             double value;
-            if (renderResolution == DataResolution.Hourly)
+            if (unitRate == UnitRates.NoRate) value = dataPoint.Value;
+
+            else if (renderResolution == DataResolution.Hourly)
             {
                 if (unitRate == UnitRates.PerHour) value = dataPoint.Value;
                 else if (unitRate == UnitRates.PerMinute) value = dataPoint.Value * 60;
