@@ -25,7 +25,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             _processModel = model;
             
             AvailableNodeOutputSpecs.Clear();
-            foreach (var spec in _processModel.CalculateDerivedSeries().Where(x => x.Id > 0 && x.Id != _aggregatorModel.Id))
+            foreach (var spec in _processModel.GetAllNodeSpecs().Where(x => x.Id > 0 && x.Id != _aggregatorModel.Id))
             {
                 var vm = new CheckableItemViewModel
                 {
