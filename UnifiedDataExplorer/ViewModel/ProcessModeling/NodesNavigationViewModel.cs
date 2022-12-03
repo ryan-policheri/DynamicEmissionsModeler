@@ -15,6 +15,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         private const string PRODUCT_CONVERSION_NODE = "Product Conversion Node";
         private const string USAGE_ADJUSTER_NODE = "Usage Adjuster Node";
         private const string PRODUCT_SUBTRACTOR_NODE = "Product Subtractor Node";
+        private const string MULTI_SPLITTER_NODE = "Multi Splitter Node";
 
         private ProcessModel _model;
 
@@ -45,6 +46,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
                 if (value == PRODUCT_CONVERSION_NODE) CreateAndWrapNode<ProductConversionNode>();
                 if (value == USAGE_ADJUSTER_NODE) CreateAndWrapNode<UsageAdjusterNode>();
                 if (value == PRODUCT_SUBTRACTOR_NODE) CreateAndWrapNode<ProductSubtractorNode>();
+                if (value == MULTI_SPLITTER_NODE) CreateAndWrapNode<MultiSplitterNode>();
             }
         }
 
@@ -108,6 +110,11 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
                     psnvm.Load(node, _model);
                     vm = psnvm;
                     break;
+                case nameof(MultiSplitterNode):
+                    MultiSplitterNodeViewModel msnvm = this.Resolve<MultiSplitterNodeViewModel>();
+                    msnvm.Load(node, _model);
+                    vm = msnvm;
+                    break;
                 default:
                     throw new NotImplementedException($"Do not know what viewmodel to use for the given node of type {node.GetType().Name}");
             }
@@ -120,7 +127,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             AddOptions.Clear();
             AddOptions.Add(UNSELECTED); AddOptions.Add(EXCHANGE_NODE);
             AddOptions.Add(LIKE_TERM_AGGREGATOR); AddOptions.Add(SPLITTER_NODE); AddOptions.Add(PRODUCT_CONVERSION_NODE);
-            AddOptions.Add(USAGE_ADJUSTER_NODE); AddOptions.Add(PRODUCT_SUBTRACTOR_NODE);
+            AddOptions.Add(USAGE_ADJUSTER_NODE); AddOptions.Add(PRODUCT_SUBTRACTOR_NODE); AddOptions.Add(MULTI_SPLITTER_NODE);
             SelectedAddOption = AddOptions.First();
         }
     }

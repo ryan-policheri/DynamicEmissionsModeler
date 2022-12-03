@@ -25,8 +25,10 @@ namespace UnifiedDataExplorer.Common
 
         public void RegisterAllTemplatesByConvention()
         {
-            IEnumerable<Type> viewModelTypes = _assembly.GetTypes().Where(x => x.Namespace.StartsWith(_viewModelRootNamespace) && x.Name.EndsWith("ViewModel"));
-            IEnumerable<Type> viewTypes = _assembly.GetTypes().Where(x => x.Namespace.StartsWith(_viewRootNamespace) && x.Name.EndsWith("View"));
+            IEnumerable<Type> viewModelTypes = _assembly.GetTypes()
+                .Where(x => x.Namespace != null && x.Name != null && x.Namespace.StartsWith(_viewModelRootNamespace) && x.Name.EndsWith("ViewModel"));
+            IEnumerable<Type> viewTypes = _assembly.GetTypes()
+                .Where(x => x.Namespace != null && x.Name != null && x.Namespace.StartsWith(_viewRootNamespace) && x.Name.EndsWith("View"));
 
             foreach(Type viewModelType in viewModelTypes)
             {

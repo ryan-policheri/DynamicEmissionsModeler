@@ -53,6 +53,15 @@ namespace EmissionsMonitorDataAccess
                 model.ProcessNodes.Add(ssn.RemainderResultNode);
             }
 
+            foreach (var mssn in model.ProcessNodes.Where(x => x.GetType() == typeof(MultiSplitterNode)).Select(x => x as MultiSplitterNode).ToList())
+            {
+                foreach(var childNode in mssn.SplitResultNodes)
+                {
+                    model.ProcessNodes.Add(childNode);
+                }
+                model.ProcessNodes.Add(mssn.RemainderResultNode);
+            }
+
             //Populate Preceding Nodes
             foreach (var node in model.ProcessNodes)
             {
@@ -83,6 +92,11 @@ namespace EmissionsMonitorDataAccess
                 {
                     ProductSubtractorNode psn = node as ProductSubtractorNode;
                     psn.PrecedingNode = model.ProcessNodes.First(x => x.Id == psn.PrecedingNodeId);
+                }
+                if (node is MultiSplitterNode)
+                {
+                    MultiSplitterNode mssn = node as MultiSplitterNode;
+                    mssn.PrecedingNode = model.ProcessNodes.First(x => x.Id == mssn.PrecedingNodeId);
                 }
             }
         }

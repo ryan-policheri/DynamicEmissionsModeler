@@ -16,7 +16,7 @@ namespace EmissionsMonitorDataAccess
 
         public async Task<ICollection<MonitorSeries>> ExecuteModelAsync(ModelExecutionSpec spec)
         {
-            IEnumerable<ProcessNode> leafs = spec.Model.GetProcessLeafs();
+            IEnumerable<ProcessNode> nodes = spec.Model.ProcessNodes;
             ICollection<DataSourceSeriesUri> neededSeriesUris = spec.Model.GetAllSeriesUris();
             TimeSeriesRenderSettings renderSettings = new TimeSeriesRenderSettings
             {
@@ -39,18 +39,18 @@ namespace EmissionsMonitorDataAccess
             {
                 ICollection<DataPoint> timeData = neededSeries.SelectMany(x => x.DataPoints).Where(x => x.Timestamp == offset).ToList();
 
-                foreach (ProcessNode leaf in leafs)
+                foreach (ProcessNode node in nodes)
                 {
                     if (first)
                     {
                         MonitorSeries monitorSeries = new MonitorSeries();
-                        monitorSeries.SeriesName = leaf.Name;
+                        monitorSeries.SeriesName = node.Name;
                         monitorSeries.DataPoints = new List<MonitorDataPoint>();
                         monitorSeriesList.Add(monitorSeries);
                     }
 
-                    MonitorSeries monitorSeries2 = monitorSeriesList.First(x => x.SeriesName == leaf.Name);
-                    ProductCostResults results = leaf.RenderProductAndCosts(timeData);
+                    MonitorSeries monitorSeries2 = monitorSeriesList.First(x => x.SeriesName == node.Name);
+                    ProductCostResults results = node.RenderProductAndCosts(timeData);
                     MonitorDataPoint monitorPoint = new MonitorDataPoint
                     {
                         Timestamp = offset,

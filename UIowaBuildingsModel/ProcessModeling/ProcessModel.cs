@@ -38,12 +38,6 @@ namespace EmissionsMonitorModel.ProcessModeling
             ProcessNodes.Add(node);
         }
 
-        public IEnumerable<ProcessNode> GetProcessLeafs()
-        {
-            //TODO: Implement this correctly
-            return ProcessNodes;
-        }
-
         public ICollection<DataSourceSeriesUri> GetAllSeriesUris()
         {
             ICollection<DataSourceSeriesUri> seriesUris = new List<DataSourceSeriesUri>();
