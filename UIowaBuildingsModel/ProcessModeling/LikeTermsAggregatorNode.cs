@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace EmissionsMonitorModel.ProcessModeling
 {
-    public class LikeTermsAggregatorNode : ProcessNode
+    public class LikeTermsAggregatorNode : ProcessNode, IMultiplePredecessor
     {
         public LikeTermsAggregatorNode()
         {

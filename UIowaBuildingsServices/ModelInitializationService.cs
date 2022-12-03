@@ -45,60 +45,6 @@ namespace EmissionsMonitorDataAccess
                     function.FunctionHostObject = hostInstance;
                 }
             }
-
-            //Add Split Nodes
-            foreach (var ssn in model.ProcessNodes.Where(x => x.GetType() == typeof(StreamSplitterNode)).Select(x => x as StreamSplitterNode).ToList())
-            {
-                model.ProcessNodes.Add(ssn.SplitResultNode);
-                model.ProcessNodes.Add(ssn.RemainderResultNode);
-            }
-
-            foreach (var mssn in model.ProcessNodes.Where(x => x.GetType() == typeof(MultiSplitterNode)).Select(x => x as MultiSplitterNode).ToList())
-            {
-                foreach(var childNode in mssn.SplitResultNodes)
-                {
-                    model.ProcessNodes.Add(childNode);
-                }
-                model.ProcessNodes.Add(mssn.RemainderResultNode);
-            }
-
-            //Populate Preceding Nodes
-            foreach (var node in model.ProcessNodes)
-            {
-                if (node is LikeTermsAggregatorNode)
-                {
-                    LikeTermsAggregatorNode ltn = node as LikeTermsAggregatorNode;
-                    foreach (int id in ltn.PrecedingNodeIds)
-                    {
-                        ltn.PrecedingNodes.Add(model.ProcessNodes.First(x => x.Id == id));
-                    }
-                }
-                if (node is StreamSplitterNode)
-                {
-                    StreamSplitterNode ssn = node as StreamSplitterNode;
-                    ssn.PrecedingNode = model.ProcessNodes.First(x => x.Id == ssn.PrecedingNodeId);
-                }
-                if (node is ProductConversionNode)
-                {
-                    ProductConversionNode pcn = node as ProductConversionNode;
-                    pcn.PrecedingNode = model.ProcessNodes.First(x => x.Id == pcn.PrecedingNodeId);
-                }
-                if (node is UsageAdjusterNode)
-                {
-                    UsageAdjusterNode uan = node as UsageAdjusterNode;
-                    uan.PrecedingNode = model.ProcessNodes.First(x => x.Id == uan.PrecedingNodeId);
-                }
-                if (node is ProductSubtractorNode)
-                {
-                    ProductSubtractorNode psn = node as ProductSubtractorNode;
-                    psn.PrecedingNode = model.ProcessNodes.First(x => x.Id == psn.PrecedingNodeId);
-                }
-                if (node is MultiSplitterNode)
-                {
-                    MultiSplitterNode mssn = node as MultiSplitterNode;
-                    mssn.PrecedingNode = model.ProcessNodes.First(x => x.Id == mssn.PrecedingNodeId);
-                }
-            }
         }
 
         public async Task InitializeFunction(DataFunction function)

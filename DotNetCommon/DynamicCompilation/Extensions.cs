@@ -12,7 +12,7 @@
             if (String.IsNullOrEmpty(source)) return source;
             source = source.Replace(" ", spaceReplaceChar);
             string keepChars = new String(source.Where(x => Char.IsLetterOrDigit(x) || x == '_').ToArray());
-            if (Char.IsDigit(keepChars[0])) keepChars = "_" + keepChars;
+            if (keepChars.Length > 0 && Char.IsDigit(keepChars[0])) keepChars = "_" + keepChars;
             return keepChars;
         }
 

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace EmissionsMonitorModel.ProcessModeling
 {
-    public class UsageAdjusterNode : ProcessNode
+    public class UsageAdjusterNode : ProcessNode, ISinglePredecessor
     {
         public UsageAdjusterNode()
         {

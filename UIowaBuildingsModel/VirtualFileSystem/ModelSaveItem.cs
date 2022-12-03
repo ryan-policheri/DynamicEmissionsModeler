@@ -15,6 +15,7 @@ namespace EmissionsMonitorModel.VirtualFileSystem
         public ProcessModel ToProcessModel()
         {
             var model = this.ProcessModelJsonDetails.ConvertJsonToObject<ProcessModel>();
+            model.OnDeserialized();
             model.ModelName = this.SaveItemName;
             return model;
         }

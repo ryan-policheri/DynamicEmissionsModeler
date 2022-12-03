@@ -1,5 +1,5 @@
 ﻿using EmissionsMonitorModel.DataSources;
-using EmissionsMonitorModel.TimeSeries;
+using System.Runtime.Serialization;
 
 namespace EmissionsMonitorModel.ProcessModeling
 {
@@ -10,6 +10,37 @@ namespace EmissionsMonitorModel.ProcessModeling
             ProcessNodes = new List<ProcessNode>();
         }
 
+        public void OnDeserialized()
+        {
+            //Populate Preceding Nodes object references
+            foreach (var node in this.GetAllNodes(true))
+            {
+                if (node is ISinglePredecessor) ((ISinglePredecessor)node).PrecedingNode = this.GetAllNodes(false).First(x => x.Id == ((ISinglePredecessor)node).PrecedingNodeId);
+                if (node is IMultiplePredecessor)
+                {
+                    var multiPredsNode = (IMultiplePredecessor)node;
+                    foreach (int id in multiPredsNode.PrecedingNodeIds)
+                    {
+                        multiPredsNode.PrecedingNodes.Add(this.GetAllNodes(false).First(x => x.Id == id));
+                    }
+                }
+                if (node.GetType() == typeof(MultiSplitterNode))
+                {
+                    MultiSplitterNode multiSplitterNode = (MultiSplitterNode)node;
+                    multiSplitterNode.OnChildNodeDynamicallyAdded += (splitterNode, childNode) =>
+                    {//Smelly. The multi splitter node is going to dynamically add nodes based on the user-entered split functions.
+                     //This listener is here so that when a node gets dyanmically the model can assign its ID
+                        childNode.Id = GetAllNodes(true).Max(x => x.Id) + 1;
+                    };
+
+                    foreach (MultiSplitResultNode splitResult in multiSplitterNode.SplitResultNodes)
+                    {
+                        splitResult.OwningSplitter = multiSplitterNode;
+                    }
+                }
+            }
+        }
+
         public string ModelName { get; set; }
 
         public ICollection<ProcessNode> ProcessNodes { get; set; }
@@ -18,7 +49,7 @@ namespace EmissionsMonitorModel.ProcessModeling
         {
             if (node.Id < 1)
             {
-                node.Id = ProcessNodes.Count == 0 ? 1 : GetAllNodes().Max(x => x.Id) + 1;
+                node.Id = ProcessNodes.Count == 0 ? 1 : GetAllNodes(true).Max(x => x.Id) + 1;
                 if (node.GetType() == typeof(StreamSplitterNode))
                 {
                     StreamSplitterNode splitterNode = (StreamSplitterNode)node;
@@ -28,10 +59,11 @@ namespace EmissionsMonitorModel.ProcessModeling
                 if (node.GetType() == typeof(MultiSplitterNode))
                 {
                     MultiSplitterNode multiSplitterNode = (MultiSplitterNode)node;
-                    multiSplitterNode.RemainderResultNode.Id = node.Id;
-                    multiSplitterNode.OnChildNodeDynamicallyAdded += (splitterNode, childNode) => //Smelly
-                    {
-                        childNode.Id = GetAllNodes().Max(x => x.Id) + 1;
+                    multiSplitterNode.RemainderResultNodeId = node.Id + 1;
+                    multiSplitterNode.OnChildNodeDynamicallyAdded += (splitterNode, childNode) =>
+                    {//Smelly. The multi splitter node is going to dynamically add nodes based on the user-entered split functions.
+                     //This listener is here so that when a node gets dyanmically the model can assign its ID
+                        childNode.Id = GetAllNodes(true).Max(x => x.Id) + 1;
                     };
                 }
             }
@@ -56,29 +88,21 @@ namespace EmissionsMonitorModel.ProcessModeling
             return seriesUris;
         }
 
-        public ICollection<ProcessNode> GetAllNodes(bool includeSplitterRoots = false)
+        /// <summary>
+        /// Gathers all the process nodes contained in the process model, including nodes that are dynamically created by other nodes (I.E. the result and remainder of a splitter node).
+        /// </summary>
+        /// <param name="includeAncillaryRoots">If true the nodes that manage ancillary nodes will be included otherwise only the ancillary nodes will be included.</param>
+        public ICollection<ProcessNode> GetAllNodes(bool includeAncillaryRoots = false)
         {
             List<ProcessNode> results = new List<ProcessNode>();
             foreach (ProcessNode node in ProcessNodes)
             {
-                if (node.GetType() == typeof(StreamSplitterNode)) //Creates 2 child nodes (split and remainder)
+                if (node is ICreateAncillaryNodes)
                 {
-                    var splitterNode = (StreamSplitterNode)node;
-                    if(includeSplitterRoots) results.Add(splitterNode);
-                    results.Add(splitterNode.SplitResultNode);
-                    results.Add(splitterNode.RemainderResultNode);
+                    results.AddRange(((ICreateAncillaryNodes)node).GetAncillaryNodes());
+                    if (includeAncillaryRoots) results.Add(node); 
                 }
-                else if (node.GetType() == typeof(MultiSplitterNode)) //Creates n child nodes (1 to many splits and 1 remainder)
-                {
-                    var multiSplitterNode = (MultiSplitterNode)node;
-                    if (includeSplitterRoots) results.Add(multiSplitterNode);
-                    foreach(var child in multiSplitterNode.SplitResultNodes) results.Add(child);
-                    results.Add(multiSplitterNode.RemainderResultNode);
-                }
-                else
-                {
-                    results.Add(node);
-                }
+                else results.Add(node);
             }
 
             return results;

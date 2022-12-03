@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace EmissionsMonitorModel.ProcessModeling
 {
-    public class ProductSubtractorNode : ProcessNode
+    public class ProductSubtractorNode : ProcessNode, ISinglePredecessor
     {
         public ProductSubtractorNode()
         {

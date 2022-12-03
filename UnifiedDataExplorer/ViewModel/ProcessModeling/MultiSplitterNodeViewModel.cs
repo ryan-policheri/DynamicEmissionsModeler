@@ -85,9 +85,9 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             vm.Load(copy, (status) =>
             {
                 if (status == ViewModelDataStatus.Added) { this._multiSplitterModel.AddSplitFunction(vm.GetBackingModel()); }
-                if (status == ViewModelDataStatus.Updated) { this._multiSplitterModel.SplitFunctions.Remove(function); this._multiSplitterModel.AddSplitFunction(vm.GetBackingModel()); }
+                if (status == ViewModelDataStatus.Updated) { this._multiSplitterModel.UpdateSplitFunction(function, vm.GetBackingModel()); }
 
-                if (status == ViewModelDataStatus.Removed) { this._multiSplitterModel.SplitFunctions.Remove(function); }
+                if (status == ViewModelDataStatus.Removed) { this._multiSplitterModel.RemoveSplitFunction(function); }
                 if (status == ViewModelDataStatus.Canceled) { /*Do nothing*/ }
 
                 Load(_multiSplitterModel, _processModel);

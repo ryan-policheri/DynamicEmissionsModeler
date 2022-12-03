@@ -34,7 +34,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             if (id > 0)
             {
                 _saveItem = await _repo.GetModelSaveItemAsync(id);
-                _model = _saveItem.ProcessModelJsonDetails.ConvertJsonToObject<ProcessModel>();
+                _model = _saveItem.ToProcessModel();
             }
             else _model = new ProcessModel();
 

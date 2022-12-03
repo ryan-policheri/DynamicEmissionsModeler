@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace EmissionsMonitorModel.ProcessModeling
 {
-    public class StreamSplitterNode : ProcessNode
+    public class StreamSplitterNode : ProcessNode, ISinglePredecessor, ICreateAncillaryNodes
     {
         public StreamSplitterNode()
         {
@@ -13,7 +13,7 @@ namespace EmissionsMonitorModel.ProcessModeling
             RemainderResultNode = new StreamSplitRemainderNode { OwningSplitter = this };
         }
 
-        public new int Id 
+        public new int Id
         {
             get { return base.Id; }
             set
@@ -24,8 +24,8 @@ namespace EmissionsMonitorModel.ProcessModeling
             }
         }
 
-        public new string Name 
-        { 
+        public new string Name
+        {
             get { return base.Name; }
             set
             {
@@ -42,8 +42,8 @@ namespace EmissionsMonitorModel.ProcessModeling
         public ProcessNode PrecedingNode { get; set; }
 
         private int _splitResultNodeId;
-        public int SplitResultNodeId 
-        { 
+        public int SplitResultNodeId
+        {
             get { return _splitResultNodeId; }
             set
             {
@@ -74,7 +74,7 @@ namespace EmissionsMonitorModel.ProcessModeling
         public ProductCostResults RenderSplitFunctionProductAndCosts(ICollection<DataPoint> dataPoints)
         {
             ProductCostResults preceedingStream = RenderProductAndCosts(dataPoints);
-            if(preceedingStream.Product.UnitType != SplitFunction.FunctionUnit || preceedingStream.Product.UnitForm != SplitFunction.FunctionUnitForm)
+            if (preceedingStream.Product.UnitType != SplitFunction.FunctionUnit || preceedingStream.Product.UnitForm != SplitFunction.FunctionUnitForm)
             {
                 throw new InvalidOperationException("The proceeding node and the split function must have the same type of product");
             }
@@ -82,7 +82,7 @@ namespace EmissionsMonitorModel.ProcessModeling
             var inputPoints = dataPoints.Where(x => SplitFunction.FunctionFactors.Any(y => y.FactorUri.Uri == x.Series.SeriesUri.Uri));
             DataFunctionResult splitProduct = SplitFunction.ExecuteFunction(inputPoints);
             if (preceedingStream.Product.TotalValue < splitProduct.TotalValue) { throw new InvalidOperationException("Split value cannot be more than total value"); }
-           
+
             var costs = preceedingStream.CalculateCostOfRawProductAmount(splitProduct.TotalValue);
             ICollection<DataFunctionResult> splitCosts = new List<DataFunctionResult>();
             foreach (var cost in preceedingStream.Costs)
@@ -105,7 +105,7 @@ namespace EmissionsMonitorModel.ProcessModeling
         public ProductCostResults RenderRemainderProductAndCost(ICollection<DataPoint> dataPoints)
         {
             ProductCostResults preceedingStream = RenderProductAndCosts(dataPoints);
-            if (preceedingStream.Product.UnitType != SplitFunction.FunctionUnit 
+            if (preceedingStream.Product.UnitType != SplitFunction.FunctionUnit
                 || preceedingStream.Product.UnitForm != SplitFunction.FunctionUnitForm
                 || preceedingStream.Product.DefaultValueUnit != SplitFunction.FunctionDefaultReturnUnit)
             {
@@ -114,8 +114,8 @@ namespace EmissionsMonitorModel.ProcessModeling
 
             var inputPoints = dataPoints.Where(x => SplitFunction.FunctionFactors.Any(y => y.FactorUri.Uri == x.Series.SeriesUri.Uri));
             DataFunctionResult splitProduct = SplitFunction.ExecuteFunction(inputPoints);
-            if(preceedingStream.Product.TotalValue < splitProduct.TotalValue) { throw new InvalidOperationException("Split value cannot be more than total value"); } 
-           
+            if (preceedingStream.Product.TotalValue < splitProduct.TotalValue) { throw new InvalidOperationException("Split value cannot be more than total value"); }
+
             double remaininingValue = preceedingStream.Product.TotalValue - splitProduct.TotalValue;
             DataFunctionResult remainingProduct = preceedingStream.Product.Duplicate();
             remainingProduct.FunctionName += $" (Remainder of {this.SplitFunction.FunctionName})";
@@ -148,6 +148,11 @@ namespace EmissionsMonitorModel.ProcessModeling
         public override ICollection<DataFunction> GetUserDefinedFunctions()
         {
             return new List<DataFunction>() { SplitFunction };
+        }
+
+        public ICollection<ProcessNode> GetAncillaryNodes()
+        {
+            return new List<ProcessNode>() { this.SplitResultNode, this.RemainderResultNode };
         }
     }
 }

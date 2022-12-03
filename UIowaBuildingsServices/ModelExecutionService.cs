@@ -16,7 +16,7 @@ namespace EmissionsMonitorDataAccess
 
         public async Task<ICollection<MonitorSeries>> ExecuteModelAsync(ModelExecutionSpec spec)
         {
-            IEnumerable<ProcessNode> nodes = spec.Model.ProcessNodes;
+            IEnumerable<ProcessNode> nodes = spec.Model.GetAllNodes(true);
             ICollection<DataSourceSeriesUri> neededSeriesUris = spec.Model.GetAllSeriesUris();
             TimeSeriesRenderSettings renderSettings = new TimeSeriesRenderSettings
             {

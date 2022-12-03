@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace EmissionsMonitorModel.ProcessModeling
 {
-    public class ProductConversionNode : ProcessNode
+    public class ProductConversionNode : ProcessNode, ISinglePredecessor
     {//Converts product A to a product B
 
         public ProductConversionNode()

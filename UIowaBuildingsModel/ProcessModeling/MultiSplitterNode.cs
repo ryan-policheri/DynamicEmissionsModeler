@@ -1,9 +1,10 @@
 ﻿using EmissionsMonitorModel.TimeSeries;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace EmissionsMonitorModel.ProcessModeling
 {
-    public class MultiSplitterNode : ProcessNode
+    public class MultiSplitterNode : ProcessNode, ISinglePredecessor, ICreateAncillaryNodes
     {
         public MultiSplitterNode()
         {
@@ -11,8 +12,6 @@ namespace EmissionsMonitorModel.ProcessModeling
             PrecedingNode = null;
 
             SplitFunctions = new List<DataFunction>();
-
-            SplitResultNodeIds = new List<int>();
             SplitResultNodes = new List<MultiSplitResultNode>();
 
             RemainderResultNode = new MultiSplitRemainderNode { OwningSplitter = this };
@@ -46,9 +45,6 @@ namespace EmissionsMonitorModel.ProcessModeling
 
         public ICollection<DataFunction> SplitFunctions { get; set; }
 
-        public ICollection<int> SplitResultNodeIds { get; set; }
-
-        [JsonIgnore]
         public ICollection<MultiSplitResultNode> SplitResultNodes { get; set; }
 
 
@@ -67,14 +63,38 @@ namespace EmissionsMonitorModel.ProcessModeling
         public MultiSplitRemainderNode RemainderResultNode { get; set; }
 
         //TODO: This is smelly. It's done this way because the process model listens to the event so that it can assign an id to the dynamically added node.
+        //It'd be better to just use guids instead of integer ids that way we can just assign the id here
         public delegate void ChildNodeDynamicallyAdded(MultiSplitterNode sender, MultiSplitResultNode addedNode);
         public event ChildNodeDynamicallyAdded OnChildNodeDynamicallyAdded;
+
         public void AddSplitFunction(DataFunction splitFunction)
         {
             SplitFunctions.Add(splitFunction);
-            var splitResultNode = new MultiSplitResultNode { Name = splitFunction.FunctionName + " (From Multi Split)", OwningSplitter = this, OwningSplitterId = this.Id, SplitFunctionName = splitFunction.FunctionName };
+            var splitResultNode = new MultiSplitResultNode
+            {
+                OwningSplitter = this,
+                OwningSplitterId = this.Id,
+                Name = splitFunction.FunctionName + " (From Multi Split)",
+                SplitFunctionName = splitFunction.FunctionName
+            };
             SplitResultNodes.Add(splitResultNode);
             if (OnChildNodeDynamicallyAdded != null) OnChildNodeDynamicallyAdded(this, splitResultNode);
+        }
+
+        public void UpdateSplitFunction(DataFunction oldSplitFunction, DataFunction newSplitFunction)
+        {
+            MultiSplitResultNode relatedResultNode = this.SplitResultNodes.First(x => x.SplitFunctionName == oldSplitFunction.FunctionName);
+            this.SplitFunctions.Remove(oldSplitFunction);
+            this.SplitFunctions.Add(newSplitFunction);
+            relatedResultNode.Name = newSplitFunction.FunctionName + " (From Multi Split)";
+            relatedResultNode.SplitFunctionName = newSplitFunction.FunctionName;
+        }
+
+        public void RemoveSplitFunction(DataFunction function)
+        {
+            MultiSplitResultNode relatedResultNode = this.SplitResultNodes.First(x => x.SplitFunctionName == function.FunctionName);
+            this.SplitFunctions.Remove(function);
+            this.SplitResultNodes.Remove(relatedResultNode);
         }
 
         public ProductCostResults RenderSplitFunctionProductAndCosts(ICollection<DataPoint> dataPoints, MultiSplitResultNode resultNode)
@@ -149,6 +169,14 @@ namespace EmissionsMonitorModel.ProcessModeling
         public override ProductCostResults RenderProductAndCosts(ICollection<DataPoint> dataPoints)
         {
             return PrecedingNode.RenderProductAndCosts(dataPoints);
+        }
+
+        public ICollection<ProcessNode> GetAncillaryNodes()
+        {
+            List<ProcessNode> ancillaryNodes = new List<ProcessNode>();
+            foreach (var child in this.SplitResultNodes) ancillaryNodes.Add(child);
+            ancillaryNodes.Add(this.RemainderResultNode);
+            return ancillaryNodes;
         }
     }
 }
