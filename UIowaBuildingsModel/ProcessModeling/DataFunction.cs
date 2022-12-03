@@ -15,6 +15,7 @@ namespace EmissionsMonitorModel.ProcessModeling
     [JsonDerivedType(typeof(ElectricEnergyFunction), "electric_energy")]
     [JsonDerivedType(typeof(MoneyFunction), "money_currency")]
     [JsonDerivedType(typeof(Co2MassFunction), "co2_mass")]
+    [JsonDerivedType(typeof(ChilledWaterVolumeFunction), "chilled_water_volume")]
     public abstract class DataFunction
     {
         public DataFunction()
@@ -91,6 +92,7 @@ namespace EmissionsMonitorModel.ProcessModeling
             yield return new SteamEnergyFunction().ToTypeMapping();
             yield return new ElectricEnergyFunction().ToTypeMapping();
             yield return new Co2MassFunction().ToTypeMapping();
+            yield return new ChilledWaterVolumeFunction().ToTypeMapping();
             yield return new MoneyFunction().ToTypeMapping();
         }
 
@@ -172,6 +174,31 @@ namespace EmissionsMonitorModel.ProcessModeling
         {
             Mass mass = (Mass)value;
             return mass.Kilograms;
+        }
+    }
+
+    public abstract class VolumeFunction : DataFunction
+    {
+        public VolumeFunction() : base()
+        {
+            FunctionUnit = "Volume";
+        }
+
+        public override Type GetReturnType() => typeof(Volume);
+    }
+
+    public class ChilledWaterVolumeFunction : VolumeFunction
+    {
+        public ChilledWaterVolumeFunction() : base()
+        {
+            FunctionUnitForm = "Chilled Water";
+            FunctionDefaultReturnUnit = "U.S. Gallons";
+        }
+
+        public override double ToDefaultValueRendering(object value)
+        {
+            Volume volume = (Volume)value;
+            return volume.UsGallons;
         }
     }
 

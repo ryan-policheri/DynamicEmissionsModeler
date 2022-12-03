@@ -165,5 +165,73 @@ namespace Tests.EmissionsMonitorModel.ProcessModelingTests
 
             return node;
         }
+
+        public class ElectricGenerator
+        {
+            public Money FuelCost(DataPoint NaturalGasUsagePoint)
+            {
+                Volume gasVolume = Volume.FromCubicFeet(NaturalGasUsagePoint.Value);
+                decimal cost = (decimal)(gasVolume.KilocubicFeet * 10.00); //$10 per 1,000 cubic feet 
+                return Money.FromUsDollars(cost);
+            }
+
+            public Mass CO2EmissionsCost(DataPoint NaturalGasUsagePoint)
+            {
+                Volume gasVolume = Volume.FromCubicFeet(NaturalGasUsagePoint.Value);
+                Mass co2Emissions = NaturalGas.ToCo2Emissions(gasVolume);
+                return co2Emissions;
+            }
+
+            public Energy ElectricEnergyOutput(DataPoint ElectricOutputPoint)
+            {
+                Energy electricEnergy = Energy.FromMegawattHours(ElectricOutputPoint.Value);
+                return electricEnergy;
+            }
+        }
+
+        public static ExchangeNode BuildElectricGeneratorExchangeNode()
+        {
+            ElectricGenerator electricGeneratorCompute = new ElectricGenerator();
+
+            ExchangeNode node = new ExchangeNode
+            {
+                Name = "Electric Generator",
+                Costs = new List<DataFunction>()
+                {
+                    new MoneyFunction()
+                    {
+                        FunctionName = "Fuel Cost",
+                        FunctionFactors = new List<FunctionFactor>()
+                        {
+                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = new DataSourceSeriesUri { Uri = "Electric Gen NG Flow Tag" }}
+                        },
+                        FunctionCode = "Foo",
+                        FunctionHostObject = electricGeneratorCompute
+                    },
+                    new Co2MassFunction()
+                    {
+                        FunctionName = "CO2 Emissions Cost",
+                        FunctionFactors = new List<FunctionFactor>()
+                        {
+                            new FunctionFactor() { FactorName = "Natural Gas Usage", FactorUri = new DataSourceSeriesUri { Uri = "Electric Gen NG Flow Tag" } }
+                        },
+                        FunctionCode = "bar",
+                        FunctionHostObject = electricGeneratorCompute
+                    }
+                },
+                Product = new ElectricEnergyFunction()
+                {
+                    FunctionName = "Electric Energy Output",
+                    FunctionFactors = new List<FunctionFactor>()
+                    {
+                        new FunctionFactor() { FactorName = "Electric Output", FactorUri = new DataSourceSeriesUri { Uri = "Electric Output Tag" } }
+                    },
+                    FunctionCode = "Foobar",
+                    FunctionHostObject = electricGeneratorCompute
+                }
+            };
+
+            return node;
+        }
     }
 }
