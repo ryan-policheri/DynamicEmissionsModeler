@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 namespace EmissionsMonitorModel.ProcessModeling
 {
     [JsonPolymorphic]
+    [JsonDerivedType(typeof(MultiProductConversionNode), typeDiscriminator: "multi_product_conversion_node")]
     [JsonDerivedType(typeof(MultiSplitterNode), typeDiscriminator: "multi_splitter_node")]
     [JsonDerivedType(typeof(ProductSubtractorNode), typeDiscriminator: "product_subtractor_node")]
     [JsonDerivedType(typeof(UsageAdjusterNode), typeDiscriminator: "usage_adjuster_node")]

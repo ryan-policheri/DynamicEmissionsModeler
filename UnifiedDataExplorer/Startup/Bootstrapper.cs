@@ -137,6 +137,7 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<UsageAdjusterNodeViewModel>();
             services.AddTransient<ProductSubtractorNodeViewModel>();
             services.AddTransient<MultiSplitterNodeViewModel>();
+            services.AddTransient<MultiProductConversionNodeViewModel>();
             services.AddTransient<DataFunctionViewModel>(x => 
                 new DataFunctionViewModel(
                     x.GetService<ModelInitializationService>(),
