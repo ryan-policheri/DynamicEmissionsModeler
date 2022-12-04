@@ -13,6 +13,7 @@ namespace EmissionsMonitorDataAccess.Http
     {
         public ModelExecutionClient()
         {
+            this.Client.Timeout = new TimeSpan(12, 0 , 0);
         }
 
         public async Task<ModelExecutionResult> RemoteExecuteAsync(ModelExecutionSpec spec)
