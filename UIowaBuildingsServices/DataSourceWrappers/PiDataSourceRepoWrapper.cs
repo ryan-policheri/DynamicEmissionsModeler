@@ -79,11 +79,22 @@ namespace EmissionsMonitorDataAccess.DataSourceWrappers
                 Series series = new Series();
                 series.SeriesUri = query;
                 //TODO: Some error checking on the data points
-                series.DataPoints = inputPiPoint.SummaryDataPoints.Select(x => new DataPoint
+                series.DataPoints = inputPiPoint.SummaryDataPoints.Select(x => 
                 {
-                    Series = series,
-                    Timestamp = x.DataPoint.Timestamp,
-                    Value = x.HasErrors ? 0 : double.Parse(x.DataPoint.Value.ToString())
+                    double value = x.HasErrors ? 0 : double.Parse(x.DataPoint.Value.ToString());
+                    //if (x?.DataPoint?.Value == null)
+                    //{
+                    //    if (query.UseZeroForNulls) value = 0;
+                    //    else throw new NullReferenceException("No value found for during enumeration of " + query.SeriesName);
+                    //}
+
+                    if(value < 0 && query.UseZeroForNegatives) value = 0;
+                    return new DataPoint
+                    {
+                        Series = series,
+                        Timestamp = x.DataPoint.Timestamp,
+                        Value = value
+                    };
                 }).ToList();
                 return series;
             }
