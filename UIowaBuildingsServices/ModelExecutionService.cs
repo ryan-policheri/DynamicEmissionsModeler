@@ -16,28 +16,24 @@ namespace EmissionsMonitorDataAccess
 
         public async Task<ICollection<MonitorSeries>> ExecuteModelAsync(ModelExecutionSpec spec)
         {
-            IEnumerable<ProcessNode> nodes = spec.Model.GetAllNodes(true);
-            ICollection<DataSourceSeriesUri> neededSeriesUris = spec.Model.GetAllSeriesUris();
-            TimeSeriesRenderSettings renderSettings = new TimeSeriesRenderSettings
-            {
-                StartDateTime = spec.StartTime,
-                EndDateTime = spec.EndTime,
-                RenderResolution = spec.DataResolution
-            };
-
-            foreach (DataSourceSeriesUri seriesUri in neededSeriesUris.Where(x => x.SeriesDataResolution == DataResolutionPlusVariable.Variable))
-            {
-                seriesUri.FillVariableResolution(renderSettings.RenderResolution);
+            IEnumerable<DataSourceSeriesUri> neededDataStreams = spec.Model.GetAllUniqueSeriesUris();
+            foreach (DataSourceSeriesUri uri in neededDataStreams.Where(x => x.SeriesDataResolution == DataResolutionPlusVariable.Variable))
+            {//All streams that are marked with variable resolution means that their owning system (I.E. PI) can render data at any resolution 
+                uri.FillVariableResolution(spec.DataResolution); //So we say that the stream's resolution is whatever the user is looking for in this execution
             }
+            ICollection<DataSourceSeriesUriQueryRender> queries = neededDataStreams //To convert the data streams to a query, we add the model execition info to it
+                .Select(x => new DataSourceSeriesUriQueryRender(x, spec.StartTime, spec.EndTime, spec.DataResolution)).ToList();
 
-            ICollection<Series> neededSeries = await QuerySeries(neededSeriesUris, renderSettings);
+            ICollection<Series> allSeries = await ExecuteAllQueries(queries); //Get all the data needed to render the entire model
 
+            //Render each node of the model across all time points
+            IEnumerable<ProcessNode> nodes = spec.Model.GetAllNodes(true);
             ICollection<MonitorSeries> monitorSeriesList = new List<MonitorSeries>();
-
             bool first = true;
-            foreach (DateTimeOffset offset in renderSettings.BuildTimePoints())
+
+            foreach (DateTimeOffset offset in DataResolution.BuildTimePoints(spec.DataResolution, spec.StartTime, spec.EndTime))
             {
-                ICollection<DataPoint> timeData = neededSeries.SelectMany(x => x.DataPoints).Where(x => x.Timestamp == offset).ToList();
+                ICollection<DataPoint> timeData = allSeries.SelectMany(x => x.DataPoints).Where(x => x.Timestamp == offset).ToList();
 
                 foreach (ProcessNode node in nodes)
                 {
@@ -64,13 +60,13 @@ namespace EmissionsMonitorDataAccess
             return monitorSeriesList;
         }
 
-        public async Task<ICollection<Series>> QuerySeries(ICollection<DataSourceSeriesUri> seriesUris, TimeSeriesRenderSettings renderSettings)
+        private async Task<ICollection<Series>> ExecuteAllQueries(ICollection<DataSourceSeriesUriQueryRender> queries)
         {
             ICollection<Series> seriesList = new List<Series>();
-            foreach (DataSourceSeriesUri uri in seriesUris)
+            foreach (DataSourceSeriesUriQueryRender query in queries)
             {
-                Series series = await _dataSource.GetTimeSeriesAsync(uri, renderSettings);
-                Series normalizedSeries = series.RenderSeriesAtTargetResolution(renderSettings);
+                Series series = await _dataSource.GetTimeSeriesAsync(query);
+                Series normalizedSeries = series.RenderSeriesAtTargetResolution(query.GetQueryRenderSettings());
                 seriesList.Add(normalizedSeries);
             }
             return seriesList;

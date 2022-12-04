@@ -107,7 +107,7 @@ namespace EmissionsMonitorModel.ProcessModeling
                 throw new InvalidOperationException("The proceeding node and the split function must have the same type of product");
             }
 
-            var inputPoints = dataPoints.Where(x => splitFunction.FunctionFactors.Any(y => y.FactorUri.Uri == x.Series.SeriesUri.Uri));
+            var inputPoints = dataPoints.Where(x => splitFunction.FunctionFactors.Any(y => y.FactorUri.EquivelentSeriesAndConfig(x.Series.SeriesUri)));
             DataFunctionResult splitProduct = splitFunction.ExecuteFunction(inputPoints);
             if (preceedingStream.Product.TotalValue < splitProduct.TotalValue) { throw new InvalidOperationException("Split value cannot be more than total value"); }
 

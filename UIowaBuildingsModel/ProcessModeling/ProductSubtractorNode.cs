@@ -33,7 +33,7 @@ namespace EmissionsMonitorModel.ProcessModeling
                 throw new InvalidOperationException("The preceeding node and the product deduction function must have the same type of product");
             }
 
-            var input = dataPoints.Where(x => ProductDeductionFunction.FunctionFactors.Any(y => y.FactorUri.Uri == x.Series.SeriesUri.Uri));
+            var input = dataPoints.Where(x => ProductDeductionFunction.FunctionFactors.Any(y => y.FactorUri.EquivelentSeriesAndConfig(x.Series.SeriesUri)));
             DataFunctionResult productDeduction = ProductDeductionFunction.ExecuteFunction(input);
             if (preceedingStream.Product.TotalValue < productDeduction.TotalValue) { throw new InvalidOperationException("Deduction value cannot be more than total value"); }
 

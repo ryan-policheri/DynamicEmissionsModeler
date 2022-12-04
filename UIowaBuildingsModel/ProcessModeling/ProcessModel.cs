@@ -1,4 +1,5 @@
-﻿using EmissionsMonitorModel.DataSources;
+﻿using DotNetCommon.Extensions;
+using EmissionsMonitorModel.DataSources;
 using System.Runtime.Serialization;
 
 namespace EmissionsMonitorModel.ProcessModeling
@@ -70,24 +71,6 @@ namespace EmissionsMonitorModel.ProcessModeling
             ProcessNodes.Add(node);
         }
 
-        public ICollection<DataSourceSeriesUri> GetAllSeriesUris()
-        {
-            ICollection<DataSourceSeriesUri> seriesUris = new List<DataSourceSeriesUri>();
-
-            foreach (ProcessNode node in this.ProcessNodes)
-            {
-                foreach (DataFunction function in node.GetUserDefinedFunctions())
-                {
-                    foreach (FunctionFactor factor in function.FunctionFactors)
-                    {
-                        if(!seriesUris.Any(x => x.Uri == factor.FactorUri.Uri)) seriesUris.Add(factor.FactorUri);
-                    }
-                }
-            }
-
-            return seriesUris;
-        }
-
         /// <summary>
         /// Gathers all the process nodes contained in the process model, including nodes that are dynamically created by other nodes (I.E. the result and remainder of a splitter node).
         /// </summary>
@@ -108,9 +91,20 @@ namespace EmissionsMonitorModel.ProcessModeling
             return results;
         }
 
-        public ICollection<NodeOutputSpec> GetAllNodeSpecs(bool includeSplitterRoots = false)
+        public ICollection<NodeOutputSpec> GetAllNodeSpecs(bool includeAncillaryRoots = false)
         {
-            return GetAllNodes(includeSplitterRoots).Select(x => x.ToSpec()).ToList();
+            return GetAllNodes(includeAncillaryRoots).Select(x => x.ToSpec()).ToList();
+        }
+
+        public ICollection<DataSourceSeriesUri> GetAllUniqueSeriesUris()
+        {//Get a copy of all uniquely identified data streams.
+            return this.ProcessNodes
+                .SelectMany(x => x.GetUserDefinedFunctions())
+                .SelectMany(x => x.FunctionFactors)
+                .Select(x => x.FactorUri.Copy())
+                .GroupBy(x => x.EquivelentSeriesAndConfigJoinKey(true))
+                .Select(x => x.First())
+                .ToList();
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Tests.EmissionsMonitorModel.TimeSeriesTests
                 }
             };
 
-            TimeSeriesRenderSettings renderSettings = new TimeSeriesRenderSettings
+            QueryRenderSettings renderSettings = new QueryRenderSettings
             {
                 StartDateTime = new DateTimeOffset(2022, 11, 1, 3, 0, 0, TimeZones.GetUtcOffset()),
                 EndDateTime = new DateTimeOffset(2022, 11, 1, 6, 0, 0, TimeZones.GetUtcOffset()),
@@ -64,7 +64,7 @@ namespace Tests.EmissionsMonitorModel.TimeSeriesTests
                     new DataPoint { Value = 70, Timestamp = new DateTimeOffset(2022, 11, 1, 4, 0, 0, TimeZones.GetUtcOffset())  }
                 }
             };
-            TimeSeriesRenderSettings renderSettings = new TimeSeriesRenderSettings
+            QueryRenderSettings renderSettings = new QueryRenderSettings
             {
                 StartDateTime = new DateTimeOffset(2022, 11, 1, 3, 0, 0, TimeZones.GetUtcOffset()),
                 EndDateTime = new DateTimeOffset(2022, 11, 1, 4, 0, 0, TimeZones.GetUtcOffset()),
@@ -92,7 +92,7 @@ namespace Tests.EmissionsMonitorModel.TimeSeriesTests
                     new DataPoint { Value = 70, Timestamp = new DateTimeOffset(2022, 11, 1, 3, 2, 0, TimeZones.GetUtcOffset())  }
                 }
             };
-            TimeSeriesRenderSettings renderSettings = new TimeSeriesRenderSettings
+            QueryRenderSettings renderSettings = new QueryRenderSettings
             {
                 StartDateTime = new DateTimeOffset(2022, 11, 1, 3, 1, 0, TimeZones.GetUtcOffset()),
                 EndDateTime = new DateTimeOffset(2022, 11, 1, 3, 2, 0, TimeZones.GetUtcOffset()),
@@ -120,7 +120,7 @@ namespace Tests.EmissionsMonitorModel.TimeSeriesTests
                     new DataPoint { Value = 70, Timestamp = new DateTimeOffset(2022, 11, 1, 3, 5, 2, TimeZones.GetUtcOffset())  }
                 }
             };
-            TimeSeriesRenderSettings renderSettings = new TimeSeriesRenderSettings
+            QueryRenderSettings renderSettings = new QueryRenderSettings
             {
                 StartDateTime = new DateTimeOffset(2022, 11, 1, 3, 5, 1, TimeZones.GetUtcOffset()),
                 EndDateTime = new DateTimeOffset(2022, 11, 1, 3, 5, 2, TimeZones.GetUtcOffset()),

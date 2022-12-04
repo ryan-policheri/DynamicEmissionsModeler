@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EmissionsMonitorModel.DataSources;
+﻿using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorModel.TimeSeries;
 
 namespace EmissionsMonitorServices.DataSourceWrappers
@@ -24,10 +19,17 @@ namespace EmissionsMonitorServices.DataSourceWrappers
             return data;
         }
 
-        public async Task<Series> GetTimeSeriesAsync(DataSourceSeriesUri uri, TimeSeriesRenderSettings renderSettings)
+        public async Task<Series> GetTimeSeriesAsync(DataSourceSeriesUri uri, QueryRenderSettings renderSettings)
         {
             ITimeSeriesDataSource dataSource = _dataSourceFactory.GetTimeSeriesDataSourceById(uri.DataSourceId);
             Series data = await dataSource.GetTimeSeriesAsync(uri, renderSettings);
+            return data;
+        }
+
+        public async Task<Series> GetTimeSeriesAsync(DataSourceSeriesUriQueryRender query)
+        {
+            ITimeSeriesDataSource dataSource = _dataSourceFactory.GetTimeSeriesDataSourceById(query.DataSourceId);
+            Series data = await dataSource.GetTimeSeriesAsync(query);
             return data;
         }
     }

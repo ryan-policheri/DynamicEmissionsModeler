@@ -52,7 +52,7 @@ namespace EmissionsMonitorModel.ProcessModeling
             }
 
             //Associate the new product with the previous costs
-            var input = dataPoints.Where(x => NewProductFunction.FunctionFactors.Any(y => y.FactorUri.Uri == x.Series.SeriesUri.Uri));
+            var input = dataPoints.Where(x => NewProductFunction.FunctionFactors.Any(y => y.FactorUri.EquivelentSeriesAndConfig(x.Series.SeriesUri)));
             DataFunctionResult newProduct = NewProductFunction.ExecuteFunction(input);
             results.Product = newProduct;
 

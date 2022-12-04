@@ -37,7 +37,7 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
 
         protected override async Task RenderDataSet()
         {
-            TimeSeriesRenderSettings settings = new TimeSeriesRenderSettings
+            QueryRenderSettings settings = new QueryRenderSettings
             {
                 StartDateTime = new DateTimeOffset(this.StartDateTime.ToUniversalTime()),
                 EndDateTime = new DateTimeOffset(this.EndDateTime.ToUniversalTime())

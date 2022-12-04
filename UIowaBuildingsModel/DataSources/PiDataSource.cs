@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Dynamic;
 using DotNetCommon.Extensions;
+using EmissionsMonitorModel.ProcessModeling;
 using PiModel;
 
 namespace EmissionsMonitorModel.DataSources
@@ -34,6 +35,18 @@ namespace EmissionsMonitorModel.DataSources
             obj.Password = this.Password;
             obj.DefaultAssetServer = this.DefaultAssetServer;
             return ((object)obj).ToJson();
+        }
+
+        public static string ResolutionToPiString(string resolution)
+        {
+            switch (resolution)
+            {
+                case DataResolution.EverySecond: return "1s";
+                case DataResolution.EveryMinute: return "1m";
+                case DataResolution.Hourly: return "1h";
+                case DataResolution.Daily: return "1d";
+                default: throw new NotImplementedException($"need to implement resolution {resolution}");
+            }
         }
     }
 }

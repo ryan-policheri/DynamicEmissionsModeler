@@ -34,7 +34,7 @@ namespace EmissionsMonitorModel.ProcessModeling
                 throw new InvalidOperationException("The preceeding node and the actual usage function must have the same type of product");
             }
 
-            var input = dataPoints.Where(x => ProductUsageFunction.FunctionFactors.Any(y => y.FactorUri.Uri == x.Series.SeriesUri.Uri));
+            var input = dataPoints.Where(x => ProductUsageFunction.FunctionFactors.Any(y => y.FactorUri.EquivelentSeriesAndConfig(x.Series.SeriesUri)));
             DataFunctionResult actualProductUsage = ProductUsageFunction.ExecuteFunction(input);
             if (preceedingStream.Product.TotalValue < actualProductUsage.TotalValue) { throw new InvalidOperationException("Actual usage value cannot be more than total value"); }
 

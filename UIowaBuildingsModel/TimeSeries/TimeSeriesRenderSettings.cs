@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DotNetCommon.Extensions;
+﻿using DotNetCommon.Extensions;
 using EIA.Domain.Extensions;
 using EIA.Domain.Model;
+using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorModel.ProcessModeling;
 using PiModel;
 
 namespace EmissionsMonitorModel.TimeSeries
 {
-    public class TimeSeriesRenderSettings : IBuildPiTimeSeriesQueryString, IBuildEiaTimeSeriesQueryString
+    public class QueryRenderSettings : IBuildPiTimeSeriesQueryString, IBuildEiaTimeSeriesQueryString
     {
         public DateTimeOffset StartDateTime { get; set; }
 
@@ -19,11 +15,11 @@ namespace EmissionsMonitorModel.TimeSeries
 
         public string RenderResolution { get; set; }
 
-        //public Interval UnitResolution { get; set; }
-
+        public ICollection<DateTimeOffset> BuildTimePoints() => DataResolution.BuildTimePoints(this.RenderResolution, this.StartDateTime, this.EndDateTime);
+        
         public string BuildPiInterpolatedDataQueryString()
         {
-            string resolution = RenderResolution == null ? "1h" : ResolutionToPiString(RenderResolution);
+            string resolution = RenderResolution == null ? "1h" : PiDataSource.ResolutionToPiString(RenderResolution);
             string url = ""
                 .WithParameter("startTime", StartDateTime.ToStringWithNoOffset())
                 .WithParameter("endTime", EndDateTime.ToStringWithNoOffset())
@@ -34,8 +30,8 @@ namespace EmissionsMonitorModel.TimeSeries
 
         public string BuildPiSummaryDataQueryString()
         {
-            string resolution = RenderResolution == null ? "1h" : ResolutionToPiString(RenderResolution);
-            DateTimeOffset adjustedForSummaryEnd = AddIntervalUnit(RenderResolution, this.EndDateTime);
+            string resolution = RenderResolution == null ? "1h" : PiDataSource.ResolutionToPiString(RenderResolution);
+            DateTimeOffset adjustedForSummaryEnd = DataResolution.AddIntervalUnit(RenderResolution, this.EndDateTime);
             string url = ""
                 .WithParameter("startTime", StartDateTime.ToStringWithNoOffset())
                 .WithParameter("endTime", adjustedForSummaryEnd.ToStringWithNoOffset())
@@ -45,47 +41,12 @@ namespace EmissionsMonitorModel.TimeSeries
             return url;
         }
 
-        private string ResolutionToPiString(string resolution)
-        {
-            switch (resolution)
-            {
-                case DataResolution.EverySecond: return "1s";
-                case DataResolution.EveryMinute: return "1m";
-                case DataResolution.Hourly: return "1h";
-                case DataResolution.Daily: return "1d";
-                default: throw new NotImplementedException($"need to implement resolution {resolution}");
-            }
-        }
-
-        private DateTimeOffset AddIntervalUnit(string resolution, DateTimeOffset endDateTime)
-        {
-            switch (resolution)
-            {
-                case DataResolution.EverySecond: return endDateTime.AddSeconds(1);
-                case DataResolution.EveryMinute: return endDateTime.AddMinutes(1);
-                case DataResolution.Hourly: return endDateTime.AddHours(1);
-                case DataResolution.Daily: return endDateTime.AddDays(1);
-                default: throw new NotImplementedException($"need to implement resolution {resolution}");
-            }
-        }
-
         public string BuildEiaQueryString()
         {
             string queryString = ""
                 .WithQueryString("start", StartDateTime.UtcDateTime.ToString("yyyyMMddTHHZ"))
                 .WithQueryString("end", EndDateTime.UtcDateTime.ToString("yyyyMMddTHHZ"));
             return queryString;
-        }
-
-        public ICollection<DateTimeOffset> BuildTimePoints()
-        {
-            switch (this.RenderResolution)
-            {
-                case DataResolution.EverySecond: return this.StartDateTime.EnumerateSecondsUntil(this.EndDateTime);
-                case DataResolution.EveryMinute: return this.StartDateTime.EnumerateMinutesUntil(this.EndDateTime);
-                case DataResolution.Hourly: return this.StartDateTime.EnumerateHoursUntil(this.EndDateTime);
-                default: throw new NotImplementedException("render res " + this.RenderResolution + " not  implemented");
-            }
         }
     }
 }

@@ -48,20 +48,20 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 
         public bool UseZeroForNegatives
         {
-            get { return _model.UseZeroForNegatives; }
-            set { _model.UseZeroForNegatives = value; OnPropertyChanged();}
+            get { return _model.FactorUri != null ? _model.FactorUri.UseZeroForNegatives : true; }
+            set { if (_model.FactorUri != null) _model.FactorUri.UseZeroForNegatives = value; OnPropertyChanged();}
         }
 
         public bool UseZeroForNulls
         {
-            get { return _model.UseZeroForNulls; }
-            set { _model.UseZeroForNulls = value; OnPropertyChanged(); }
+            get { return _model.FactorUri != null ? _model.FactorUri.UseZeroForNulls : false; }
+            set { if (_model.FactorUri != null) _model.FactorUri.UseZeroForNulls = value; OnPropertyChanged(); }
         }
 
         public string FilteringExpression
         {
-            get { return _model.FilteringExpression; }
-            set { _model.FilteringExpression = value; OnPropertyChanged(); }
+            get { return _model.FactorUri?.FilteringExpression; }
+            set { if (_model.FactorUri != null) _model.FactorUri.FilteringExpression = value; OnPropertyChanged(); }
         }
 
 

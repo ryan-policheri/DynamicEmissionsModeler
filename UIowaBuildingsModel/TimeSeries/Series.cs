@@ -9,7 +9,7 @@ namespace EmissionsMonitorModel.TimeSeries
         public DataSourceSeriesUri SeriesUri { get; set; }
         public ICollection<DataPoint> DataPoints { get; set; }
 
-        public Series RenderSeriesAtTargetResolution(TimeSeriesRenderSettings renderSettings)
+        public Series RenderSeriesAtTargetResolution(QueryRenderSettings renderSettings)
         {
             Series newSeries = new Series { SeriesUri = this.SeriesUri };
             ICollection<DataPoint> renderedDataPoints = new List<DataPoint>();

@@ -27,7 +27,7 @@ namespace EmissionsMonitorModel.ProcessModeling
         public override ProductCostResults RenderProductAndCosts(ICollection<DataPoint> dataPoints)
         {
             ProductCostResults results = PrecedingNode.RenderProductAndCosts(dataPoints);
-            var input = dataPoints.Where(x => NewProductFunction.FunctionFactors.Any(y => y.FactorUri.Uri == x.Series.SeriesUri.Uri));
+            var input = dataPoints.Where(x => NewProductFunction.FunctionFactors.Any(y => y.FactorUri.EquivelentSeriesAndConfig(x.Series.SeriesUri)));
             DataFunctionResult newProduct = NewProductFunction.ExecuteFunction(input);
             results.Product = newProduct;
             return results;

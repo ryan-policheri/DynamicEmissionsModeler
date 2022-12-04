@@ -6,6 +6,8 @@ namespace EmissionsMonitorModel.TimeSeries
     {
         public Task<Series> GetTimeSeriesAsync(DataSourceSeriesUri uri, DateTimeOffset startTime, DateTimeOffset endTime);
 
-        public Task<Series> GetTimeSeriesAsync(DataSourceSeriesUri uri, TimeSeriesRenderSettings renderSettings);
+        public Task<Series> GetTimeSeriesAsync(DataSourceSeriesUri uri, QueryRenderSettings renderSettings);
+
+        public Task<Series> GetTimeSeriesAsync(DataSourceSeriesUriQueryRender query);
     }
 }

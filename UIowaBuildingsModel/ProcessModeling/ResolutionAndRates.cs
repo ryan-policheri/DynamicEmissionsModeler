@@ -13,6 +13,30 @@ namespace EmissionsMonitorModel.ProcessModeling
         {
             return new List<string> { EverySecond, EveryMinute, Hourly, Daily };
         }
+
+        public static ICollection<DateTimeOffset> BuildTimePoints(string resolution, DateTimeOffset startDateTime, DateTimeOffset endDateTime)
+        {
+            switch (resolution)
+            {
+                case DataResolution.EverySecond: return startDateTime.EnumerateSecondsUntil(endDateTime);
+                case DataResolution.EveryMinute: return startDateTime.EnumerateMinutesUntil(endDateTime);
+                case DataResolution.Hourly: return startDateTime.EnumerateHoursUntil(endDateTime);
+                default: throw new NotImplementedException("render resolution " + resolution + " not  implemented");
+            }
+        }
+
+        public static DateTimeOffset AddIntervalUnit(string resolution, DateTimeOffset endDateTime)
+        {
+            switch (resolution)
+            {
+                case DataResolution.EverySecond: return endDateTime.AddSeconds(1);
+                case DataResolution.EveryMinute: return endDateTime.AddMinutes(1);
+                case DataResolution.Hourly: return endDateTime.AddHours(1);
+                case DataResolution.Daily: return endDateTime.AddDays(1);
+                default: throw new NotImplementedException($"need to implement resolution {resolution}");
+            }
+        }
+
     }
 
     public static class DataResolutionExtensions
