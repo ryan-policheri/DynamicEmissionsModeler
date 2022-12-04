@@ -222,12 +222,24 @@ namespace EmissionsMonitorModel.ProcessModeling
 
     public class FunctionFactor
     {
+        public FunctionFactor()
+        {
+            UseZeroForNegatives = true;
+            UseZeroForNulls = false;
+        }
+
         public string FactorName { get; set; }
 
         public DataSourceSeriesUri FactorUri { get; set; }
 
         [NotMapped] 
         public string ParameterName => FactorName?.ToValidVariableName() + "Point";
+
+        public bool UseZeroForNegatives { get; set; }
+
+        public bool UseZeroForNulls { get; set; }
+
+        public string FilteringExpression { get; set; }
     }
 
     public class FunctionTypeMapping

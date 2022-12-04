@@ -44,26 +44,41 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal">
                 <Label Content="Data Source: "/>
                 <TextBlock Text="{Binding DataSourceName}" Margin="0 6 0 0"/>
             </StackPanel>
-            <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0 5 0 0">
                 <Label Content="Time Series Id: "/>
                 <TextBlock Text="{Binding SeriesName}"  Margin="0 6 0 0"/>
             </StackPanel>
-            <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0 5 0 0">
                 <Label Content="Units Summary: "/>
                 <TextBlock Text="{Binding UnitsSummary}"  Margin="0 6 0 0"/>
             </StackPanel>
-            <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0 5 0 0">
                 <Label Content="Unit Rate: "/>
-                <ComboBox ItemsSource="{Binding AvailableUnitRates}" SelectedItem="{Binding SelectedUnitRate}" Margin="0 6 0 0" MinWidth="100"/>
+                <ComboBox ItemsSource="{Binding AvailableUnitRates}" SelectedItem="{Binding SelectedUnitRate}" Margin="0 0 0 0" MinWidth="100"/>
             </StackPanel>
-            <StackPanel Grid.Row="4" Orientation="Horizontal">
+            <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0 5 0 0">
                 <Label Content="Data Resolution: "/>
-                <ComboBox ItemsSource="{Binding AvailableDataResolutions}" SelectedItem="{Binding SelectedDataResolution}"  Margin="0 6 0 0" MinWidth="100"/>
+                <ComboBox ItemsSource="{Binding AvailableDataResolutions}" SelectedItem="{Binding SelectedDataResolution}"  Margin="0 0 0 0" MinWidth="100"/>
+            </StackPanel>
+            <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0 5 0 0">
+                <Label Content="Use zero for negative values: "/>
+                <CheckBox Margin="0 6 0 0" IsChecked="{Binding UseZeroForNegatives,Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel Grid.Row="6" Orientation="Horizontal" Margin="0 5 0 0">
+                <Label Content="Use zero for null values: "/>
+                <CheckBox Margin="0 6 0 0 " IsChecked="{Binding UseZeroForNulls,Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel Grid.Row="7" Orientation="Horizontal" Margin="0 5 0 0">
+                <Label Content="Filtering expression: " />
+                <TextBox Margin="0 6 0 0 " Text="{Binding FilteringExpression,Mode=TwoWay}" MinWidth="200"/>
             </StackPanel>
         </Grid>
     </Grid>

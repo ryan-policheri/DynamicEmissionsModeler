@@ -46,6 +46,24 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             set { if (_model.FactorUri != null) _model.FactorUri.SeriesDataResolution = value; OnPropertyChanged(); }
         }
 
+        public bool UseZeroForNegatives
+        {
+            get { return _model.UseZeroForNegatives; }
+            set { _model.UseZeroForNegatives = value; OnPropertyChanged();}
+        }
+
+        public bool UseZeroForNulls
+        {
+            get { return _model.UseZeroForNulls; }
+            set { _model.UseZeroForNulls = value; OnPropertyChanged(); }
+        }
+
+        public string FilteringExpression
+        {
+            get { return _model.FilteringExpression; }
+            set { _model.FilteringExpression = value; OnPropertyChanged(); }
+        }
+
 
         public bool ShowDropZone => _model.FactorUri == null;
 
