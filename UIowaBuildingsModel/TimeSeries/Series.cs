@@ -53,6 +53,13 @@ namespace EmissionsMonitorModel.TimeSeries
         {
             if (currentResolution == DataResolution.Hourly)
             {
+                if (desiredResolution == DataResolution.Daily) return value;
+                else if (desiredResolution == DataResolution.Hourly) return value / 24;
+                else if (desiredResolution == DataResolution.EveryMinute) return value / 1440;
+                else if (desiredResolution == DataResolution.EverySecond) return value / 86400;
+            }
+            else if (currentResolution == DataResolution.Hourly)
+            {
                 if (desiredResolution == DataResolution.Hourly) return value;
                 else if (desiredResolution == DataResolution.EveryMinute) return value / 60;
                 else if (desiredResolution == DataResolution.EverySecond) return value / 3600;
@@ -74,6 +81,13 @@ namespace EmissionsMonitorModel.TimeSeries
             double value;
             if (unitRate == UnitRates.NoRate) value = dataPoint.Value;
 
+            else if (renderResolution == DataResolution.Daily)
+            {
+                if (unitRate == UnitRates.PerHour) value = dataPoint.Value * 24;
+                else if (unitRate == UnitRates.PerMinute) value = dataPoint.Value * 1440;
+                else if (unitRate == UnitRates.PerSecond) value = dataPoint.Value * 86400;
+                else throw new NotImplementedException();
+            }
             else if (renderResolution == DataResolution.Hourly)
             {
                 if (unitRate == UnitRates.PerHour) value = dataPoint.Value;

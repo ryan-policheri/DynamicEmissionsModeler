@@ -21,6 +21,7 @@ namespace EmissionsMonitorModel.ProcessModeling
                 case DataResolution.EverySecond: return startDateTime.EnumerateSecondsUntil(endDateTime);
                 case DataResolution.EveryMinute: return startDateTime.EnumerateMinutesUntil(endDateTime);
                 case DataResolution.Hourly: return startDateTime.EnumerateHoursUntil(endDateTime);
+                case DataResolution.Daily: return startDateTime.EnumerateDaysUntil(endDateTime);
                 default: throw new NotImplementedException("render resolution " + resolution + " not  implemented");
             }
         }

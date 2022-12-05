@@ -65,6 +65,11 @@
             return EnumerateTimePoints(startDateTime, endDateTime, (inPoint) => inPoint.AddHours(1));
         }
 
+        public static ICollection<DateTimeOffset> EnumerateDaysUntil(this DateTimeOffset startDateTime, DateTimeOffset endDateTime)
+        {
+            return EnumerateTimePoints(startDateTime, endDateTime, (inPoint) => inPoint.AddDays(1).Date);
+        }
+
         private static ICollection<DateTimeOffset> EnumerateTimePoints(DateTimeOffset startTime, DateTimeOffset endTime, Func<DateTimeOffset, DateTimeOffset> incrementFunc)
         {
             if (startTime > endTime) throw new ArgumentException("startDateTime must be less than or equal to endDateTime");

@@ -81,7 +81,10 @@ namespace EmissionsMonitorModel.ProcessModeling
 
             var inputPoints = dataPoints.Where(x => SplitFunction.FunctionFactors.Any(y => y.FactorUri.EquivelentSeriesAndConfig(x.Series.SeriesUri)));
             DataFunctionResult splitProduct = SplitFunction.ExecuteFunction(inputPoints);
-            if (preceedingStream.Product.TotalValue < splitProduct.TotalValue) { throw new InvalidOperationException("Split value cannot be more than total value"); }
+            if (preceedingStream.Product.TotalValue < splitProduct.TotalValue) 
+            { 
+                throw new InvalidOperationException("Split value cannot be more than total value"); 
+            }
 
             var costs = preceedingStream.CalculateCostOfRawProductAmount(splitProduct.TotalValue);
             ICollection<DataFunctionResult> splitCosts = new List<DataFunctionResult>();
