@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Images\CO2.png" />
     <None Remove="Resources\Images\EIA_Logo.png" />
     <None Remove="Resources\Images\Eia_Search_Logo.png" />
     <None Remove="Resources\Images\Flame.png" />
@@ -18,9 +19,11 @@
     <None Remove="Resources\Images\Loading.gif" />
     <None Remove="Resources\Images\MEC_Logo.png" />
     <None Remove="Resources\Images\MISO_Logo.png" />
+    <None Remove="Resources\Images\Money.png" />
     <None Remove="Resources\Images\PI_AF_LOGO.jpg" />
     <None Remove="Resources\Images\Pi_Logo.png" />
     <None Remove="Resources\Images\Pi_Search_Logo.png" />
+    <None Remove="Resources\Images\Steam.png" />
     <None Remove="Resources\Images\Water.png" />
     <None Remove="Resources\NodeIcons\AdjusterNode.png" />
     <None Remove="Resources\NodeIcons\AggregatorNode.png" />
@@ -33,6 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Images\CO2.png" />
     <Resource Include="Resources\Images\EIA_Logo.png" />
     <Resource Include="Resources\Images\Eia_Search_Logo.png" />
     <Resource Include="Resources\Images\Flame.png" />
@@ -49,9 +53,11 @@
     <Resource Include="Resources\Images\Loading.gif" />
     <Resource Include="Resources\Images\MEC_Logo.png" />
     <Resource Include="Resources\Images\MISO_Logo.png" />
+    <Resource Include="Resources\Images\Money.png" />
     <Resource Include="Resources\Images\PI_AF_LOGO.jpg" />
     <Resource Include="Resources\Images\Pi_Logo.png" />
     <Resource Include="Resources\Images\Pi_Search_Logo.png" />
+    <Resource Include="Resources\Images\Steam.png" />
     <Resource Include="Resources\Images\Water.png" />
     <Resource Include="Resources\NodeIcons\AdjusterNode.png" />
     <Resource Include="Resources\NodeIcons\AggregatorNode.png" />

@@ -23,6 +23,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0" Text="Function value is a unit of: " Margin="0 5 0 0" FontSize="16"/>
@@ -31,6 +32,8 @@
             <ComboBox Grid.Column="3" ItemsSource="{Binding UnitForms}" SelectedItem="{Binding SelectedUnitForm}" Margin="5 0 10 0" MinWidth="75" FontWeight="Bold" FontSize="16"/>
             <TextBlock Grid.Column="4" Text="and has the name: " Margin="0 5 0 0" FontSize="16"/>
             <TextBox Grid.Column="5" Text="{Binding FunctionName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding UnitAndTypeSelected, Converter={StaticResource BoolToVisibility}}" Margin="5 0 0 0" FontWeight="Bold" FontSize="16"/>
+            <Image Grid.Column="6" Source="{Binding Path=DataContext, RelativeSource={RelativeSource Self}, Converter={StaticResource DataFunctionTypeToIcon}}" Margin="25 0 0 0" Width="30" Height="30"
+                   Visibility="{Binding UnitAndTypeSelected, Converter={StaticResource BoolToVisibility}}" />
         </Grid>
 
         <Grid Grid.Row="1" Visibility="{Binding UnitAndTypeSelected, Converter={StaticResource BoolToVisibility}}">

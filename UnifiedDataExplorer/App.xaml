@@ -23,6 +23,7 @@
             <converters:DataSourceTypeToResourceIcon x:Key="DataSourceTypeToIconPath"/>
             <converters:BoolToFolderIcon x:Key="BoolToFolderIconString"/>
             <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+            <converters:DataFunctionTypeToIcon x:Key="DataFunctionTypeToIcon"/>
             <!--END CONVERTERS-->
 
             <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}" x:Key="DataGridColumnHeaderStyle"/>
