@@ -17,6 +17,8 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 
         public override string NodeTypeName => "Splitter Node";
 
+        public override string NodeImagePath => "/Resources/NodeIcons/SplitterNode.png";
+
         public ObservableCollection<NodeOutputSpec> AvailableNodeOutputSpecs { get; }
 
         private NodeOutputSpec _selectedNodeToSplit;

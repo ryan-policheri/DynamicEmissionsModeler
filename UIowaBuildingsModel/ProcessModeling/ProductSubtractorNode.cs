@@ -35,7 +35,10 @@ namespace EmissionsMonitorModel.ProcessModeling
 
             var input = dataPoints.Where(x => ProductDeductionFunction.FunctionFactors.Any(y => y.FactorUri.EquivelentSeriesAndConfig(x.Series.SeriesUri)));
             DataFunctionResult productDeduction = ProductDeductionFunction.ExecuteFunction(input);
-            if (preceedingStream.Product.TotalValue < productDeduction.TotalValue) { throw new InvalidOperationException("Deduction value cannot be more than total value"); }
+            if (preceedingStream.Product.TotalValue < productDeduction.TotalValue) 
+            {
+                throw new InvalidOperationException("Deduction value cannot be more than total value"); 
+            }
 
             preceedingStream.Product.TotalValue -= productDeduction.TotalValue;
             return preceedingStream;

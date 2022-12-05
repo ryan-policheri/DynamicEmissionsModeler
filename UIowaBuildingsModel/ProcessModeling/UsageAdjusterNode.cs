@@ -36,7 +36,10 @@ namespace EmissionsMonitorModel.ProcessModeling
 
             var input = dataPoints.Where(x => ProductUsageFunction.FunctionFactors.Any(y => y.FactorUri.EquivelentSeriesAndConfig(x.Series.SeriesUri)));
             DataFunctionResult actualProductUsage = ProductUsageFunction.ExecuteFunction(input);
-            if (preceedingStream.Product.TotalValue < actualProductUsage.TotalValue) { throw new InvalidOperationException("Actual usage value cannot be more than total value"); }
+            if (preceedingStream.Product.TotalValue < actualProductUsage.TotalValue)
+            { 
+                throw new InvalidOperationException("Actual usage value cannot be more than total value");
+            }
 
             var costs = preceedingStream.CalculateCostOfRawProductAmount(actualProductUsage.TotalValue);
 

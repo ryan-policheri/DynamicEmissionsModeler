@@ -18,6 +18,8 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 
         public override string NodeTypeName => "Multi Product Conversion Node";
 
+        public override string NodeImagePath => "/Resources/NodeIcons/MultiProductConverterNode.png";
+
         public ObservableCollection<CheckableItemViewModel> AvailableNodeOutputSpecs { get; }
 
         private DataFunctionViewModel _newProductFunctionViewModel;

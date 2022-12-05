@@ -27,15 +27,23 @@ namespace EmissionsMonitorWebApi.Controllers
         [HttpPost]
         public async Task<ModelExecutionResult> PostDataSource(ModelExecutionSpec spec)
         {
-            spec.Model = (await _repo.GetModelSaveItemAsync(spec.ModelId)).ToProcessModel();
-            await _modelInitService.InitializeModel(spec.Model);
-            var nodeSeries = await _executionService.ExecuteModelAsync(spec);
-            var result = new ModelExecutionResult
+            try
             {
-                ExecutionSpec = spec,
-                NodeSeries = nodeSeries
-            };
-            return result;
+                spec.Model = (await _repo.GetModelSaveItemAsync(spec.ModelId)).ToProcessModel();
+                await _modelInitService.InitializeModel(spec.Model);
+                var nodeSeries = await _executionService.ExecuteModelAsync(spec);
+                var result = new ModelExecutionResult
+                {
+                    ExecutionSpec = spec,
+                    NodeSeries = nodeSeries
+                };
+                return result;
+            }
+            catch (Exception ex)
+            {
+                  _logger.LogError(ex, ex?.Message);
+                throw;
+            }
         }
     }
 }

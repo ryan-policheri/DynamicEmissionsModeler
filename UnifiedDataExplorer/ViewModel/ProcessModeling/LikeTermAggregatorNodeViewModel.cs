@@ -18,6 +18,8 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 
         public override string NodeTypeName => "Like Term Aggregator Node";
 
+        public override string NodeImagePath => "/Resources/NodeIcons/AggregatorNode.png";
+
         public void Load(ProcessNode aggregatorNode, ProcessModel model)
         {
             base.Load(aggregatorNode);

@@ -20,6 +20,8 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 
         public override string NodeTypeName => "Exchange Node";
 
+        public override string NodeImagePath => "/Resources/NodeIcons/ExchangeNode.png";
+
         public ObservableCollection<DataFunction> CostFunctions { get; }
 
         private DataFunction _selectedCostFunction;

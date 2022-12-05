@@ -12,6 +12,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         }
 
         public abstract string NodeTypeName { get; }
+        public abstract string NodeImagePath { get; }
 
         public string NodeName
         { 

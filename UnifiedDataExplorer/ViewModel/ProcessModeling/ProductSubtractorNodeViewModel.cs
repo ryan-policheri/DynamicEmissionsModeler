@@ -1,10 +1,6 @@
 ﻿using EmissionsMonitorModel.ProcessModeling;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnifiedDataExplorer.ViewModel.Base;
 
 namespace UnifiedDataExplorer.ViewModel.ProcessModeling
@@ -20,6 +16,8 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         }
 
         public override string NodeTypeName => "Product Subtractor Node";
+
+        public override string NodeImagePath => "/Resources/NodeIcons/SubtractorIcon.png";
 
         public ObservableCollection<NodeOutputSpec> AvailableNodeOutputSpecs { get; }
 

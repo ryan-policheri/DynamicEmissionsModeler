@@ -13,6 +13,7 @@
     <None Remove="Resources\Images\Gascan.png" />
     <None Remove="Resources\Images\Leaf.png" />
     <None Remove="Resources\Images\Leaf2.png" />
+    <None Remove="Resources\Images\Leaf3.png" />
     <None Remove="Resources\Images\Lightening-Bolt.png" />
     <None Remove="Resources\Images\Loading.gif" />
     <None Remove="Resources\Images\MEC_Logo.png" />
@@ -21,6 +22,14 @@
     <None Remove="Resources\Images\Pi_Logo.png" />
     <None Remove="Resources\Images\Pi_Search_Logo.png" />
     <None Remove="Resources\Images\Water.png" />
+    <None Remove="Resources\NodeIcons\AdjusterNode.png" />
+    <None Remove="Resources\NodeIcons\AggregatorNode.png" />
+    <None Remove="Resources\NodeIcons\ExchangeNode.png" />
+    <None Remove="Resources\NodeIcons\MultiProductConverterNode.png" />
+    <None Remove="Resources\NodeIcons\MultiSplitterNode.png" />
+    <None Remove="Resources\NodeIcons\ProductConverterNode.png" />
+    <None Remove="Resources\NodeIcons\SplitterNode.png" />
+    <None Remove="Resources\NodeIcons\SubtractorIcon.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +44,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\Leaf2.png" />
+    <Resource Include="Resources\Images\Leaf3.png" />
     <Resource Include="Resources\Images\Lightening-Bolt.png" />
     <Resource Include="Resources\Images\Loading.gif" />
     <Resource Include="Resources\Images\MEC_Logo.png" />
@@ -43,6 +53,14 @@
     <Resource Include="Resources\Images\Pi_Logo.png" />
     <Resource Include="Resources\Images\Pi_Search_Logo.png" />
     <Resource Include="Resources\Images\Water.png" />
+    <Resource Include="Resources\NodeIcons\AdjusterNode.png" />
+    <Resource Include="Resources\NodeIcons\AggregatorNode.png" />
+    <Resource Include="Resources\NodeIcons\ExchangeNode.png" />
+    <Resource Include="Resources\NodeIcons\MultiProductConverterNode.png" />
+    <Resource Include="Resources\NodeIcons\MultiSplitterNode.png" />
+    <Resource Include="Resources\NodeIcons\ProductConverterNode.png" />
+    <Resource Include="Resources\NodeIcons\SplitterNode.png" />
+    <Resource Include="Resources\NodeIcons\SubtractorIcon.png" />
   </ItemGroup>
 
   <ItemGroup>

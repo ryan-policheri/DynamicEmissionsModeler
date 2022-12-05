@@ -17,6 +17,8 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 
         public override string NodeTypeName => "Product Conversion Node";
 
+        public override string NodeImagePath => "/Resources/NodeIcons/ProductConverterNode.png";
+
         public ObservableCollection<NodeOutputSpec> AvailableNodeOutputSpecs { get; }
 
         private NodeOutputSpec _selectedNodeToSplit;

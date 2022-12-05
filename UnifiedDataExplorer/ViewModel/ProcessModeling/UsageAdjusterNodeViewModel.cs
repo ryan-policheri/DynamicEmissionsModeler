@@ -17,6 +17,8 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
 
         public override string NodeTypeName => "Usage Adjuster Node";
 
+        public override string NodeImagePath => "/Resources/NodeIcons/AdjusterNode.png";
+
         public ObservableCollection<NodeOutputSpec> AvailableNodeOutputSpecs { get; }
 
 

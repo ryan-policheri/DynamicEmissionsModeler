@@ -25,13 +25,12 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" Text="Function of unit: " Margin="0 5 0 0"/>
-            <ComboBox Grid.Column="1" ItemsSource="{Binding UnitTypes}" SelectedItem="{Binding SelectedUnitType}" Margin="5 0 10 0" MinWidth="75" FontWeight="Bold"/>
-            <TextBlock Grid.Column="2" Text=" and type: " Margin="0 5 0 0"/>
-            <ComboBox Grid.Column="3" ItemsSource="{Binding UnitForms}" SelectedItem="{Binding SelectedUnitForm}" Margin="5 0 10 0" MinWidth="75" FontWeight="Bold"/>
-
-            <TextBlock Grid.Column="4" Text="and name: " Margin="0 5 0 0"/>
-            <TextBox Grid.Column="5" Text="{Binding FunctionName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding UnitAndTypeSelected, Converter={StaticResource BoolToVisibility}}" Margin="5 0 0 0" FontWeight="Bold"/>
+            <TextBlock Grid.Column="0" Text="Function value is a unit of: " Margin="0 5 0 0" FontSize="16"/>
+            <ComboBox Grid.Column="1" ItemsSource="{Binding UnitTypes}" SelectedItem="{Binding SelectedUnitType}" Margin="5 0 10 0" MinWidth="75" FontWeight="Bold" FontSize="16"/>
+            <TextBlock Grid.Column="2" Text=" and is in the form of: " Margin="0 5 0 0" FontSize="16"/>
+            <ComboBox Grid.Column="3" ItemsSource="{Binding UnitForms}" SelectedItem="{Binding SelectedUnitForm}" Margin="5 0 10 0" MinWidth="75" FontWeight="Bold" FontSize="16"/>
+            <TextBlock Grid.Column="4" Text="and has the name: " Margin="0 5 0 0" FontSize="16"/>
+            <TextBox Grid.Column="5" Text="{Binding FunctionName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding UnitAndTypeSelected, Converter={StaticResource BoolToVisibility}}" Margin="5 0 0 0" FontWeight="Bold" FontSize="16"/>
         </Grid>
 
         <Grid Grid.Row="1" Visibility="{Binding UnitAndTypeSelected, Converter={StaticResource BoolToVisibility}}">
@@ -45,42 +44,46 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="Description" Margin="0 20 0 0" FontWeight="Bold"/>
-            <TextBox Grid.Row="1" Text="{Binding FunctionDescription,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 0" 
+            <TextBlock Grid.Row="0" Text="Description:" Margin="0 20 0 3" FontWeight="Bold" FontSize="15"/>
+            <TextBox Grid.Row="1" Text="{Binding FunctionDescription,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 0" FontSize="16" 
                  TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" SpellCheck.IsEnabled="True" MinLines="3" BorderThickness="1"/>
 
-            <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-                <TextBlock FontSize="16">
-                <Run Text="public " Foreground="Blue" />
-                <Run Text="{Binding ReturnType, Mode=OneWay}" Foreground="#2B91AF"/>
-                <Run Text="{Binding MethodName, Mode=OneWay}" Foreground="#74531F"/>
-                <Run Text="("/>
-                <ListBox ItemsSource="{Binding FunctionFactors}" Padding="0 10 0 0" RequestBringIntoView="ListBox_RequestBringIntoView">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <VirtualizingStackPanel IsItemsHost="True" Orientation="Horizontal"/>
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListBoxItem}">
-                            <Setter Property="Margin" Value="0 "/>
-                            <Setter Property="Padding" Value="0"/>
-                            <Setter Property="VerticalAlignment" Value="Bottom"/>
-                            <Setter Property="VerticalContentAlignment" Value="Bottom"/>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type vm:FunctionFactorViewModel}">
-                            <TextBlock MouseDown="OnDoubleClick" Margin="0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+            <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="0 20 0 0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontSize="18" Margin="0">
+                        <Run Text="public " Foreground="Blue" />
+                        <Run Text="{Binding ReturnType, Mode=OneWay}" Foreground="#2B91AF"/>
+                        <Run Text="{Binding MethodName, Mode=OneWay}" Foreground="#74531F"/>
+                        <Run Text="("/>
+                    </TextBlock>
+                    <ListBox ItemsSource="{Binding FunctionFactors}" Padding="0 10 0 0" RequestBringIntoView="ListBox_RequestBringIntoView" FontSize="18">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel IsItemsHost="True" Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}">
+                                <Setter Property="Margin" Value="0 "/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="VerticalAlignment" Value="Bottom"/>
+                                <Setter Property="VerticalContentAlignment" Value="Bottom"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:FunctionFactorViewModel}">
+                                <TextBlock MouseDown="OnDoubleClick" Margin="0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Bottom">
                                 <Run Text="DataPoint " Foreground="#2B91AF"/>
                                 <Run Text="{Binding ParameterName, Mode=OneWay}"/>
                                 <Run Text=", "/>
-                            </TextBlock>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-                <Run Text=")"/>
-            </TextBlock>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <TextBlock FontSize="16">
+                 <Run Text=")"/>
+                    </TextBlock>
+                </StackPanel>
             </ScrollViewer>
 
             <TextBlock Grid.Row="3" Text="{}{"/>
