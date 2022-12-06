@@ -175,7 +175,7 @@ namespace UnifiedDataExplorer.Startup
             services.AddSingleton<ReportProcessor>(x => new ReportProcessor(
                 x.GetRequiredService<ReportingService>(),
                 x.GetRequiredService<ExcelExportService>(),
-                x.GetRequiredService<PiHttpClient>(),
+                x.GetRequiredService<DataSourceServiceFactory>(),
                 config.HourlyEmissionsReportRootAssetLink,
                 x.GetRequiredService<IMessageHub>(),
                 x.GetRequiredService<DataFileProvider>(),

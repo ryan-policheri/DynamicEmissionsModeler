@@ -15,6 +15,9 @@ using UnifiedDataExplorer.Services.WindowDialog;
 using UnifiedDataExplorer.ViewModel;
 using EmissionsMonitorModel;
 using DotNetCommon.Helpers;
+using EIA.Services.Clients;
+using EmissionsMonitorDataAccess.DataSourceWrappers;
+using EmissionsMonitorServices.DataSourceWrappers;
 
 namespace UnifiedDataExplorer.Services.Reporting
 {
@@ -22,19 +25,20 @@ namespace UnifiedDataExplorer.Services.Reporting
     {
         private readonly ReportingService _reportingService;
         private readonly ExcelExportService _excelExportService;
-        private readonly PiHttpClient _piClient;
+        private readonly DataSourceServiceFactory _factory;
+        private PiHttpClient _piClient;
         private readonly string _rootAssetLink;
         private readonly IMessageHub _messageHub;
         private readonly DataFileProvider _dataFileProvider;
         private readonly IDialogService _dialogService;
         private readonly ILogger _logger;
 
-        public ReportProcessor(ReportingService reportingService, ExcelExportService excelExportService, PiHttpClient piClient, string rootAssetLink,
+        public ReportProcessor(ReportingService reportingService, ExcelExportService excelExportService, DataSourceServiceFactory factory, string rootAssetLink,
             IMessageHub messageHub, DataFileProvider dataFileProvider, IDialogService dialogService, ILogger<ReportProcessor> logger)
         {
             _reportingService = reportingService;
             _excelExportService = excelExportService;
-            _piClient = piClient;
+            _factory = factory;
             _rootAssetLink = rootAssetLink;
             _messageHub = messageHub;
             _dataFileProvider = dataFileProvider;
@@ -63,6 +67,7 @@ namespace UnifiedDataExplorer.Services.Reporting
 
         public async Task RenderBuildingEmissionsReport()
         {
+            _piClient = _factory.GetDataSourceServiceById<PiHttpClient>(2);
             Asset asset = await _piClient.GetByDirectLink<Asset>(_rootAssetLink);
             IEnumerable<Asset> childAssets = await _piClient.GetChildAssets(asset);
 

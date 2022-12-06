@@ -14,7 +14,7 @@ namespace EmissionsMonitorDataAccess
             _dataSource = dataSource;
         }
 
-        public async Task<ICollection<MonitorSeries>> ExecuteModelAsync(ModelExecutionSpec spec)
+        public async Task<ModelExecutionResult> ExecuteModelAsync(ModelExecutionSpec spec)
         {
             IEnumerable<DataSourceSeriesUri> neededDataStreams = spec.Model.GetAllUniqueSeriesUris();
             foreach (DataSourceSeriesUri uri in neededDataStreams.Where(x => x.SeriesDataResolution == DataResolutionPlusVariable.Variable))
@@ -57,7 +57,11 @@ namespace EmissionsMonitorDataAccess
                 first = false;
             }
 
-            return monitorSeriesList;
+            return new ModelExecutionResult
+            {
+                ExecutionSpec = spec,
+                NodeSeries = monitorSeriesList
+            };
         }
 
         private async Task<ICollection<Series>> ExecuteAllQueries(ICollection<DataSourceSeriesUriQueryRender> queries)

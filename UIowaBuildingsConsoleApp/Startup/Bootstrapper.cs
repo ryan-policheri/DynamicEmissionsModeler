@@ -1,9 +1,16 @@
-﻿using DotNetCommon.Logging.File;
+﻿using DotNetCommon;
+using DotNetCommon.Logging.File;
 using DotNetCommon.PersistenceHelpers;
-using DotNetCommon.Security;
 using DotNetCommon.SystemHelpers;
-using EIA.Domain.Model;
 using EIA.Services.Clients;
+using EmissionsMonitorDataAccess;
+using EmissionsMonitorDataAccess.Abstractions;
+using EmissionsMonitorDataAccess.Database;
+using EmissionsMonitorDataAccess.Database.Repositories;
+using EmissionsMonitorModel.TimeSeries;
+using EmissionsMonitorServices.DataSourceWrappers;
+using EmissionsMonitorServices.Experiments.DailyCarbonTrend;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -23,35 +30,19 @@ namespace UIowaBuildingsConsoleApp.Startup
                 .Build();
 
             Config config = new Config(rawConfig);
-            config.AppDataDirectory = SystemFunctions.CombineDirectoryComponents(AppDataFolderOptions.Roaming, "Unified Data Explorer");
-
             return config;
         }
 
         public static IServiceProvider BuildServiceProvider(Config config)
         {
-            string encryptionFilePath = SystemFunctions.CombineDirectoryComponents(config.AppDataDirectory, "Key.json");
-            AppDataFile encryptionKeyFile = new AppDataFile(encryptionFilePath);
-            if (!encryptionKeyFile.FileExists)
-            {
-                EncryptionKey key = CredentialProvider.GenerateIvAndKey();
-                encryptionKeyFile.Save(key);
-            }
-
-            CredentialProvider credProvider = new CredentialProvider(encryptionKeyFile.FullFilePath);
-
-            string credentialsFilePath = SystemFunctions.CombineDirectoryComponents(config.AppDataDirectory, "Credentials.json");
-            EncryptedAppDataFile credentialsFile = new EncryptedAppDataFile(credentialsFilePath, credProvider);
-            CredentialConfig credConfig = new CredentialConfig();
-            if (credentialsFile.FileExists)
-            {
-                credConfig = credentialsFile.Read<CredentialConfig>();
-            }
-
             ServiceCollection services = new ServiceCollection();
 
-            string logFileName = $"UIowaBuildingsConsoleApp_Log_{DateTime.Today.Year}-{DateTime.Today.Month}-{DateTime.Today.Day}.log";
-            string logFileDirectory = SystemFunctions.CombineDirectoryComponents(AppDataFolderOptions.Local, "UIowa Buildings Console App", "Logs");
+            services.AddDbContext<EmissionsMonitorContext>(options => options.UseSqlServer(config.DefaultConnection));
+            services.AddTransient<IDataSourceRepository, DataSourceRepository>();
+            services.AddTransient<IVirtualFileSystemRepository, VirtualFileSystemRepository>();
+
+            string logFileName = $"UIowaEnergyConsoleApp_Log_{DateTime.Today.Year}-{DateTime.Today.Month}-{DateTime.Today.Day}.log";
+            string logFileDirectory = SystemFunctions.CombineDirectoryComponents(AppDataFolderOptions.Local, "UIowa Energy Console App", "Logs");
             FileLoggerConfig fileLoggerConfig = new FileLoggerConfig(logFileDirectory, logFileName);
             FileLoggerProvider fileLoggerProvider = new FileLoggerProvider(fileLoggerConfig);
 
@@ -61,20 +52,25 @@ namespace UIowaBuildingsConsoleApp.Startup
                 logging.AddProvider(fileLoggerProvider);
             });
 
-            services.AddSingleton<ICredentialProvider>(credProvider);
-
-            services.AddTransient<EiaClient>(x =>
+            services.AddTransient<EiaClient>();
+            services.AddTransient<PiHttpClient>();
+            services.AddTransient<DataSourceServiceFactory>(x =>
             {
-                var client = new EiaClient();
-                client.Initialize(config.EiaWebApiBaseAddress, credProvider.DecryptValue(credConfig.EncryptedEiaWebApiKey));
-                return client;
+                var factory = new DataSourceServiceFactory(() => x.GetService<EiaClient>(), () => x.GetService<PiHttpClient>(),
+                    x.GetService<IDataSourceRepository>(), false);
+                var task = Task.Run(async () => await factory.LoadAllDataSourceServices());
+                task.Wait();
+                return factory;
             });
-            services.AddTransient<PiHttpClient>(x => new PiHttpClient(config.PiWebApiBaseAddress,
-                credProvider.DecryptValue(credConfig.EncryptedPiUserName),
-                credProvider.DecryptValue(credConfig.EncryptedPiPassword),
-                config.PiAssestServerName));
 
+            services.AddTransient<ITimeSeriesDataSource, MainDataSourceRepo>();
+            services.AddTransient<ModelInitializationService>();
+            services.AddTransient<DynamicCompilerService>();
+            services.AddTransient<ModelExecutionService>();
             services.AddSingleton<ReportingService>();
+
+            services.AddTransient<DailyCarbonExperimentDriver>();
+
 
             return services.BuildServiceProvider();
         }

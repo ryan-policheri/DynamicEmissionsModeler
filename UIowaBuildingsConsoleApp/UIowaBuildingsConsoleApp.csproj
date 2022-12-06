@@ -18,6 +18,8 @@
   <ItemGroup>
     <ProjectReference Include="..\DotNetCommon\DotNetCommon.csproj" />
     <ProjectReference Include="..\EIA.Services\EIA.Services.csproj" />
+    <ProjectReference Include="..\EmissionsMonitorDataAccess.Abstractions\EmissionsMonitorDataAccess.Abstractions.csproj" />
+    <ProjectReference Include="..\EmissionsMonitorDataAccess.Database\EmissionsMonitorDataAccess.Database.csproj" />
     <ProjectReference Include="..\PiServices\PiServices.csproj" />
     <ProjectReference Include="..\UIowaBuildingsModel\EmissionsMonitorModel.csproj" />
     <ProjectReference Include="..\UIowaBuildingsServices\EmissionsMonitorServices.csproj" />
@@ -27,6 +29,10 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Experiments\CarbonReporting\" />
   </ItemGroup>
 
 </Project>

@@ -9,24 +9,29 @@ using PiModel;
 using UnitsNet;
 using EmissionsMonitorModel;
 using EmissionsMonitorModel.ConversionMethods;
+using EmissionsMonitorServices.DataSourceWrappers;
+using EmissionsMonitorDataAccess.DataSourceWrappers;
 
 namespace UIowaBuildingsServices
 {
     public class ReportingService
     {
-        private readonly PiHttpClient _piClient;
-        private readonly EiaClient _eiaClient;
+        private PiHttpClient _piClient;
+        private EiaClient _eiaClient;
+        private DataSourceServiceFactory _factory;
         private readonly ILogger<ReportingService> _logger;
 
-        public ReportingService(PiHttpClient piClient, EiaClient eiaClient, ILogger<ReportingService> logger)
+        public ReportingService(DataSourceServiceFactory factory, ILogger<ReportingService> logger)
         {
-            _piClient = piClient;
-            _eiaClient = eiaClient;
+            _factory = factory;
             _logger = logger;
         }
 
         public async Task<CampusSnapshot> GenerateCampusSnapshot(HourlyEmissionsReportParameters parameters)
         {
+            _piClient = _factory.GetDataSourceServiceById<PiHttpClient>(2);
+            _eiaClient = _factory.GetDataSourceServiceById<EiaClient>(1);
+
             //UIowa is obviously in central time... So for the sake of this report we can assume that our intention is to render data in central time,
             //but if we were looking at buildings in multiple time zones obviously this would need to be changed
             DateTimeOffset startDateTime = new DateTimeOffset(parameters.StartDateInLocalTime.Date, TimeZones.GetCentralTimeOffset(parameters.StartDateInLocalTime.Date)); //Report convention, start at 12AM (first hour) of the given startDate
@@ -199,7 +204,7 @@ namespace UIowaBuildingsServices
         }
 
         //CAMPUS
-        public async Task<PowerPlantDataMapper> PopulatePowerPlantMapper(DateTimeOffset startTime, DateTimeOffset endTime)
+        private async Task<PowerPlantDataMapper> PopulatePowerPlantMapper(DateTimeOffset startTime, DateTimeOffset endTime)
         {
             PowerPlantDataMapper powerPlantMapper = OnCampusPowerMapping.BuildPowerPlantMapper();
 

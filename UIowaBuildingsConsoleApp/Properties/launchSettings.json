@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "CarbonBase": {
+      "commandName": "Project",
+      "commandLineArgs": "DailyCarbonTrend --ModelID 2093 --StartDate 12/6/2021 --EndDate 12/6/2022"
+    },
+    "Phase1Reporting (Deprecated)": {
+      "commandName": "Project",
+      "commandLineArgs": "Phase1Reporting"
+    }
+  }
+}

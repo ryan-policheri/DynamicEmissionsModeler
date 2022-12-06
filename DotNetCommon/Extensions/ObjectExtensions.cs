@@ -165,6 +165,11 @@ namespace DotNetCommon.Extensions
                 if (DateTime.TryParse(rawValue, out DateTime result)) property.SetValue(instance, result);
                 else property.SetValue(instance, default(DateTime));
             }
+            else if (propertyType == typeof(DateTimeOffset))
+            {
+                if (DateTimeOffset.TryParse(rawValue, out DateTimeOffset result)) property.SetValue(instance, result);
+                else property.SetValue(instance, default(DateTimeOffset));
+            }
             else if (propertyType.IsEnum)
             {
                 if (!String.IsNullOrWhiteSpace(rawValue))

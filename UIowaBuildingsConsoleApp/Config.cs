@@ -25,13 +25,7 @@ namespace UIowaBuildingsModelConsoleApp
             }
         }
 
-        public string AppDataDirectory { get; set; }
-
-        public string PiWebApiBaseAddress { get; set; }
-
-        public string PiAssestServerName { get; set; }
-
-        public string EiaWebApiBaseAddress { get; set; }
+        public string DefaultConnection { get; set; }
 
         public string HourlyEmissionsReportRootAssetLink { get; set; }
     }

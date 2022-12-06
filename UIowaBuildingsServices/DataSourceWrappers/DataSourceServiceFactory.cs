@@ -61,7 +61,7 @@ namespace EmissionsMonitorServices.DataSourceWrappers
             }).First();
         }
 
-        public T GetDataSourceServiceById<T>(int dataSourceId) where T : new()
+        public T GetDataSourceServiceById<T>(int dataSourceId) where T : class
         {
             var existingSource = _sources.First(x => x.DataSourceInfo.SourceId == dataSourceId);
             return (T)existingSource.DataSourceService;

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnitsNet;
 
-namespace UIowaBuildingsConsoleApp
+namespace UIowaBuildingsConsoleApp.Experiments.Phase1Reporting
 {
     public class UsageTime
     {
