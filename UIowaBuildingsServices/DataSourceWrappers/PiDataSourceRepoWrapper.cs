@@ -104,5 +104,7 @@ namespace EmissionsMonitorDataAccess.DataSourceWrappers
             }
             else throw new ArgumentException($"Pi Prefix \"{query.Prefix}\" unknown");
         }
+
+        public PiHttpClient GetUnderlyingClient() => _client;
     }
 }

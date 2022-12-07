@@ -66,5 +66,7 @@ namespace EmissionsMonitorDataAccess.DataSourceWrappers
             }).ToList();
             return series;
         }
+
+        public EiaClient GetUnderlyingClient() => _client;
     }
 }

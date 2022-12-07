@@ -20,17 +20,20 @@ namespace UIowaBuildingsServices
         private EiaClient _eiaClient;
         private DataSourceServiceFactory _factory;
         private readonly ILogger<ReportingService> _logger;
+        private readonly bool _wasWrapped;
 
-        public ReportingService(DataSourceServiceFactory factory, ILogger<ReportingService> logger)
+        public ReportingService(DataSourceServiceFactory factory, ILogger<ReportingService> logger, bool wasWrapped = false)
         {
             _factory = factory;
             _logger = logger;
+            _wasWrapped = wasWrapped;
         }
 
         public async Task<CampusSnapshot> GenerateCampusSnapshot(HourlyEmissionsReportParameters parameters)
         {
-            _piClient = _factory.GetDataSourceServiceById<PiHttpClient>(2);
-            _eiaClient = _factory.GetDataSourceServiceById<EiaClient>(1);
+            //This should be refactored to use a process model; this hackery is just a way to let us run the phase 1 emissions report
+            _piClient = _wasWrapped ? _factory.GetDataSourceServiceById<PiDataSourceRepoWrapper>(2).GetUnderlyingClient() : _factory.GetDataSourceServiceById<PiHttpClient>(2);
+            _eiaClient = _wasWrapped ? _factory.GetDataSourceServiceById<EiaDataSourceRepoWrapper>(1).GetUnderlyingClient() : _factory.GetDataSourceServiceById<EiaClient>(1);
 
             //UIowa is obviously in central time... So for the sake of this report we can assume that our intention is to render data in central time,
             //but if we were looking at buildings in multiple time zones obviously this would need to be changed

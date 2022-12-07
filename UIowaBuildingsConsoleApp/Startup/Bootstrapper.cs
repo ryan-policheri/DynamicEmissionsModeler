@@ -57,7 +57,7 @@ namespace UIowaBuildingsConsoleApp.Startup
             services.AddTransient<DataSourceServiceFactory>(x =>
             {
                 var factory = new DataSourceServiceFactory(() => x.GetService<EiaClient>(), () => x.GetService<PiHttpClient>(),
-                    x.GetService<IDataSourceRepository>(), false);
+                    x.GetService<IDataSourceRepository>(), true);
                 var task = Task.Run(async () => await factory.LoadAllDataSourceServices());
                 task.Wait();
                 return factory;
@@ -67,7 +67,10 @@ namespace UIowaBuildingsConsoleApp.Startup
             services.AddTransient<ModelInitializationService>();
             services.AddTransient<DynamicCompilerService>();
             services.AddTransient<ModelExecutionService>();
-            services.AddSingleton<ReportingService>();
+            services.AddSingleton<ReportingService>(x =>
+            {
+                return new ReportingService(x.GetRequiredService<DataSourceServiceFactory>(), x.GetRequiredService<ILogger<ReportingService>>(), true);
+            });
 
             services.AddTransient<DailyCarbonExperimentDriver>();
 
