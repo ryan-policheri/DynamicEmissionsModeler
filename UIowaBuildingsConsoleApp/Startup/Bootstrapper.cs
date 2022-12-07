@@ -40,6 +40,7 @@ namespace UIowaBuildingsConsoleApp.Startup
             services.AddDbContext<EmissionsMonitorContext>(options => options.UseSqlServer(config.DefaultConnection));
             services.AddTransient<IDataSourceRepository, DataSourceRepository>();
             services.AddTransient<IVirtualFileSystemRepository, VirtualFileSystemRepository>();
+            services.AddTransient<IExperimentsRepository, ExperimentsRepository>();
 
             string logFileName = $"UIowaEnergyConsoleApp_Log_{DateTime.Today.Year}-{DateTime.Today.Month}-{DateTime.Today.Day}.log";
             string logFileDirectory = SystemFunctions.CombineDirectoryComponents(AppDataFolderOptions.Local, "UIowa Energy Console App", "Logs");

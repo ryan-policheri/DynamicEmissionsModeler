@@ -40,7 +40,7 @@ namespace Tests.EmissionsMonitorServices
             spec.EndTime = new DateTimeOffset(2022, 9, 18, 6, 5, 13, TimeZones.GetUtcOffset());
             spec.DataResolution = DataResolution.EverySecond;
 
-            ICollection<MonitorSeries> monitorSeries = await service.ExecuteModelAsync(spec);
+            ICollection<MonitorSeries> monitorSeries = (await service.ExecuteModelAsync(spec)).NodeSeries;
 
             monitorSeries.First().DataPoints.ElementAt(0).Values.Product.TotalValue.Should().Be(1);
             monitorSeries.First().DataPoints.ElementAt(2).Values.Product.TotalValue.Should().Be(3);

@@ -178,6 +178,10 @@ namespace DotNetCommon.Extensions
                     property.SetValue(instance, Enum.Parse(enumType, rawValue, true));
                 }
             }
+            else if (propertyType == typeof(IEnumerable<int>))
+            {
+                if (!String.IsNullOrWhiteSpace(rawValue)) property.SetValue(instance, rawValue.Split(",").Select(x => int.Parse(x)));
+            }
             else throw new NotImplementedException("Parsing for type " + propertyType.Name + " is not implemented.");
         }
     }

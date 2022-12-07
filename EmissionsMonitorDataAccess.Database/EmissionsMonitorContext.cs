@@ -1,4 +1,5 @@
 ﻿using EmissionsMonitorModel.DataSources;
+using EmissionsMonitorModel.Experiments.DailyCarbonTrend;
 using EmissionsMonitorModel.VirtualFileSystem;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,10 @@ namespace EmissionsMonitorDataAccess.Database
         public DbSet<Folder> Folders { get; set; }
 
         public DbSet<SaveItem> SaveItems { get; set; }
+
+        public DbSet<DailyCarbonExperiment> DailyCarbonExperiments { get; set; }
+
+        public DbSet<DailyCarbonExperimentRecord> DailyCarbonRecords { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -46,6 +51,17 @@ namespace EmissionsMonitorDataAccess.Database
                 .HasValue<ExploreSetSaveItem>(SaveItemTypes.ExploreSetSaveItem)
                 .HasValue<ModelSaveItem>(SaveItemTypes.ModelSaveItem);
             saveItemSpec.ToTable("SAVE_ITEM");
+
+            var dailyCarbonExperimentSpec = modelBuilder.Entity<DailyCarbonExperiment>();
+            dailyCarbonExperimentSpec.HasKey(x => x.ExperimentId);
+            dailyCarbonExperimentSpec.Property(typeof(string), "NodeIdsString");
+            dailyCarbonExperimentSpec.Property(typeof(DateTimeOffset), "ExperimentDate");
+            dailyCarbonExperimentSpec.ToTable("DAILY_CARBON_EXPERIMENT");
+            
+            var dailyCarbonExperimentRecordSpec = modelBuilder.Entity<DailyCarbonExperimentRecord>();
+            dailyCarbonExperimentRecordSpec.HasKey(x => new { x.ExperimentId, x.Date });
+            dailyCarbonExperimentRecordSpec.HasOne(x => x.Experiment).WithMany(x => x.ExperimentRecords).HasForeignKey(x => x.ExperimentId);
+            dailyCarbonExperimentRecordSpec.ToTable("DAILY_CARBON_EXPERIMENT_RECORD");
         }
     }
 }

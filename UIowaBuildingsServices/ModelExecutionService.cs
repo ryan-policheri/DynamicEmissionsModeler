@@ -27,7 +27,9 @@ namespace EmissionsMonitorDataAccess
             ICollection<Series> allSeries = await ExecuteAllQueries(queries); //Get all the data needed to render the entire model
 
             //Render each node of the model across all time points
-            IEnumerable<ProcessNode> nodes = spec.Model.GetAllNodes(true);
+            IEnumerable<ProcessNode> nodes = spec.NodeIds == null 
+                ? spec.Model.GetAllNodes(true) 
+                : spec.Model.GetAllNodes(true).Where(x => spec.NodeIds.Any(y => y == x.Id));
             ICollection<MonitorSeries> monitorSeriesList = new List<MonitorSeries>();
             bool first = true;
 

@@ -10,5 +10,6 @@ namespace EmissionsMonitorModel.ProcessModeling
         public DateTimeOffset StartTime { get; set; }
         public DateTimeOffset EndTime { get; set; }
         public string DataResolution { get; set; }
+        public IEnumerable<int>? NodeIds { get; set; }
     }
 }

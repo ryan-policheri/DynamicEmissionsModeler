@@ -1,9 +1,6 @@
-﻿using DotNetCommon.Extensions;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using UIowaBuildingsConsoleApp.Startup;
-using EmissionsMonitorModel;
 using UIowaBuildingsModelConsoleApp;
-using UIowaBuildingsServices;
 using UIowaBuildingsConsoleApp.Experiments.Phase1Reporting;
 using EmissionsMonitorServices.Experiments.DailyCarbonTrend;
 using UIowaBuildingsConsoleApp;
@@ -21,7 +18,7 @@ public static class Program
         if (command == "Phase1Reporting") await Phase1Reporter.Phase1OldCode(serviceProvider);
         else if (command == "DailyCarbonTrend") await serviceProvider
                 .GetRequiredService<DailyCarbonExperimentDriver>()
-                .ExecuteExperiement(CommandLineInputHelpers.BindArgumentsToType<DailyCarbonTrendConfig>(args));
+                .ExecuteExperiement(CommandLineInputHelpers.BindArgumentsToType<DailyCarbonExperiment>(args));
         else throw new NotImplementedException($"Command {command} not recognized.");
     }
 }

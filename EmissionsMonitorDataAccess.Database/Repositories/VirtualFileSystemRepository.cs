@@ -1,8 +1,6 @@
 ﻿using EmissionsMonitorDataAccess.Abstractions;
-using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorModel.VirtualFileSystem;
 using Microsoft.EntityFrameworkCore;
-using UnitsNet;
 
 namespace EmissionsMonitorDataAccess.Database.Repositories
 {

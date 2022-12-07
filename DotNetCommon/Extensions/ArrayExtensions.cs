@@ -45,6 +45,21 @@
 
             return delimitedList;
         }
+
+        public static string ToDelimitedList(this IEnumerable<int> list, string delimiter = ",")
+        {
+            string delimitedList = string.Empty;
+            foreach (int i in list)
+            {
+                delimitedList = delimitedList + i + delimiter;
+            }
+            if (delimitedList.Length > 0)
+            {
+                delimitedList = delimitedList.TrimEnd(delimiter);
+            }
+
+            return delimitedList;
+        }
     }
 
     internal class ArrayTraverse

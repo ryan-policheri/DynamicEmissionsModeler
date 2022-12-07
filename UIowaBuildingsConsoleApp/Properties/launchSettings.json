@@ -6,7 +6,7 @@
     },
     "CarbonBase": {
       "commandName": "Project",
-      "commandLineArgs": "DailyCarbonTrend --ModelID 2093 --StartDate 12/6/2021 --EndDate 12/6/2022"
+      "commandLineArgs": "DailyCarbonTrend --ModelID 2093 --StartDate 12/6/2021 --EndDate 12/6/2022 --NodeIds 1,2,3,4,5,7,8,14"
     },
     "Phase1Reporting (Deprecated)": {
       "commandName": "Project",
