@@ -74,7 +74,7 @@
             </Button>
         </Grid>
 
-        <Grid Grid.Row="1" Grid.Column="1" Margin="0 20 0 0 ">
+        <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0 20 0 0 ">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
