@@ -10,6 +10,8 @@
 
         public double Co2InKilograms { get; set; }
 
+        public double FuelCostInDollars { get; set; }
+
         public double Co2InMegatons { get; set; }
     }
 }

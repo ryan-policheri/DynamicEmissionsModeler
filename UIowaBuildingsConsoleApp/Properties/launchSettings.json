@@ -4,13 +4,29 @@
       "commandName": "WSL2",
       "distributionName": ""
     },
-    "CarbonBase": {
-      "commandName": "Project",
-      "commandLineArgs": "DailyCarbonTrend --ModelID 2093 --StartDate 12/6/2021 --EndDate 12/6/2022 --NodeIds 1,2,3,4,5,7,8,14"
-    },
     "Phase1Reporting (Deprecated)": {
       "commandName": "Project",
       "commandLineArgs": "Phase1Reporting"
+    },
+    "UIowa DailyCarbon EPA": {
+      "commandName": "Project",
+      "commandLineArgs": "DailyCarbonTrend --ModelID 2095 --StartDate 12/6/2021 --EndDate 12/5/2022 --NodeIds 1,2,3,4,5,7,8,14"
+    },
+    "UIowa DailyCarbon Org": {
+      "commandName": "Project",
+      "commandLineArgs": "DailyCarbonTrend --ModelID 2096 --StartDate 12/6/2021 --EndDate 12/5/2022 --NodeIds 1,2,3,4,5,7,8,14"
+    },
+    "UIowa DailyCarbon No Coal EPA": {
+      "commandName": "Project",
+      "commandLineArgs": "DailyCarbonTrend --ModelID 2097 --StartDate 12/6/2021 --EndDate 12/5/2022 --NodeIds 1,2,3,4,5,7,8,14"
+    },
+    "UIowa DailyCarbon No Coal Org": {
+      "commandName": "Project",
+      "commandLineArgs": "DailyCarbonTrend --ModelID 2098 --StartDate 12/6/2021 --EndDate 12/5/2022 --NodeIds 1,2,3,4,5,7,8,14"
+    },
+    "2021 Compare Test": {
+      "commandName": "Project",
+      "commandLineArgs": "DailyCarbonTrend --ModelID 2095 --StartDate 1/1/2021 --EndDate 12/31/2021 --NodeIds 1,2,3,4,5,7,8,14"
     }
   }
 }

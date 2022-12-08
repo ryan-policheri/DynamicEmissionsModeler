@@ -16,20 +16,20 @@ namespace EmissionsMonitorDataAccess
 
         public async Task<ModelExecutionResult> ExecuteModelAsync(ModelExecutionSpec spec)
         {
-            IEnumerable<DataSourceSeriesUri> neededDataStreams = spec.Model.GetAllUniqueSeriesUris();
+            //Render each node of the model across all time points
+            IEnumerable<ProcessNode> nodes = spec.NodeIds == null
+                ? spec.Model.GetAllNodes(true)
+                : spec.Model.GetAllNodes(true).Where(x => spec.NodeIds.Any(y => y == x.Id));
+
+            IEnumerable<DataSourceSeriesUri> neededDataStreams = spec.Model.GetAllUniqueSeriesUris(spec.NodeIds);
             foreach (DataSourceSeriesUri uri in neededDataStreams.Where(x => x.SeriesDataResolution == DataResolutionPlusVariable.Variable))
             {//All streams that are marked with variable resolution means that their owning system (I.E. PI) can render data at any resolution 
                 uri.FillVariableResolution(spec.DataResolution); //So we say that the stream's resolution is whatever the user is looking for in this execution
             }
             ICollection<DataSourceSeriesUriQueryRender> queries = neededDataStreams //To convert the data streams to a query, we add the model execition info to it
                 .Select(x => new DataSourceSeriesUriQueryRender(x, spec.StartTime, spec.EndTime, spec.DataResolution)).ToList();
-
             ICollection<Series> allSeries = await ExecuteAllQueries(queries); //Get all the data needed to render the entire model
 
-            //Render each node of the model across all time points
-            IEnumerable<ProcessNode> nodes = spec.NodeIds == null 
-                ? spec.Model.GetAllNodes(true) 
-                : spec.Model.GetAllNodes(true).Where(x => spec.NodeIds.Any(y => y == x.Id));
             ICollection<MonitorSeries> monitorSeriesList = new List<MonitorSeries>();
             bool first = true;
 

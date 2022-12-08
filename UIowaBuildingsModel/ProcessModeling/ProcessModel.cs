@@ -96,9 +96,10 @@ namespace EmissionsMonitorModel.ProcessModeling
             return GetAllNodes(includeAncillaryRoots).Select(x => x.ToSpec()).ToList();
         }
 
-        public ICollection<DataSourceSeriesUri> GetAllUniqueSeriesUris()
+        public ICollection<DataSourceSeriesUri> GetAllUniqueSeriesUris(IEnumerable<int>? nodeIds = null)
         {//Get a copy of all uniquely identified data streams.
-            return this.ProcessNodes
+            var processNodes = nodeIds == null ? this.ProcessNodes : this.ProcessNodes.Where(x => nodeIds.Any(y => x.Id == y));
+            return processNodes
                 .SelectMany(x => x.GetUserDefinedFunctions())
                 .SelectMany(x => x.FunctionFactors)
                 .Select(x => x.FactorUri.Copy())

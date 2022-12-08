@@ -44,7 +44,10 @@ namespace EmissionsMonitorServices.Experiments.DailyCarbonTrend
                     Date = g.Key,
                     Co2InKilograms = g.Sum(x => x.Values.Costs
                             .First(x => x.UnitType == (new Co2MassFunction()).FunctionUnit && x.UnitForm == (new Co2MassFunction()).FunctionUnitForm)
-                            .TotalValue)  
+                            .TotalValue),
+                    FuelCostInDollars = g.Sum(x => x.Values.Costs
+                            .First(x => x.UnitType == (new MoneyFunction()).FunctionUnit && x.UnitForm == (new MoneyFunction()).FunctionUnitForm)
+                            .TotalValue)
                 }).ToList();
 
             await _expsRepo.SaveDailyCarbonExperimentResultsAsync(experiment);
