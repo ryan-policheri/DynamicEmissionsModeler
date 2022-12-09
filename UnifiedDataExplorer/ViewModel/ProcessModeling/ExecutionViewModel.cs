@@ -86,7 +86,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
             set 
             {
                 SetField(ref _selectedStream, value); 
-                if(value != null) SelectedStreamResults = ExecutionResult.NodeSeries.First(x => x.SeriesName == _selectedStream).TransformToDataTable();
+                if(value != null) SelectedStreamResults = ExecutionResult.NodeSeries.First(x => x.NodeName == _selectedStream).TransformToDataTable();
             }
         }
 
@@ -105,7 +105,7 @@ namespace UnifiedDataExplorer.ViewModel.ProcessModeling
         {
             ExecutionResult = await _client.RemoteExecuteAsync(this._spec);
             Streams.Clear();
-            foreach(var ns in ExecutionResult.NodeSeries) { Streams.Add(ns.SeriesName); }
+            foreach(var ns in ExecutionResult.NodeSeries) { Streams.Add(ns.NodeName); }
         }
 
         private void OnExcelExport()

@@ -27,6 +27,10 @@
     "2021 Compare Test": {
       "commandName": "Project",
       "commandLineArgs": "DailyCarbonTrend --ModelID 2095 --StartDate 1/1/2021 --EndDate 12/31/2021 --NodeIds 1,2,3,4,5,7,8,14"
+    },
+    "Ind Study Exp": {
+      "commandName": "Project",
+      "commandLineArgs": "IndStudyExp --ModelID 2096 --FinalSteamNodeId 29 --FinalElectricNodeId 24 --FinalChilledWaterNodeId 35 --StartDate 11/1/2022 --EndDate 12/5/2022 --DataResolution Daily"
     }
   }
 }

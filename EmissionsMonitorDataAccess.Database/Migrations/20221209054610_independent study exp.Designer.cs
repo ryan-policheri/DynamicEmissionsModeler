@@ -4,6 +4,7 @@ using EmissionsMonitorDataAccess.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmissionsMonitorDataAccess.Database.Migrations
 {
     [DbContext(typeof(EmissionsMonitorContext))]
-    partial class EmissionsMonitorContextModelSnapshot : ModelSnapshot
+    [Migration("20221209054610_independent study exp")]
+    partial class independentstudyexp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,7 +113,7 @@ namespace EmissionsMonitorDataAccess.Database.Migrations
                     b.Property<DateTimeOffset>("EndDate")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<DateTimeOffset>("ExperimentDate")
+                    b.Property<DateTimeOffset>("ExperimentData")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<int>("FinalChilledWaterNodeId")

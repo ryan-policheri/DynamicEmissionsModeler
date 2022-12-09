@@ -40,19 +40,19 @@ namespace Tests.EmissionsMonitorServices
             spec.EndTime = new DateTimeOffset(2022, 9, 18, 6, 5, 13, TimeZones.GetUtcOffset());
             spec.DataResolution = DataResolution.EverySecond;
 
-            ICollection<MonitorSeries> monitorSeries = (await service.ExecuteModelAsync(spec)).NodeSeries;
+            ICollection<NodeSeries> monitorSeries = (await service.ExecuteModelAsync(spec)).NodeSeries;
 
-            monitorSeries.First().DataPoints.ElementAt(0).Values.Product.TotalValue.Should().Be(1);
-            monitorSeries.First().DataPoints.ElementAt(2).Values.Product.TotalValue.Should().Be(3);
-            monitorSeries.First().DataPoints.ElementAt(6).Values.Product.TotalValue.Should().Be(2.5);
+            monitorSeries.First().NodeOutputPoints.ElementAt(0).Values.Product.TotalValue.Should().Be(1);
+            monitorSeries.First().NodeOutputPoints.ElementAt(2).Values.Product.TotalValue.Should().Be(3);
+            monitorSeries.First().NodeOutputPoints.ElementAt(6).Values.Product.TotalValue.Should().Be(2.5);
 
-            monitorSeries.First().DataPoints.ElementAt(0).Values.Costs.First(x => x.UnitType == "Currency").TotalValue.Should().Be(0.2);
-            monitorSeries.First().DataPoints.ElementAt(2).Values.Costs.First(x => x.UnitType == "Currency").TotalValue.Should().Be(0.3);
-            monitorSeries.First().DataPoints.ElementAt(6).Values.Costs.First(x => x.UnitType == "Currency").TotalValue.Should().Be(0.25);
+            monitorSeries.First().NodeOutputPoints.ElementAt(0).Values.Costs.First(x => x.UnitType == "Currency").TotalValue.Should().Be(0.2);
+            monitorSeries.First().NodeOutputPoints.ElementAt(2).Values.Costs.First(x => x.UnitType == "Currency").TotalValue.Should().Be(0.3);
+            monitorSeries.First().NodeOutputPoints.ElementAt(6).Values.Costs.First(x => x.UnitType == "Currency").TotalValue.Should().Be(0.25);
 
-            monitorSeries.First().DataPoints.ElementAt(0).Values.Costs.First(x => x.UnitType == "Mass").TotalValue.Should().Be(1.102);
-            monitorSeries.First().DataPoints.ElementAt(2).Values.Costs.First(x => x.UnitType == "Mass").TotalValue.Should().Be(1.653);
-            Math.Round(monitorSeries.First().DataPoints.ElementAt(6).Values.Costs.First(x => x.UnitType == "Mass").TotalValue, 4).Should().Be(1.3775);
+            monitorSeries.First().NodeOutputPoints.ElementAt(0).Values.Costs.First(x => x.UnitType == "Mass").TotalValue.Should().Be(1.102);
+            monitorSeries.First().NodeOutputPoints.ElementAt(2).Values.Costs.First(x => x.UnitType == "Mass").TotalValue.Should().Be(1.653);
+            Math.Round(monitorSeries.First().NodeOutputPoints.ElementAt(6).Values.Costs.First(x => x.UnitType == "Mass").TotalValue, 4).Should().Be(1.3775);
         }
 
         private Mock<ITimeSeriesDataSource> DataSourceMock()

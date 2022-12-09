@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EmissionsMonitorModel.ProcessModeling;
+﻿using EmissionsMonitorModel.ProcessModeling;
 
 namespace EmissionsMonitorModel.TimeSeries
 {
-    public class MonitorDataPoint
+    public class NodeOutputPoint
     {
         public DateTimeOffset Timestamp { get; set; }
         

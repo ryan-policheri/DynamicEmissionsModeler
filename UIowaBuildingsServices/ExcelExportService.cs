@@ -70,10 +70,10 @@ namespace UIowaBuildingsServices
             {
                 foreach(var ns in executionResult.NodeSeries)
                 {
-                    ExcelWorksheet ws = package.Workbook.Worksheets.Add(ns.SeriesName);
+                    ExcelWorksheet ws = package.Workbook.Worksheets.Add(ns.NodeName);
                     var dt = ns.TransformToDataTable();
                     ws.Cells["A1"].Value = "Stream Name:"; this.BoldenRange(ws, 1, 1);
-                    ws.Cells["B1"].Value = ns.SeriesName;
+                    ws.Cells["B1"].Value = ns.NodeName;
                     ws.Cells["A2"].Value = "Stream Product: "; this.BoldenRange(ws, 2, 1);
                     ws.Cells["B2"].Value = ns.ProductName;
                     ws.Cells["A3"].Value = "Stream Costs: "; this.BoldenRange(ws, 3, 1);

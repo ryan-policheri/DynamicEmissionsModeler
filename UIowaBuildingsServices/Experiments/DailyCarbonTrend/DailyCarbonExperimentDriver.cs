@@ -37,7 +37,7 @@ namespace EmissionsMonitorServices.Experiments.DailyCarbonTrend
             });
 
             experiment.ExperimentRecords = results.NodeSeries
-                .SelectMany(x => x.DataPoints)
+                .SelectMany(x => x.NodeOutputPoints)
                 .GroupBy(x => x.Timestamp)
                 .Select(g => new DailyCarbonExperimentRecord
                 {

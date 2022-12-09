@@ -10,6 +10,7 @@ using EmissionsMonitorDataAccess.Database.Repositories;
 using EmissionsMonitorModel.TimeSeries;
 using EmissionsMonitorServices.DataSourceWrappers;
 using EmissionsMonitorServices.Experiments.DailyCarbonTrend;
+using EmissionsMonitorServices.Experiments.IndStudyExp;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -74,6 +75,7 @@ namespace UIowaBuildingsConsoleApp.Startup
             });
 
             services.AddTransient<DailyCarbonExperimentDriver>();
+            services.AddTransient<IndStudyExpDriver>();
 
 
             return services.BuildServiceProvider();

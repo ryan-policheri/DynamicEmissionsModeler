@@ -21,7 +21,7 @@ namespace EmissionsMonitorDataAccess
                 ? spec.Model.GetAllNodes(true)
                 : spec.Model.GetAllNodes(true).Where(x => spec.NodeIds.Any(y => y == x.Id));
 
-            IEnumerable<DataSourceSeriesUri> neededDataStreams = spec.Model.GetAllUniqueSeriesUris(spec.NodeIds);
+            IEnumerable<DataSourceSeriesUri> neededDataStreams = spec.Model.GetAllUniqueSeriesUris(null);
             foreach (DataSourceSeriesUri uri in neededDataStreams.Where(x => x.SeriesDataResolution == DataResolutionPlusVariable.Variable))
             {//All streams that are marked with variable resolution means that their owning system (I.E. PI) can render data at any resolution 
                 uri.FillVariableResolution(spec.DataResolution); //So we say that the stream's resolution is whatever the user is looking for in this execution
@@ -30,7 +30,7 @@ namespace EmissionsMonitorDataAccess
                 .Select(x => new DataSourceSeriesUriQueryRender(x, spec.StartTime, spec.EndTime, spec.DataResolution)).ToList();
             ICollection<Series> allSeries = await ExecuteAllQueries(queries); //Get all the data needed to render the entire model
 
-            ICollection<MonitorSeries> monitorSeriesList = new List<MonitorSeries>();
+            ICollection<NodeSeries> monitorSeriesList = new List<NodeSeries>();
             bool first = true;
 
             foreach (DateTimeOffset offset in DataResolution.BuildTimePoints(spec.DataResolution, spec.StartTime, spec.EndTime))
@@ -41,20 +41,21 @@ namespace EmissionsMonitorDataAccess
                 {
                     if (first)
                     {
-                        MonitorSeries monitorSeries = new MonitorSeries();
-                        monitorSeries.SeriesName = node.Name;
-                        monitorSeries.DataPoints = new List<MonitorDataPoint>();
+                        NodeSeries monitorSeries = new NodeSeries();
+                        monitorSeries.NodeId = node.Id;
+                        monitorSeries.NodeName = node.Name;
+                        monitorSeries.NodeOutputPoints = new List<NodeOutputPoint>();
                         monitorSeriesList.Add(monitorSeries);
                     }
 
-                    MonitorSeries monitorSeries2 = monitorSeriesList.First(x => x.SeriesName == node.Name);
+                    NodeSeries monitorSeries2 = monitorSeriesList.First(x => x.NodeId == node.Id);
                     ProductCostResults results = node.RenderProductAndCosts(timeData);
-                    MonitorDataPoint monitorPoint = new MonitorDataPoint
+                    NodeOutputPoint monitorPoint = new NodeOutputPoint
                     {
                         Timestamp = offset,
                         Values = results
                     };
-                    monitorSeries2.DataPoints.Add(monitorPoint);
+                    monitorSeries2.NodeOutputPoints.Add(monitorPoint);
                 }
                 first = false;
             }

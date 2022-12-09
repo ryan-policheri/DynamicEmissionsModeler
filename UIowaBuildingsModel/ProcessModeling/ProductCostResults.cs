@@ -6,6 +6,9 @@
 
         public DataFunctionResult Product { get; set; }
 
+        public double CalculateProductCostFactor(DataFunctionResult cost) 
+            => this.Costs.Contains(cost) ? cost.TotalValue / this.Product.TotalValue : throw new ArgumentOutOfRangeException("This is not my cost!");
+
         public ICollection<Cost> CalculateCostOfAbstractProductAmount(object productAmount)
         {
             double desiredProductAmount = Product.ValueRenderFunction(productAmount);
