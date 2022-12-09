@@ -45,6 +45,9 @@ namespace EmissionsMonitorServices.Experiments.DailyCarbonTrend
                     Co2InKilograms = g.Sum(x => x.Values.Costs
                             .First(x => x.UnitType == (new Co2MassFunction()).FunctionUnit && x.UnitForm == (new Co2MassFunction()).FunctionUnitForm)
                             .TotalValue),
+                    Co2InMetricTons = g.Sum(x => x.Values.Costs
+                            .First(x => x.UnitType == (new Co2MassFunction()).FunctionUnit && x.UnitForm == (new Co2MassFunction()).FunctionUnitForm)
+                            .TotalValue) / 1000,
                     FuelCostInDollars = g.Sum(x => x.Values.Costs
                             .First(x => x.UnitType == (new MoneyFunction()).FunctionUnit && x.UnitForm == (new MoneyFunction()).FunctionUnitForm)
                             .TotalValue)
