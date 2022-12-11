@@ -17,7 +17,7 @@ namespace PiModel
 
     public class SummarizedDataPoint
     {
-        public DateTime Timestamp { get; set; }
+        public DateTimeOffset Timestamp { get; set; }
         public object Value { get; set; }
         public string UnitsAbbreviation { get; set; }
         public bool Good { get; set; }

@@ -4,6 +4,7 @@ using DotNetCommon.EventAggregation;
 using DotNetCommon.SystemHelpers;
 using EIA.Domain.Model;
 using EmissionsMonitorModel.DataSources;
+using EmissionsMonitorModel.ProcessModeling;
 using EmissionsMonitorModel.TimeSeries;
 using EmissionsMonitorServices.DataSourceWrappers;
 using PiModel;
@@ -68,9 +69,10 @@ namespace UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints
             QueryRenderSettings settings = new QueryRenderSettings
             {
                 StartDateTime = new DateTimeOffset(this.StartDateTime.ToUniversalTime()),
-                EndDateTime = new DateTimeOffset(this.EndDateTime.ToUniversalTime())
+                EndDateTime = new DateTimeOffset(this.EndDateTime.ToUniversalTime()),
+                RenderResolution = DataResolution.Hourly
             };
-            await _client.LoadInterpolatedValues(_dataHost, settings);
+            await _client.LoadSummaryValues(_dataHost, settings);
             if(_dataHost is AssetValue) DataSet = (_dataHost as AssetValue).RenderDataPointsAsTable();
             if(_dataHost is PiPoint) DataSet = (_dataHost as PiPoint).RenderDataPointsAsTable();
         }

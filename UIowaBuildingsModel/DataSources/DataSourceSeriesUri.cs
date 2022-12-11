@@ -118,7 +118,7 @@ namespace EmissionsMonitorModel.DataSources
                 .WithParameter("endTime", adjustedForSummaryEnd.ToStringWithNoOffset())
                 .WithParameter("summaryType", "average")
                 .WithParameter("summaryDuration", resolution);
-            if (!String.IsNullOrWhiteSpace(this.FilteringExpression)) url = url.WithParameter("filterExpression", this.FilteringExpression);
+            //TEMP: if (!String.IsNullOrWhiteSpace(this.FilteringExpression)) url = url.WithParameter("filterExpression", this.FilteringExpression);
 
             return url;
         }
