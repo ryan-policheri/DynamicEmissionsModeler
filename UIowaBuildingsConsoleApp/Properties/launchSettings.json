@@ -30,7 +30,7 @@
     },
     "Ind Study Exp": {
       "commandName": "Project",
-      "commandLineArgs": "IndStudyExp --ModelID 2096 --FinalSteamNodeId 29 --FinalElectricNodeId 24 --FinalChilledWaterNodeId 35 --StartDate 11/1/2022 --EndDate 12/5/2022 --DataResolution Daily"
+      "commandLineArgs": "IndStudyExp --ModelID 2099 --FinalSteamNodeId 29 --FinalElectricNodeId 24 --FinalChilledWaterNodeId 35 --StartDate 11/1/2022 --EndDate 12/5/2022 --DataResolution Daily"
     }
   }
 }

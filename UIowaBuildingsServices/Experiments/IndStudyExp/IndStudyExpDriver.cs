@@ -48,8 +48,8 @@ namespace EmissionsMonitorServices.Experiments.IndStudyExp
             foreach (DateTimeOffset timeStamp in results.NodeSeries.First().NodeOutputPoints.Select(x => x.Timestamp)) 
             {
                 var steamPoint = steamNode.NodeOutputPoints.First(x => x.Timestamp == timeStamp).Values;
-                var electricPoint = steamNode.NodeOutputPoints.First(x => x.Timestamp == timeStamp).Values;
-                var chilledWaterPoint = steamNode.NodeOutputPoints.First(x => x.Timestamp == timeStamp).Values;
+                var electricPoint = electricNode.NodeOutputPoints.First(x => x.Timestamp == timeStamp).Values;
+                var chilledWaterPoint = chilledWaterNode.NodeOutputPoints.First(x => x.Timestamp == timeStamp).Values;
 
                 var record = new IndStudyExperimentRecord
                 {
