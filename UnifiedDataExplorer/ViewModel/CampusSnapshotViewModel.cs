@@ -118,9 +118,14 @@ namespace UnifiedDataExplorer.ViewModel
         public ObservableCollection<StatViewModel> CoolingEnergyStats { get; }
 
         public string TotalGallonsDisplay => String.Format("{0:n0}", SelectedBuildingUsage.TotalCo2InGasolineVolumeEquivelent.UsGallons) + " Gasoline Gallons";
+        public string TotalKilogramsDisplay => String.Format("{0:n0}", SelectedBuildingUsage.TotalCo2.Kilograms) + " Kilograms";
         public string ElectricGallonsDisplay => String.Format("{0:n0}", SelectedBuildingUsage.ElectricCo2InGasolineVolumeEquivelent.UsGallons) + " Gasoline Gallons";
+        public string ElectricKilogramsDisplay => String.Format("{0:n0}", SelectedBuildingUsage.Co2FromElectricUsage.Kilograms) + " Kilograms";
         public string HeatingGallonsDisplay => String.Format("{0:n0}", SelectedBuildingUsage.HeatingCo2InGasolineVolumeEquivelent.UsGallons) + " Gasoline Gallons";
+        public string HeatingKilogramsDisplay => String.Format("{0:n0}", SelectedBuildingUsage.Co2FromSteamUsage.Kilograms) + " Kilograms";
         public string CoolingGallonsDisplay => String.Format("{0:n0}", SelectedBuildingUsage.CoolingCo2InGasolineVolumeEquivelent.UsGallons) + " Gasoline Gallons";
+        public string CoolingKilogramsDisplay => String.Format("{0:n0}", SelectedBuildingUsage.Co2FromChilledWaterUsage.Kilograms) + " Kilograms";
+
 
         private void SetCurrentBuildingUsage()
         {

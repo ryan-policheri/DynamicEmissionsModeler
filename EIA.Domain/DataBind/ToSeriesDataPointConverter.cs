@@ -14,6 +14,7 @@ namespace EIA.Domain.DataBind
     {
         public override ICollection<SeriesDataPoint> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            throw new NotSupportedException("parser was from old version of eia api");
             ICollection<SeriesDataPoint> all = new List<SeriesDataPoint>();
             int startDepth = reader.CurrentDepth;
             int outerArrayDepth = reader.CurrentDepth + 1;

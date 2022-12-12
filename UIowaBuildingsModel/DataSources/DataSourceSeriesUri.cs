@@ -126,8 +126,8 @@ namespace EmissionsMonitorModel.DataSources
         public string BuildEiaQueryString()
         {
             string queryString = ""
-                .WithQueryString("start", StartDateTime.UtcDateTime.ToString("yyyyMMddTHHZ"))
-                .WithQueryString("end", EndDateTime.UtcDateTime.ToString("yyyyMMddTHHZ"));
+                .WithQueryString("start", StartDateTime.UtcDateTime.ToString("yyyy-MM-ddTHHZ"))
+                .WithQueryString("end", EndDateTime.UtcDateTime.ToString("yyyy-MM-ddTHHZ"));
             return queryString;
         }
 

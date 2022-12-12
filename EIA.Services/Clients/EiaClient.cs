@@ -83,7 +83,7 @@ namespace EIA.Services.Clients
 
         public async Task<Series> GetSeriesByIdAsync(string seriesId, int numberOfDays = -1)
         {
-            string pathPreDayFilter = "series/".WithQueryString("api_key", SubscriptionKey).WithQueryString("series_id", seriesId);
+            string pathPreDayFilter = $"/v2/seriesid/{seriesId}".WithQueryString("api_key", SubscriptionKey);
             string path = pathPreDayFilter;
             if (numberOfDays > 0)
             {
@@ -91,10 +91,10 @@ namespace EIA.Services.Clients
                 string dateFilterValue = startDate.ToString("yyyyMMddTHHZ");
                 path = pathPreDayFilter.WithQueryString("start", dateFilterValue);
             }
-            Series series = await this.GetFirstAsync<Series>(path, "series");
+            Series series = await this.GetAsync<Series>(path, "response");
             if (!series.Frequency.IsHourlyFrequency()) //This is smelly, but essentially we are saying that if the data isn't hourly, remove the numberOfDays filter
             {
-                series = await this.GetFirstAsync<Series>(pathPreDayFilter, "series");
+                series = await this.GetAsync<Series>(pathPreDayFilter, "response");
             }
             //series.ParseAllDates();
             return series;
@@ -103,10 +103,10 @@ namespace EIA.Services.Clients
         public async Task<Series> GetSeriesByIdAsync(string seriesId, IBuildEiaTimeSeriesQueryString settings)
         {
             //TODO, make this work better
-            string preUserQuery = "series/".WithQueryString("api_key", SubscriptionKey).WithQueryString("series_id", seriesId);
+            string preUserQuery = $"/v2/seriesid/{seriesId}".WithQueryString("api_key", SubscriptionKey);
             string queryString = settings.BuildEiaQueryString();
             string path = preUserQuery + "&" + queryString.TrimStart('?');
-            Series series = await this.GetFirstAsync<Series>(path, "series");
+            Series series = await this.GetAsync<Series>(path, "response");
             return series;
         }
 
@@ -117,10 +117,10 @@ namespace EIA.Services.Clients
             string startDateString = startDate.ToStringWithNoOffset("yyyyMMddTHHZ");
             string endDateString  = endDate.ToStringWithNoOffset("yyyyMMddTHHZ");
 
-            string path = "series/".WithQueryString("api_key", SubscriptionKey).WithQueryString("series_id", seriesId);
+            string path = $"/v2/seriesid/{seriesId}".WithQueryString("api_key", SubscriptionKey);
             path = path.WithQueryString("start", startDateString);
             path = path.WithQueryString("end", endDateString);
-            Series series = await this.GetFirstAsync<Series>(path, "series");
+            Series series = await this.GetFirstAsync<Series>(path, "response");
 
             if (!series.Frequency.IsHourlyFrequency()) throw new ArgumentException("This method is only for series that are hourly in nature");
 
