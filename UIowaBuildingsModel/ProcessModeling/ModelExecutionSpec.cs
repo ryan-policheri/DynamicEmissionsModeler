@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using EmissionsMonitorModel.Exceptions;
+using System.Text.Json.Serialization;
 
 namespace EmissionsMonitorModel.ProcessModeling
 {
@@ -11,5 +12,6 @@ namespace EmissionsMonitorModel.ProcessModeling
         public DateTimeOffset EndTime { get; set; }
         public string DataResolution { get; set; }
         public IEnumerable<int>? NodeIds { get; set; }
+        public OverflowHandleStrategies? OverflowHandleStrategy { get; set; }
     }
 }

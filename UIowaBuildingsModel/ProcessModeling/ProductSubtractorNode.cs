@@ -1,4 +1,5 @@
-﻿using EmissionsMonitorModel.TimeSeries;
+﻿using EmissionsMonitorModel.Exceptions;
+using EmissionsMonitorModel.TimeSeries;
 using System.Text.Json.Serialization;
 
 namespace EmissionsMonitorModel.ProcessModeling
@@ -37,7 +38,13 @@ namespace EmissionsMonitorModel.ProcessModeling
             DataFunctionResult productDeduction = ProductDeductionFunction.ExecuteFunction(input);
             if (preceedingStream.Product.TotalValue < productDeduction.TotalValue) 
             {
-                throw new InvalidOperationException("Deduction value cannot be more than total value"); 
+                throw new NodeOverflowException(new NodeOverflowError
+                {
+                    NodeId = this.Id,
+                    NodeName = this.Name,
+                    NodeInputs = dataPoints,
+                    TimeStamp = dataPoints.First().Timestamp
+                }, "Deduction value cannot be more than total value", null);
             }
 
             preceedingStream.Product.TotalValue -= productDeduction.TotalValue;

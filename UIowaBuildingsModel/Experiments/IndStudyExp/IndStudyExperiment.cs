@@ -1,4 +1,7 @@
-﻿namespace EmissionsMonitorModel.Experiments.IndStudyExp
+﻿using EmissionsMonitorModel.Exceptions;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace EmissionsMonitorModel.Experiments.IndStudyExp
 {
     public class IndStudyExperiment
     {
@@ -19,5 +22,8 @@
         public string DataResolution { get; set; }
 
         public List<IndStudyExperimentRecord> ExperimentRecords { get; set; }
+
+        [NotMapped]
+        public OverflowHandleStrategies? OverflowStrategy { get; set; }
     }
 }

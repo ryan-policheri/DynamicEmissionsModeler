@@ -1,7 +1,10 @@
 ﻿using DotNetCommon.Extensions;
 using EmissionsMonitorModel.DataSources;
+using EmissionsMonitorModel.Exceptions;
 using EmissionsMonitorModel.ProcessModeling;
 using EmissionsMonitorModel.TimeSeries;
+using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace EmissionsMonitorDataAccess
 {
@@ -33,29 +36,70 @@ namespace EmissionsMonitorDataAccess
             ICollection<NodeSeries> monitorSeriesList = new List<NodeSeries>();
             bool first = true;
 
+            ICollection<DataPoint>? previousValidData = spec.OverflowHandleStrategy.HasValue && spec.OverflowHandleStrategy == OverflowHandleStrategies.UsePrevious ? new List<DataPoint>() : null;
+            ICollection<NodeOverflowError> errors = spec.OverflowHandleStrategy.HasValue ? new List<NodeOverflowError>() : null;
+
             foreach (DateTimeOffset offset in DataResolution.BuildTimePoints(spec.DataResolution, spec.StartTime, spec.EndTime))
             {
                 ICollection<DataPoint> timeData = allSeries.SelectMany(x => x.DataPoints).Where(x => x.Timestamp == offset).ToList();
 
-                foreach (ProcessNode node in nodes)
+                try
                 {
-                    if (first)
+                    foreach (ProcessNode node in nodes)
                     {
-                        NodeSeries monitorSeries = new NodeSeries();
-                        monitorSeries.NodeId = node.Id;
-                        monitorSeries.NodeName = node.Name;
-                        monitorSeries.NodeOutputPoints = new List<NodeOutputPoint>();
-                        monitorSeriesList.Add(monitorSeries);
+                        if (first)
+                        {
+                            NodeSeries newMonitorSeries = new NodeSeries();
+                            newMonitorSeries.NodeId = node.Id;
+                            newMonitorSeries.NodeName = node.Name;
+                            newMonitorSeries.NodeOutputPoints = new List<NodeOutputPoint>();
+                            monitorSeriesList.Add(newMonitorSeries);
+                        }
+
+                        ProductCostResults results = node.RenderProductAndCosts(timeData);
+                        NodeOutputPoint monitorPoint = new NodeOutputPoint
+                        {
+                            Timestamp = offset,
+                            Values = results
+                        };
+
+                        NodeSeries monitorSeries = monitorSeriesList.First(x => x.NodeId == node.Id);
+                        monitorSeries.NodeOutputPoints.Add(monitorPoint);
                     }
 
-                    NodeSeries monitorSeries2 = monitorSeriesList.First(x => x.NodeId == node.Id);
-                    ProductCostResults results = node.RenderProductAndCosts(timeData);
-                    NodeOutputPoint monitorPoint = new NodeOutputPoint
+                    previousValidData = timeData;
+                }
+                catch (NodeOverflowException ex)
+                {
+                    errors.Add(ex.Error);
+                    if (spec.OverflowHandleStrategy.HasValue)
                     {
-                        Timestamp = offset,
-                        Values = results
-                    };
-                    monitorSeries2.NodeOutputPoints.Add(monitorPoint);
+                        switch (spec.OverflowHandleStrategy)
+                        {
+                            case OverflowHandleStrategies.UsePrevious:
+                                foreach (ProcessNode node in nodes)
+                                {
+                                    //Remove all points from timestamp that had issue
+                                    NodeSeries monitorSeries = monitorSeriesList.First(x => x.NodeId == node.Id);
+                                    var pointToRemove = monitorSeries.NodeOutputPoints.FirstOrDefault(x => x.Timestamp == offset);
+                                    if(pointToRemove != null) monitorSeries.NodeOutputPoints.Remove(pointToRemove);
+
+                                    //Use previous data to render this time stamp
+                                    ProductCostResults results = node.RenderProductAndCosts(previousValidData);
+                                    NodeOutputPoint monitorPoint = new NodeOutputPoint
+                                    {
+                                        Timestamp = offset,
+                                        Values = results
+                                    };
+                                    monitorSeries.NodeOutputPoints.Add(monitorPoint);
+                                }
+                                break;
+                            case OverflowHandleStrategies.ExcludeTimeslot:
+                                break;
+                            default: throw new NotImplementedException("Overflow strategy not implemented");
+                        }
+                    }
+                    else throw;
                 }
                 first = false;
             }
@@ -63,7 +107,8 @@ namespace EmissionsMonitorDataAccess
             return new ModelExecutionResult
             {
                 ExecutionSpec = spec,
-                NodeSeries = monitorSeriesList
+                NodeSeries = monitorSeriesList,
+                Errors = errors
             };
         }
 

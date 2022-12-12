@@ -177,10 +177,22 @@ namespace DotNetCommon.Extensions
                     Type enumType = propertyType.UnderlyingSystemType;
                     property.SetValue(instance, Enum.Parse(enumType, rawValue, true));
                 }
-            }
+            } 
             else if (propertyType == typeof(IEnumerable<int>))
             {
                 if (!String.IsNullOrWhiteSpace(rawValue)) property.SetValue(instance, rawValue.Split(",").Select(x => int.Parse(x)));
+            }
+            else if (Nullable.GetUnderlyingType(propertyType) != null)
+            {
+                if (!String.IsNullOrWhiteSpace(rawValue))
+                {
+                    Type underlyingType = propertyType.GenericTypeArguments[0];
+                    if (underlyingType.IsEnum)
+                    {
+                        property.SetValue(instance, Enum.Parse(underlyingType, rawValue, true));
+                    }
+                    else throw new NotImplementedException("In a rush, implement this better later");//TODO: In a rush, implement this better later
+                }
             }
             else throw new NotImplementedException("Parsing for type " + propertyType.Name + " is not implemented.");
         }

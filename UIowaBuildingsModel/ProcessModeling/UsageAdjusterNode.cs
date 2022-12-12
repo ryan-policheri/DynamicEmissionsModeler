@@ -1,4 +1,5 @@
-﻿using EmissionsMonitorModel.TimeSeries;
+﻿using EmissionsMonitorModel.Exceptions;
+using EmissionsMonitorModel.TimeSeries;
 using System.Text.Json.Serialization;
 
 namespace EmissionsMonitorModel.ProcessModeling
@@ -37,8 +38,14 @@ namespace EmissionsMonitorModel.ProcessModeling
             var input = dataPoints.Where(x => ProductUsageFunction.FunctionFactors.Any(y => y.FactorUri.EquivelentSeriesAndConfig(x.Series.SeriesUri)));
             DataFunctionResult actualProductUsage = ProductUsageFunction.ExecuteFunction(input);
             if (preceedingStream.Product.TotalValue < actualProductUsage.TotalValue)
-            { 
-                throw new InvalidOperationException("Actual usage value cannot be more than total value");
+            {
+                throw new NodeOverflowException(new NodeOverflowError
+                {
+                    NodeId = this.Id,
+                    NodeName = this.Name,
+                    NodeInputs = dataPoints,
+                    TimeStamp = dataPoints.First().Timestamp
+                }, "Actual usage value cannot be more than total value", null);
             }
 
             var costs = preceedingStream.CalculateCostOfRawProductAmount(actualProductUsage.TotalValue);

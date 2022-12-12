@@ -1,4 +1,5 @@
-﻿using EmissionsMonitorModel.TimeSeries;
+﻿using EmissionsMonitorModel.Exceptions;
+using EmissionsMonitorModel.TimeSeries;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
@@ -109,7 +110,12 @@ namespace EmissionsMonitorModel.ProcessModeling
 
             var inputPoints = dataPoints.Where(x => splitFunction.FunctionFactors.Any(y => y.FactorUri.EquivelentSeriesAndConfig(x.Series.SeriesUri)));
             DataFunctionResult splitProduct = splitFunction.ExecuteFunction(inputPoints);
-            if (preceedingStream.Product.TotalValue < splitProduct.TotalValue) { throw new InvalidOperationException("Split value cannot be more than total value"); }
+            if (preceedingStream.Product.TotalValue < splitProduct.TotalValue) 
+            {
+                throw new NodeOverflowException(new NodeOverflowError { NodeId = this.Id, NodeName = this.Name,
+                    NodeInputs = dataPoints, TimeStamp = dataPoints.First().Timestamp }, 
+                    "Split value cannot be more than total value", null); 
+            }
 
             var costs = preceedingStream.CalculateCostOfRawProductAmount(splitProduct.TotalValue);
             ICollection<DataFunctionResult> splitCosts = new List<DataFunctionResult>();
@@ -133,9 +139,20 @@ namespace EmissionsMonitorModel.ProcessModeling
         public ProductCostResults RenderRemainderProductAndCost(ICollection<DataPoint> dataPoints)
         {
             ProductCostResults preceedingStream = RenderProductAndCosts(dataPoints);
-            IEnumerable<ProductCostResults> allSplits = this.SplitResultNodes.Select(x => x.RenderProductAndCosts(dataPoints));
+            ICollection<ProductCostResults> allSplits = this.SplitResultNodes.Select(x => x.RenderProductAndCosts(dataPoints)).ToList();
+            var sum = allSplits.Sum(x => x.Product.TotalValue);
+            var prec = preceedingStream.Product.TotalValue;
 
-            if (preceedingStream.Product.TotalValue < allSplits.Sum(x => x.Product.TotalValue)) { throw new InvalidOperationException("Split value cannot be more than total value"); }
+            if (preceedingStream.Product.TotalValue < allSplits.Sum(x => x.Product.TotalValue)) 
+            {
+                throw new NodeOverflowException(new NodeOverflowError
+                {
+                    NodeId = this.Id,
+                    NodeName = this.Name,
+                    NodeInputs = dataPoints,
+                    TimeStamp = dataPoints.First().Timestamp
+                }, "Split value cannot be more than total value", null);
+            }
 
             double remaininingValue = preceedingStream.Product.TotalValue - allSplits.Sum(x => x.Product.TotalValue);
             DataFunctionResult remainingProduct = preceedingStream.Product.Duplicate();
