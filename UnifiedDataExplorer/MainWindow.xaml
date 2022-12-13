@@ -8,7 +8,8 @@
         mc:Ignorable="d"
         Title="Unified Data Explorer" Height="450" Width="800" FontSize="16"
         WindowStyle="ThreeDBorderWindow"
-        Icon="./Resources/Images/Leaf.png">
+        WindowState="Maximized"
+        Icon="./Resources/Images/Leaf3.png">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

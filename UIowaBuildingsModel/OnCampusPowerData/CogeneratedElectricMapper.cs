@@ -1,7 +1,7 @@
 ﻿using DotNetCommon.Extensions;
 using UnitsNet;
 
-namespace UIowaBuildingsModel
+namespace EmissionsMonitorModel
 {
     public class CogeneratedElectricMapper
     {

@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using UIowaBuildingsModel;
+using EmissionsMonitorModel;
 using UnifiedDataExplorer.ViewModel;
 
 namespace UnifiedDataExplorer.View

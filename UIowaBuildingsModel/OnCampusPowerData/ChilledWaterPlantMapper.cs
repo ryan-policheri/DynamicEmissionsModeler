@@ -1,7 +1,7 @@
 ﻿using DotNetCommon.Extensions;
 using System.Data;
 
-namespace UIowaBuildingsModel
+namespace EmissionsMonitorModel
 {
     public class ChilledWaterPlantMapper
     {

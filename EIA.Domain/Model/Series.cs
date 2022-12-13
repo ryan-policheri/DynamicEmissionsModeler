@@ -32,7 +32,7 @@ namespace EIA.Domain.Model
         public string Updated { get; set; }
 
         [JsonPropertyName("data")]
-        [JsonConverter(typeof(ToSeriesDataPointConverter))]
+        //[JsonConverter(typeof(ToSeriesDataPointConverter))]
         public ICollection<SeriesDataPoint> DataPoints { get; set; }
 
         public DataTable RenderDataPointsAsTable()

@@ -1,27 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using UnifiedDataExplorer.ViewModel;
 
 namespace UnifiedDataExplorer
 {
-    /// <summary>
-    /// Interaction logic for ModalWindow.xaml
-    /// </summary>
     public partial class ModalWindow : Window
     {
+        private ModalViewModel ViewModel;
+        private bool ClosedByViewModel = false;
+
         public ModalWindow()
         {
             InitializeComponent();
+        }
+
+        private void ModalWindow_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (ViewModel != null)
+            {
+                ViewModel.OnRequestClose -= ViewModelOnRequestClose;
+            }
+            if (this.DataContext as ModalViewModel != null)
+            {
+                this.ViewModel = this.DataContext as ModalViewModel;
+                this.ViewModel.OnRequestClose += ViewModelOnRequestClose;
+            }
+        }
+
+        private void ViewModelOnRequestClose(object sender, Events.CloseViewModelEvent args)
+        {
+            ClosedByViewModel = true;
+            this.Close();
+        }
+
+        private void ModalWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            //if(!ClosedByViewModel) e.Cancel = true;
+            //this.ViewModel.CancelProxyCommand.Execute(null);
         }
     }
 }

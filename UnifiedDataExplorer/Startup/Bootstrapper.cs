@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using DotNetCommon;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -9,14 +10,24 @@ using DotNetCommon.Logging.File;
 using DotNetCommon.SystemHelpers;
 using DotNetCommon.PersistenceHelpers;
 using EIA.Services.Clients;
+using EmissionsMonitorDataAccess;
 using PiServices;
 using UIowaBuildingsServices;
 using UnifiedDataExplorer.ViewModel;
 using UnifiedDataExplorer.ViewModel.Base;
 using UnifiedDataExplorer.ViewModel.MainMenu;
-using UnifiedDataExplorer.Services.Window;
+using UnifiedDataExplorer.Services.WindowDialog;
 using UnifiedDataExplorer.Services.DataPersistence;
 using UnifiedDataExplorer.Services.Reporting;
+using UnifiedDataExplorer.ViewModel.DataSources;
+using EmissionsMonitorDataAccess.Abstractions;
+using EmissionsMonitorDataAccess.Http;
+using EmissionsMonitorServices.DataSourceWrappers;
+using UnifiedDataExplorer.ViewModel.DataExploring;
+using UnifiedDataExplorer.ViewModel.DataExploring.Explorers;
+using UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints;
+using UnifiedDataExplorer.ViewModel.ProcessModeling;
+using UnifiedDataExplorer.ViewModel.VirtualFileSystem;
 
 namespace UnifiedDataExplorer.Startup
 {
@@ -72,14 +83,19 @@ namespace UnifiedDataExplorer.Startup
             services.AddSingleton<ICredentialProvider>(credProvider);
             services.AddSingleton<DataFileProvider>(dataFileProvider);
 
-            services.AddTransient<EiaClient>(x => new EiaClient(config.EiaWebApiBaseAddress, credProvider.DecryptValue(credConfig.EncryptedEiaWebApiKey)));
-            services.AddTransient<PiHttpClient>(x => new PiHttpClient(config.PiWebApiBaseAddress,
-                credProvider.DecryptValue(credConfig.EncryptedPiUserName),
-                credProvider.DecryptValue(credConfig.EncryptedPiPassword),
-                config.PiAssestServerName));
+            //CLIENTS
+            services.AddTransient<EiaClient>();
+            services.AddTransient<PiHttpClient>();
+            services.AddSingleton<DataSourceServiceFactory>(x =>
+                new DataSourceServiceFactory(() => x.GetService<EiaClient>(), 
+                    () => x.GetService<PiHttpClient>(),
+                    x.GetService<IDataSourceRepository>()));
 
+            //APP SERVICES
             services.AddSingleton<IMessageHub, MessageHub>();
-            services.AddSingleton<IDialogService, DialogService>();
+            services.AddSingleton<IDialogService, DialogService>(x => 
+                new DialogService(() => x.GetRequiredService<ModalViewModel>(), 
+                    () => x.GetRequiredService<SecondaryViewModel>()));
 
             services.AddTransient<RobustViewModelDependencies>();
             services.AddTransient<RobustViewModelBase>();
@@ -87,25 +103,79 @@ namespace UnifiedDataExplorer.Startup
             //MAIN
             services.AddTransient<MainViewModel>();
             services.AddTransient<MainMenuViewModel>();
+            services.AddTransient<ModalViewModel>();
+            services.AddTransient<SecondaryViewModel>();
+
+            //DATA SOURCES
+            services.AddTransient<DataSourceBaseViewModel>();
+            services.AddTransient<EiaDataSourceViewModel>();
+            services.AddTransient<PiDataSourceViewModel>();
 
             //DATA EXPLORATION
-            services.AddTransient<DataExplorerViewModel>();
+            services.AddTransient<DataExplorationManagerViewModel>();
+            services.AddTransient<DataExploringHomeViewModel>();
+            services.AddTransient<DataSourceManagerViewModel>();
+            services.AddTransient<EiaApiExplorerViewModel>();
+            services.AddTransient<PiAssetFrameworkExplorerViewModel>();
+            services.AddTransient<PiTagExplorerViewModel>();
+            services.AddTransient<ExploreSetFileSystemViewModel>();
 
-            services.AddTransient<EiaDatasetFinderViewModel>();
-            services.AddTransient<PiDatasetFinderViewModel>();
-            
             //DATASET RENDERING
-            services.AddTransient<EiaSeriesViewModel>();
-            services.AddTransient<PiJsonDisplayViewModel>();
-            services.AddTransient<PiAssetValuesViewModel>();
-            services.AddTransient<PiInterpolatedDataViewModel>();
-            services.AddTransient<PiSearchViewModel>();
+            services.AddTransient<EiaSeriesExplorePointViewModel>();
+            services.AddTransient<PiJsonDisplayExplorePointViewModel>();
+            services.AddTransient<PiAssetValuesExplorePointViewModel>();
+            services.AddTransient<PiInterpolatedDataExplorePointViewModel>();
+
+            //ENERGY MODELING
+            services.AddTransient<ProcessModelMainViewModel>();
+            services.AddTransient<ProcessNodesViewModel>();
+            services.AddTransient<NodesNavigationViewModel>();
+            services.AddTransient<ExchangeNodeViewModel>();
+            services.AddTransient<LikeTermAggregatorNodeViewModel>();
+            services.AddTransient<StreamSplitterNodeViewModel>();
+            services.AddTransient<ProductConversionNodeViewModel>();
+            services.AddTransient<UsageAdjusterNodeViewModel>();
+            services.AddTransient<ProductSubtractorNodeViewModel>();
+            services.AddTransient<MultiSplitterNodeViewModel>();
+            services.AddTransient<MultiProductConversionNodeViewModel>();
+            services.AddTransient<DataFunctionViewModel>(x => 
+                new DataFunctionViewModel(
+                    x.GetService<ModelInitializationService>(),
+                    x.GetService<DataSourceServiceFactory>().GetDataSourceInfo,
+                    x.GetService<RobustViewModelDependencies>()
+                ));
+            services.AddTransient<EnergyModelFileSystemViewModel>();
+            services.AddTransient<ModelInitializationService>();
+            services.AddTransient<DynamicCompilerService>();
+            services.AddTransient<ExecutionViewModel>();
+
+            //EMISSIONS MONITOR SERVICES
+            services.AddTransient<IDataSourceRepository, DataSourceClient>((provider =>
+            {
+                var client = new DataSourceClient();
+                client.Initialize(config);
+                return client;
+            }));
+
+            services.AddTransient<IVirtualFileSystemRepository, VirtualFileSystemClient>((provider =>
+            {
+                var client = new VirtualFileSystemClient();
+                client.Initialize(config);
+                return client;
+            }));
+
+            services.AddTransient<ModelExecutionClient>((provider =>
+            {
+                var client = new ModelExecutionClient();
+                client.Initialize(config);
+                return client;
+            }));
 
             services.AddTransient<ExcelExportService>();
             services.AddSingleton<ReportProcessor>(x => new ReportProcessor(
                 x.GetRequiredService<ReportingService>(),
                 x.GetRequiredService<ExcelExportService>(),
-                x.GetRequiredService<PiHttpClient>(),
+                x.GetRequiredService<DataSourceServiceFactory>(),
                 config.HourlyEmissionsReportRootAssetLink,
                 x.GetRequiredService<IMessageHub>(),
                 x.GetRequiredService<DataFileProvider>(),

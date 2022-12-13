@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
+﻿using System.Collections.ObjectModel;
 using DotNetCommon.DelegateCommand;
-using DotNetCommon.PersistenceHelpers;
 using UnifiedDataExplorer.Constants;
 using UnifiedDataExplorer.Events;
 using UnifiedDataExplorer.ViewModel.Base;
@@ -34,15 +30,8 @@ namespace UnifiedDataExplorer.ViewModel.MainMenu
             MenuItemViewModel saveOpenExplorePoints = new MenuItemViewModel(MenuItemHeaders.SAVE_OPEN_EXPLORE_POINTS, new DelegateCommand(SaveOpenExplorePoints), file);
             file.Children.Add(saveOpenExplorePoints);
 
-            MenuItemViewModel openExplorePoints = new MenuItemViewModel(MenuItemHeaders.OPEN_SAVE, null, file);
+            MenuItemViewModel openExplorePoints = new MenuItemViewModel(MenuItemHeaders.BROWSE_EXPLORE_SETS, new DelegateCommand(OnBrowseExploreSets), file);
             file.Children.Add(openExplorePoints);
-
-            IEnumerable<AppDataFile> appDataFiles = AppDataFile.RetrieveAllAppFilesInDirectory(DataFileProvider.BuildDataViewFile().RootSaveDirectory);
-            foreach (AppDataFile appDataFile in appDataFiles)
-            {
-                MenuItemViewModel vm = new MenuItemViewModel(appDataFile.FileDisplayName, new DelegateCommand<AppDataFile>(OpenSave), openExplorePoints, appDataFile);
-                openExplorePoints.Children.Add(vm);
-            }
 
             MenuItemViewModel actions = new MenuItemViewModel("Actions", null, null);
             MenuItemViewModel closeAll = new MenuItemViewModel(MenuItemHeaders.CLOSE_ALL, new DelegateCommand(OnCloseAll), actions);
@@ -61,19 +50,15 @@ namespace UnifiedDataExplorer.ViewModel.MainMenu
             MenuItems.Add(settings);
         }
 
+
         private void SaveOpenExplorePoints()
         {
             MessageHub.Publish<MenuItemEvent>(new MenuItemEvent { Sender = this, SenderTypeName = nameof(MainMenuViewModel), MenuItemHeader = MenuItemHeaders.SAVE_OPEN_EXPLORE_POINTS });
         }
 
-        private void OpenSave(AppDataFile saveFile)
+        private void OnBrowseExploreSets()
         {
-            MessageHub.Publish<MenuItemEvent>(new MenuItemEvent { Sender = this,
-                SenderTypeName = nameof(MainMenuViewModel),
-                MenuItemHeader = MenuItemHeaders.OPEN_SAVE,
-                Action = MenuItemHeaders.OPEN_SAVE,
-                Data = saveFile
-            });
+            MessageHub.Publish<MenuItemEvent>(new MenuItemEvent { Sender = this, SenderTypeName = nameof(MainMenuViewModel), MenuItemHeader = MenuItemHeaders.BROWSE_EXPLORE_SETS });
         }
 
         private void OnCloseAll()

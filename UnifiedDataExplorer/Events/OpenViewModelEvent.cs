@@ -3,7 +3,7 @@ using UnifiedDataExplorer.ModelWrappers;
 
 namespace UnifiedDataExplorer.Events
 {
-    public class OpenViewModelEvent : IPiDetailLoadingInfo, IEiaDetailLoadingInfo
+    public class OpenViewModelEvent
     {
         [JsonIgnore]
         public object Sender { get; set; }
@@ -17,5 +17,10 @@ namespace UnifiedDataExplorer.Events
         public string Verb { get; set; }
 
         public string TypeTag { get; set; }
+    }
+
+    public class OpenDataSourceViewModelEvent : OpenViewModelEvent, IPiDetailLoadingInfo, IEiaDetailLoadingInfo
+    {
+        public int DataSourceId { get; set; }
     }
 }

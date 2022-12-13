@@ -4,6 +4,8 @@ namespace DotNetCommon.Extensions
 {
     public static class TypeExtensions
     {
+        public static IEnumerable<string> GetAllPropertyNames(this Type source) => source.GetProperties().Select(x => x.Name);
+
         public static object CreateInstance(this Type source)
         {
             return Activator.CreateInstance(source);

@@ -1,0 +1,175 @@
+﻿<UserControl x:Class="UnifiedDataExplorer.View.ProcessModeling.DataFunctionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UnifiedDataExplorer.View.ProcessModeling"
+             xmlns:vm="clr-namespace:UnifiedDataExplorer.ViewModel.ProcessModeling"
+             xmlns:vmBase="clr-namespace:UnifiedDataExplorer.ViewModel.Base"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Text="Function value is a unit of: " Margin="0 5 0 0" FontSize="16"/>
+            <ComboBox Grid.Column="1" ItemsSource="{Binding UnitTypes}" SelectedItem="{Binding SelectedUnitType}" Margin="5 0 10 0" MinWidth="75" FontWeight="Bold" FontSize="16"/>
+            <TextBlock Grid.Column="2" Text=" and is in the form of: " Margin="0 5 0 0" FontSize="16"/>
+            <ComboBox Grid.Column="3" ItemsSource="{Binding UnitForms}" SelectedItem="{Binding SelectedUnitForm}" Margin="5 0 10 0" MinWidth="75" FontWeight="Bold" FontSize="16"/>
+            <TextBlock Grid.Column="4" Text="and has the name: " Margin="0 5 0 0" FontSize="16"/>
+            <TextBox Grid.Column="5" Text="{Binding FunctionName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding UnitAndTypeSelected, Converter={StaticResource BoolToVisibility}}" Margin="5 0 0 0" FontWeight="Bold" FontSize="16"/>
+            <Image Grid.Column="6" Source="{Binding Path=DataContext, RelativeSource={RelativeSource Self}, Converter={StaticResource DataFunctionTypeToIcon}}" Margin="25 0 0 0" Width="30" Height="30"
+                   Visibility="{Binding UnitAndTypeSelected, Converter={StaticResource BoolToVisibility}}" />
+        </Grid>
+
+        <Grid Grid.Row="1" Visibility="{Binding UnitAndTypeSelected, Converter={StaticResource BoolToVisibility}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="Description:" Margin="0 20 0 3" FontWeight="Bold" FontSize="15"/>
+            <TextBox Grid.Row="1" Text="{Binding FunctionDescription,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 0" FontSize="16" 
+                 TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" SpellCheck.IsEnabled="True" MinLines="3" BorderThickness="1"/>
+
+            <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="0 20 0 0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontSize="18" Margin="0">
+                        <Run Text="public " Foreground="Blue" />
+                        <Run Text="{Binding ReturnType, Mode=OneWay}" Foreground="#2B91AF"/>
+                        <Run Text="{Binding MethodName, Mode=OneWay}" Foreground="#74531F"/>
+                        <Run Text="("/>
+                    </TextBlock>
+                    <ListBox ItemsSource="{Binding FunctionFactors}" Padding="0 10 0 0" RequestBringIntoView="ListBox_RequestBringIntoView" FontSize="18">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel IsItemsHost="True" Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}">
+                                <Setter Property="Margin" Value="0 "/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="VerticalAlignment" Value="Bottom"/>
+                                <Setter Property="VerticalContentAlignment" Value="Bottom"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:FunctionFactorViewModel}">
+                                <TextBlock MouseDown="OnDoubleClick" Margin="0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                                <Run Text="DataPoint " Foreground="#2B91AF"/>
+                                <Run Text="{Binding ParameterName, Mode=OneWay}"/>
+                                <Run Text=", "/>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <TextBlock FontSize="16">
+                 <Run Text=")"/>
+                    </TextBlock>
+                </StackPanel>
+            </ScrollViewer>
+
+            <TextBlock Grid.Row="3" Text="{}{"/>
+
+            <TextBox Grid.Row="4" Text="{Binding FunctionCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="15 0 0 0" FontSize="16"
+                 TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" SpellCheck.IsEnabled="False" MinLines="3" BorderThickness="0.5" VerticalScrollBarVisibility="Auto" />
+
+            <TextBlock Grid.Row="5" Text="{}}"/>
+
+            <Grid Grid.Row="6" Margin="0 10 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" Grid.Column="0">
+                    <Button ToolTip="Add a new parameter to the function" Padding="5" Height="Auto" Background="Transparent"
+                            Command="{Binding AddFactor}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="FunctionVariant" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Add Factor"/>
+                        </StackPanel>
+                    </Button>
+                    <Button ToolTip="Test that the function code compiles successfully" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
+                        Command="{Binding CompileCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="CodeBraces" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Compile"/>
+                        </StackPanel>
+                    </Button>
+                    <Button ToolTip="Test the function with sample data" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
+                        Command="{Binding TestCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="TestTube" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Test"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Visibility="{Binding ShowDoneOptions, Converter={StaticResource BoolToVisibility}}">
+                    <Button ToolTip="Confirm adding this function" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
+                            Command="{Binding DoneCommand}" CommandParameter="{x:Static vmBase:ViewModelDataStatus.Added}"
+                            Visibility="{Binding IsNew, Converter={StaticResource BoolToVisibility}}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Add" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Add" />
+                        </StackPanel>
+                    </Button>
+                    <Button ToolTip="Update changes to this function" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
+                            Command="{Binding DoneCommand}" CommandParameter="{x:Static vmBase:ViewModelDataStatus.Updated}"
+                            Visibility="{Binding IsInModel, Converter={StaticResource BoolToVisibility}}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Update" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Update" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button ToolTip="Cancel changes to this function" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
+                            Command="{Binding DoneCommand}" CommandParameter="{x:Static vmBase:ViewModelDataStatus.Canceled}">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsNew}" Value="{StaticResource TrueValue}">
+                                        <Setter Property="ToolTip" Value="Cancel the addition of this function"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Cancel" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Cancel"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button ToolTip="Remove this function" Margin="5 0 0 0" Padding="5" Height="Auto" Background="Transparent"
+                            Command="{Binding DoneCommand}" CommandParameter="{x:Static vmBase:ViewModelDataStatus.Removed}"
+                            Visibility="{Binding IsInModel, Converter={StaticResource BoolToVisibility}}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Remove" Width="20" Height="20" Padding="0" Margin="0 0 5 0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Remove"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

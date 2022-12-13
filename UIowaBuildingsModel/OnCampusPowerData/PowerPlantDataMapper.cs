@@ -1,6 +1,6 @@
 ﻿using DotNetCommon.Extensions;
 
-namespace UIowaBuildingsModel
+namespace EmissionsMonitorModel
 {
     public class PowerPlantDataMapper //NOTE there will also be data that is not physically in the power plant (I.E. boilers or solar panels elsewhere on campus that are connected to the system.)
     {                                 //Perhaps it would make sense to parse out distrubuted generation/production from the central plant and encapsulate all in a class called like PowerInfrastructureMapper

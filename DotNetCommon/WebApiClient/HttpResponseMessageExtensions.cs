@@ -20,7 +20,8 @@ namespace DotNetCommon.WebApiClient
         {
 #if DEBUG
             string payload = await AsStringAsync(response);
-            return JsonSerializer.Deserialize<T>(payload, serializerOptions);
+            var deserialized = JsonSerializer.Deserialize<T>(payload, serializerOptions);
+            return deserialized;
 #else
             Task<Stream> streamTask = response.EnsureSuccessStatusCode().Content.ReadAsStreamAsync();
             return await JsonSerializer.DeserializeAsync<T>(await streamTask, serializerOptions);

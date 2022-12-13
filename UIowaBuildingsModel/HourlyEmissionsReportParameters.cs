@@ -1,4 +1,4 @@
-﻿namespace UIowaBuildingsModel
+﻿namespace EmissionsMonitorModel
 {
     public class HourlyEmissionsReportParameters
     {

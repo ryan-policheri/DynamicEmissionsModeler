@@ -90,7 +90,7 @@ namespace DotNetCommon.WebApiClient
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -139,7 +139,7 @@ namespace DotNetCommon.WebApiClient
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -182,7 +182,7 @@ namespace DotNetCommon.WebApiClient
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -197,7 +197,7 @@ namespace DotNetCommon.WebApiClient
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -213,7 +213,7 @@ namespace DotNetCommon.WebApiClient
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -247,7 +247,7 @@ namespace DotNetCommon.WebApiClient
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -270,7 +270,7 @@ namespace DotNetCommon.WebApiClient
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -283,7 +283,7 @@ namespace DotNetCommon.WebApiClient
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -302,24 +302,14 @@ namespace DotNetCommon.WebApiClient
 
         public string PrepareUri(string uri)
         {
-            string newUri = uri;
             string baseAddress = Client.BaseAddress.ToString();
-            if (!newUri.StartsWith(baseAddress) && !newUri.Contains(Client.BaseAddress.Host, StringComparison.InvariantCultureIgnoreCase))
+
+            if (!String.IsNullOrWhiteSpace(uri) && uri.Contains(Client.BaseAddress.Host, StringComparison.InvariantCultureIgnoreCase)) return uri; //Base address is assumed to be included in the provided uri.
+            else
             {
-                if (!newUri.StartsWith('/'))
-                {
-                    newUri = "/" + newUri;
-                }
-                if (!string.IsNullOrEmpty(baseAddress))
-                {
-                    if (baseAddress.EndsWith('/'))
-                    {
-                        baseAddress = baseAddress.Substring(0, baseAddress.Length - 1);
-                    }
-                    newUri = baseAddress + newUri;
-                }
+                if (!String.IsNullOrWhiteSpace(baseAddress)) return baseAddress.TrimEnd('/') + "/" + uri?.TrimStart('/');
+                else return uri;
             }
-            return newUri;
         }
 
         private void MaybeApplyHeaders(HttpContent content, IDictionary<string, string> headers)

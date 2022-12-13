@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using DotNetCommon.Extensions;
+using EmissionsMonitorDataAccess.Http;
 
 namespace UnifiedDataExplorer
 {
-    public class Config
+    public class Config : IEmissionsMonitorClientConfig
     {
         private readonly IConfiguration _rawConfig;
 
@@ -27,6 +28,8 @@ namespace UnifiedDataExplorer
         }
 
         public string AppDataDirectory { get; set; }
+
+        public string EmissionsMonitorApiBaseUrl { get; set; }
 
         public string PiWebApiBaseAddress { get; set; }
 

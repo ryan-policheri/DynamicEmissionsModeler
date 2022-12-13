@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnitsNet;
 
-namespace UIowaBuildingsModel.ConversionMethods
+namespace EmissionsMonitorModel.ConversionMethods
 {
     public static class Gasoline
     {

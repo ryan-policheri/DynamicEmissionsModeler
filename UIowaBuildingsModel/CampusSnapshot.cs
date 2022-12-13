@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UIowaBuildingsModel
+namespace EmissionsMonitorModel
 {
     public class CampusSnapshot
     {

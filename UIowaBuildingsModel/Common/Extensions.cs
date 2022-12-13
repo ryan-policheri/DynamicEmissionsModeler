@@ -2,7 +2,7 @@
 using EIA.Domain.Model;
 using PiModel;
 
-namespace UIowaBuildingsModel
+namespace EmissionsMonitorModel
 {
     public static class Extensions
     {

@@ -1,7 +1,7 @@
 ﻿using UnitsNet;
 using PiModel;
 
-namespace UIowaBuildingsModel
+namespace EmissionsMonitorModel
 {
     public class SteamOverheadFactorMapper
     {

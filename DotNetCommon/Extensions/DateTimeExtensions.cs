@@ -50,17 +50,37 @@
                     dateTimeOffset1.UtcDateTime.Hour == dateTimeOffset2.UtcDateTime.Hour);
         }
 
-        public static IEnumerable<DateTimeOffset> EnumerateHoursUntil(this DateTimeOffset startDateTime, DateTimeOffset endDateTime)
+        public static ICollection<DateTimeOffset> EnumerateSecondsUntil(this DateTimeOffset startDateTime, DateTimeOffset endDateTime)
         {
-            if (startDateTime > endDateTime) throw new ArgumentException("startDateTime must be less than or equal to endDateTime");
-            ICollection<DateTimeOffset> hours = new List<DateTimeOffset>();
-            DateTimeOffset dateIterator = startDateTime;
-            while (dateIterator <= endDateTime)
+            return EnumerateTimePoints(startDateTime, endDateTime, (inPoint) => inPoint.AddSeconds(1));
+        }
+
+        public static ICollection<DateTimeOffset> EnumerateMinutesUntil(this DateTimeOffset startDateTime, DateTimeOffset endDateTime)
+        {
+            return EnumerateTimePoints(startDateTime, endDateTime, (inPoint) => inPoint.AddMinutes(1));
+        }
+
+        public static ICollection<DateTimeOffset> EnumerateHoursUntil(this DateTimeOffset startDateTime, DateTimeOffset endDateTime)
+        {
+            return EnumerateTimePoints(startDateTime, endDateTime, (inPoint) => inPoint.AddHours(1));
+        }
+
+        public static ICollection<DateTimeOffset> EnumerateDaysUntil(this DateTimeOffset startDateTime, DateTimeOffset endDateTime)
+        {
+            return EnumerateTimePoints(startDateTime, endDateTime, (inPoint) => inPoint.AddDays(1).Date);
+        }
+
+        private static ICollection<DateTimeOffset> EnumerateTimePoints(DateTimeOffset startTime, DateTimeOffset endTime, Func<DateTimeOffset, DateTimeOffset> incrementFunc)
+        {
+            if (startTime > endTime) throw new ArgumentException("startDateTime must be less than or equal to endDateTime");
+            ICollection<DateTimeOffset> timePoints = new List<DateTimeOffset>();
+            DateTimeOffset dateIterator = startTime;
+            while (dateIterator <= endTime)
             {
-                hours.Add(dateIterator);
-                dateIterator = dateIterator.AddHours(1);
+                timePoints.Add(dateIterator);
+                dateIterator = incrementFunc(dateIterator);
             }
-            return hours;
+            return timePoints;
         }
 
         public static bool AllHoursMatch(this IEnumerable<DateTimeOffset> dataSet1, IEnumerable<DateTimeOffset> dataSet2)

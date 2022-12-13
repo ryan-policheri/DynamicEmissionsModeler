@@ -2,7 +2,7 @@
 using UnitsNet;
 using EIA.Domain.Model;
 
-namespace UIowaBuildingsModel
+namespace EmissionsMonitorModel
 {
     public class ElectricGridSourceMapper
     {

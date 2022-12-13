@@ -2,22 +2,43 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Images\CO2.png" />
+    <None Remove="Resources\Images\EIA_Logo.png" />
+    <None Remove="Resources\Images\Eia_Search_Logo.png" />
     <None Remove="Resources\Images\Flame.png" />
     <None Remove="Resources\Images\Gascan.png" />
     <None Remove="Resources\Images\Leaf.png" />
+    <None Remove="Resources\Images\Leaf2.png" />
+    <None Remove="Resources\Images\Leaf3.png" />
     <None Remove="Resources\Images\Lightening-Bolt.png" />
     <None Remove="Resources\Images\Loading.gif" />
     <None Remove="Resources\Images\MEC_Logo.png" />
     <None Remove="Resources\Images\MISO_Logo.png" />
+    <None Remove="Resources\Images\Money.png" />
+    <None Remove="Resources\Images\PI_AF_LOGO.jpg" />
+    <None Remove="Resources\Images\Pi_Logo.png" />
+    <None Remove="Resources\Images\Pi_Search_Logo.png" />
+    <None Remove="Resources\Images\Steam.png" />
     <None Remove="Resources\Images\Water.png" />
+    <None Remove="Resources\NodeIcons\AdjusterNode.png" />
+    <None Remove="Resources\NodeIcons\AggregatorNode.png" />
+    <None Remove="Resources\NodeIcons\ExchangeNode.png" />
+    <None Remove="Resources\NodeIcons\MultiProductConverterNode.png" />
+    <None Remove="Resources\NodeIcons\MultiSplitterNode.png" />
+    <None Remove="Resources\NodeIcons\ProductConverterNode.png" />
+    <None Remove="Resources\NodeIcons\SplitterNode.png" />
+    <None Remove="Resources\NodeIcons\SubtractorIcon.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Images\CO2.png" />
+    <Resource Include="Resources\Images\EIA_Logo.png" />
+    <Resource Include="Resources\Images\Eia_Search_Logo.png" />
     <Resource Include="Resources\Images\Flame.png" />
     <Resource Include="Resources\Images\Gascan.png" />
   </ItemGroup>
@@ -26,11 +47,26 @@
     <Resource Include="Resources\Images\Leaf.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\Leaf2.png" />
+    <Resource Include="Resources\Images\Leaf3.png" />
     <Resource Include="Resources\Images\Lightening-Bolt.png" />
     <Resource Include="Resources\Images\Loading.gif" />
     <Resource Include="Resources\Images\MEC_Logo.png" />
     <Resource Include="Resources\Images\MISO_Logo.png" />
+    <Resource Include="Resources\Images\Money.png" />
+    <Resource Include="Resources\Images\PI_AF_LOGO.jpg" />
+    <Resource Include="Resources\Images\Pi_Logo.png" />
+    <Resource Include="Resources\Images\Pi_Search_Logo.png" />
+    <Resource Include="Resources\Images\Steam.png" />
     <Resource Include="Resources\Images\Water.png" />
+    <Resource Include="Resources\NodeIcons\AdjusterNode.png" />
+    <Resource Include="Resources\NodeIcons\AggregatorNode.png" />
+    <Resource Include="Resources\NodeIcons\ExchangeNode.png" />
+    <Resource Include="Resources\NodeIcons\MultiProductConverterNode.png" />
+    <Resource Include="Resources\NodeIcons\MultiSplitterNode.png" />
+    <Resource Include="Resources\NodeIcons\ProductConverterNode.png" />
+    <Resource Include="Resources\NodeIcons\SplitterNode.png" />
+    <Resource Include="Resources\NodeIcons\SubtractorIcon.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,20 +82,18 @@
     <ProjectReference Include="..\EIA.Domain\EIA.Domain.csproj" />
     <ProjectReference Include="..\EIA.Services\EIA.Services.csproj" />
     <ProjectReference Include="..\DotNetCommon\DotNetCommon.csproj" />
+    <ProjectReference Include="..\EmissionsMonitorDataAccess.Abstractions\EmissionsMonitorDataAccess.Abstractions.csproj" />
+    <ProjectReference Include="..\EmissionsMonitorDataAccess.Http\EmissionsMonitorDataAccess.Http.csproj" />
     <ProjectReference Include="..\PiModel\PiModel.csproj" />
     <ProjectReference Include="..\PiServices\PiServices.csproj" />
-    <ProjectReference Include="..\UIowaBuildingsModel\UIowaBuildingsModel.csproj" />
-    <ProjectReference Include="..\UIowaBuildingsServices\UIowaBuildingsServices.csproj" />
+    <ProjectReference Include="..\UIowaBuildingsModel\EmissionsMonitorModel.csproj" />
+    <ProjectReference Include="..\UIowaBuildingsServices\EmissionsMonitorServices.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Converters\" />
   </ItemGroup>
 
 </Project>

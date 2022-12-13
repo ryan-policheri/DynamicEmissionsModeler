@@ -1,6 +1,6 @@
 ﻿using DotNetCommon.Extensions;
 
-namespace UIowaBuildingsModel
+namespace EmissionsMonitorModel
 {
     public class SteamProductionMapper
     {

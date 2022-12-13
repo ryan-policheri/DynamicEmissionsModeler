@@ -3,7 +3,7 @@ using PiModel;
 using System.Data;
 using UnitsNet;
 
-namespace UIowaBuildingsModel
+namespace EmissionsMonitorModel
 {
     public class ChilledWaterProductionMapper
     {
@@ -51,7 +51,7 @@ namespace UIowaBuildingsModel
                         {
                             if (dataSet.Units.CapsAndTrim() == "GPM")
                             {
-                                waterProduced += Volume.FromUsGallons(dataPoint.Value); //TODO Is pi using US Gallons or imperial gallons??
+                                waterProduced += Volume.FromUsGallons(dataPoint.Value * 60); //TODO Is pi using US Gallons or imperial gallons??
                             }
                             else throw new NotImplementedException($"{dataSet.Units} not implemented in chilled water output packaging");
                         }

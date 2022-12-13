@@ -2,14 +2,21 @@
 using DotNetCommon.WebApiClient;
 using PiModel;
 using PiModel.Search;
-using System.Dynamic;
-using System.Text.Json;
 
 namespace PiServices
 {
     public class PiHttpClient : WebApiClientBase
     {
         private const string ITEMS_PROPERTY = "Items";
+
+        public PiHttpClient() : base()
+        {
+            HttpClientHandler handler = new HttpClientHandler();
+            //TODO: Figure certificate out
+            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+            this.Client = new HttpClient(handler);
+        }
+
 
         public PiHttpClient(string baseAddress, string userName, string password, string defaultAssetServer = null) : base()
         {
@@ -27,13 +34,23 @@ namespace PiServices
 
         public string BaseAddress => this.Client.BaseAddress.ToString();
 
-        public string DefaultAssetServer { get; }
+        public string DefaultAssetServer { get; private set; }
 
         public string UserName { get; set; }
 
         public string Password { get; set; }
 
         public bool HasAuthorization => this.Client.DefaultRequestHeaders.Contains("Authorization");
+
+        public void Initialize(IPiConnectionInfo connInfo)
+        {
+            this.Client.BaseAddress = new Uri(connInfo.BaseUrl);
+            this.DefaultAssetServer = connInfo.DefaultAssetServer;
+            this.UserName = connInfo.UserName;
+            this.Password = connInfo.Password;
+            this.AddAuthorizationHeader();
+            //this.NestedPropertyToStartFrom = "Items"; //Using the self link does have an items property
+        }
 
         public void AddAuthorizationHeader()
         {
@@ -42,11 +59,6 @@ namespace PiServices
                 string asBase64 = "Basic " + System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(UserName + ":" + Password));
                 this.Client.DefaultRequestHeaders.Add("Authorization", asBase64);
             }
-        }
-
-        public async Task DoSomething()
-        {
-            string data = await this.GetAsync("assetservers");
         }
 
         public async Task<T> GetByDirectLink<T>(string link)
@@ -156,6 +168,7 @@ namespace PiServices
         public async Task LoadInterpolatedValues(IHaveTimeSeriesData item, DateTimeOffset startDate, DateTimeOffset endDate, string filterExpression = null)
         {
             string url = item.TimeSeriesLinks.InterpolatedData;
+            
             string startDateString = startDate.ToStringWithNoOffset();
             string endDateString = endDate.ToStringWithNoOffset();
 
@@ -166,6 +179,20 @@ namespace PiServices
             if(!String.IsNullOrWhiteSpace(filterExpression)) url = url.WithParameter("filterExpression", filterExpression);
 
             item.InterpolatedDataPoints = await this.GetAllAsync<InterpolatedDataPoint>(url, ITEMS_PROPERTY);
+        }
+
+        public async Task LoadInterpolatedValues(IHaveTimeSeriesData item, IBuildPiTimeSeriesQueryString queryStringBuilder)
+        {
+            string url = item.TimeSeriesLinks.InterpolatedData;
+            url += queryStringBuilder.BuildPiInterpolatedDataQueryString();
+            item.InterpolatedDataPoints = await this.GetAllAsync<InterpolatedDataPoint>(url, ITEMS_PROPERTY);
+        }
+
+        public async Task LoadSummaryValues(IHaveTimeSeriesData item, IBuildPiTimeSeriesQueryString queryStringBuilder)
+        {
+            string url = item.TimeSeriesLinks.SummaryData;
+            url += queryStringBuilder.BuildPiSummaryDataQueryString();
+            item.SummaryDataPoints = await this.GetAllAsync<SummaryResult>(url, ITEMS_PROPERTY);
         }
 
         public async Task LoadSquareFootValue(IHaveTimeSeriesData squareFoot, DateTimeOffset startDateTime, DateTimeOffset endDateTime)

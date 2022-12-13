@@ -103,9 +103,20 @@ namespace DotNetCommon.Extensions
             return JsonSerializer.Serialize(source);
         }
 
+        public static string ToJson<T>(this T source)
+        {
+            return JsonSerializer.Serialize<T>(source);
+        }
+
         public static string ToBeautifulJson(this object source)
         {
             return JsonSerializer.Serialize(source, CommonJsonSerializerOptions.CaseInsensitiveBeautiful);
+        }
+
+        public static object GetValue(this object source, string propertyName)
+        {
+            var prop = source.GetType().GetProperties().First(x => x.Name == propertyName);
+            return prop.GetValue(source);
         }
 
         public static bool TrySetValueWithTypeRespect(this PropertyInfo property, object instance, string rawValue)
@@ -154,12 +165,33 @@ namespace DotNetCommon.Extensions
                 if (DateTime.TryParse(rawValue, out DateTime result)) property.SetValue(instance, result);
                 else property.SetValue(instance, default(DateTime));
             }
+            else if (propertyType == typeof(DateTimeOffset))
+            {
+                if (DateTimeOffset.TryParse(rawValue, out DateTimeOffset result)) property.SetValue(instance, result);
+                else property.SetValue(instance, default(DateTimeOffset));
+            }
             else if (propertyType.IsEnum)
             {
                 if (!String.IsNullOrWhiteSpace(rawValue))
                 {
                     Type enumType = propertyType.UnderlyingSystemType;
                     property.SetValue(instance, Enum.Parse(enumType, rawValue, true));
+                }
+            } 
+            else if (propertyType == typeof(IEnumerable<int>))
+            {
+                if (!String.IsNullOrWhiteSpace(rawValue)) property.SetValue(instance, rawValue.Split(",").Select(x => int.Parse(x)));
+            }
+            else if (Nullable.GetUnderlyingType(propertyType) != null)
+            {
+                if (!String.IsNullOrWhiteSpace(rawValue))
+                {
+                    Type underlyingType = propertyType.GenericTypeArguments[0];
+                    if (underlyingType.IsEnum)
+                    {
+                        property.SetValue(instance, Enum.Parse(underlyingType, rawValue, true));
+                    }
+                    else throw new NotImplementedException("In a rush, implement this better later");//TODO: In a rush, implement this better later
                 }
             }
             else throw new NotImplementedException("Parsing for type " + propertyType.Name + " is not implemented.");

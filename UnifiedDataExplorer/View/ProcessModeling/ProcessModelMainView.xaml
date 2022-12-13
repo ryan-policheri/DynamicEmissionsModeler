@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="UnifiedDataExplorer.View.ProcessModeling.ProcessModelMainView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UnifiedDataExplorer.View.ProcessModeling"
+             xmlns:vm="clr-namespace:UnifiedDataExplorer.ViewModel.ProcessModeling"
+             xmlns:vmBase="clr-namespace:UnifiedDataExplorer.ViewModel.Base"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Menu IsMainMenu="True" Grid.Row="0" Grid.Column="0">
+            <MenuItem Header="File">
+                <MenuItem Header="Save" ToolTip="Save Process Model" Command="{Binding SaveCommand}" CommandParameter="{StaticResource FalseValue}">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="ContentSaveAll"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Save As" ToolTip="Save as new Process Model" Command="{Binding SaveCommand}" CommandParameter="{StaticResource TrueValue}">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="ContentSaveEdit"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="View">
+                <MenuItem Header="Process Nodes" ToolTip="Design and view process nodes for this model" Command="{Binding ViewProcessNodesCommand}">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="Graph" RenderTransformOrigin=".5,.5">
+                            <!--<materialDesign:PackIcon.RenderTransformOrigin>
+                                <RotateTransform x:Name="AnimatedRotateTransform" Angle="90" />
+                            </materialDesign:PackIcon.RenderTransformOrigin>-->
+                        </materialDesign:PackIcon>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Data Streams" ToolTip="View all mapped data streams for this model">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="SqlQuery"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Run">
+                <MenuItem Header="Execute Live" ToolTip="Execute the model using real system data" Command="{Binding ExecuteCommand}" CommandParameter="{StaticResource TrueValue}">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="RunFast"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Execute Test" ToolTip="Execute the model using supplied test data">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="TestTube"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+
+        <ContentControl Grid.Row="1">
+            <ContentControl Content="{Binding CurrentChild}" />
+        </ContentControl>
+    </Grid>
+</UserControl>

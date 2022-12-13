@@ -74,8 +74,8 @@
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
                                     <TextBlock Grid.Row="0" Text="CO2 from Total Energy Usage" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold" Margin="0 0 0 10"/>
-                                    <Image Grid.Row="1" Source="/Resources/Images/Gascan.png" />
-                                    <TextBlock Grid.Row="2" Text="{Binding TotalGallonsDisplay}" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold" Margin="0 10 0 0"/>
+                                    <Image Grid.Row="1" Source="/Resources/Images/CO2.png" />
+                                    <TextBlock Grid.Row="2" Text="{Binding TotalKilogramsDisplay}" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold" Margin="0 10 0 0"/>
                                 </Grid>
                             </Button.Content>
                         </Button>
@@ -162,7 +162,7 @@
 
                                         <TextBlock Grid.Row="0" Text="CO2 from Electric Usage" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold"/>
                                         <Image Grid.Row="1" Source="/Resources/Images/Lightening-Bolt.png" />
-                                        <TextBlock Grid.Row="2" Text="{Binding ElectricGallonsDisplay}" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold"/>
+                                        <TextBlock Grid.Row="2" Text="{Binding ElectricKilogramsDisplay}" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold"/>
                                     </Grid>
                                 </Button.Content>
                             </Button>
@@ -212,7 +212,7 @@
 
                                         <TextBlock Grid.Row="0" Text="CO2 from Steam Usage" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold"/>
                                         <Image Grid.Row="1" Source="/Resources/Images/Flame.png" />
-                                        <TextBlock Grid.Row="2" Text="{Binding HeatingGallonsDisplay}" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold"/>
+                                        <TextBlock Grid.Row="2" Text="{Binding HeatingKilogramsDisplay}" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold"/>
                                     </Grid>
                                 </Button.Content>
                             </Button>
@@ -262,7 +262,7 @@
 
                                         <TextBlock Grid.Row="0" Text="CO2 from Chilled Water Usage" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold"/>
                                         <Image Grid.Row="1" Source="/Resources/Images/Water.png"/>
-                                        <TextBlock Grid.Row="2"  Text="{Binding CoolingGallonsDisplay}" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold"/>
+                                        <TextBlock Grid.Row="2"  Text="{Binding CoolingKilogramsDisplay}" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold"/>
                                     </Grid>
                                 </Button.Content>
                             </Button>

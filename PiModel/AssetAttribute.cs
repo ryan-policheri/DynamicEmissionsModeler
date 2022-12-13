@@ -25,6 +25,6 @@
         public IHaveTimeSeriesDataLinks TimeSeriesLinks => Links;
 
         public IEnumerable<InterpolatedDataPoint> InterpolatedDataPoints { get; set; }
-
+        public IEnumerable<SummaryResult> SummaryDataPoints { get; set; }
     }
 }

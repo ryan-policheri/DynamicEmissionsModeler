@@ -7,26 +7,34 @@ using EIA.Domain.Model;
 using PiServices;
 using PiModel;
 using UnitsNet;
-using UIowaBuildingsModel;
-using UIowaBuildingsModel.ConversionMethods;
+using EmissionsMonitorModel;
+using EmissionsMonitorModel.ConversionMethods;
+using EmissionsMonitorServices.DataSourceWrappers;
+using EmissionsMonitorDataAccess.DataSourceWrappers;
 
 namespace UIowaBuildingsServices
 {
     public class ReportingService
     {
-        private readonly PiHttpClient _piClient;
-        private readonly EiaClient _eiaClient;
+        private PiHttpClient _piClient;
+        private EiaClient _eiaClient;
+        private DataSourceServiceFactory _factory;
         private readonly ILogger<ReportingService> _logger;
+        private readonly bool _wasWrapped;
 
-        public ReportingService(PiHttpClient piClient, EiaClient eiaClient, ILogger<ReportingService> logger)
+        public ReportingService(DataSourceServiceFactory factory, ILogger<ReportingService> logger, bool wasWrapped = false)
         {
-            _piClient = piClient;
-            _eiaClient = eiaClient;
+            _factory = factory;
             _logger = logger;
+            _wasWrapped = wasWrapped;
         }
 
         public async Task<CampusSnapshot> GenerateCampusSnapshot(HourlyEmissionsReportParameters parameters)
         {
+            //This should be refactored to use a process model; this hackery is just a way to let us run the phase 1 emissions report
+            _piClient = _wasWrapped ? _factory.GetDataSourceServiceById<PiDataSourceRepoWrapper>(2).GetUnderlyingClient() : _factory.GetDataSourceServiceById<PiHttpClient>(2);
+            _eiaClient = _wasWrapped ? _factory.GetDataSourceServiceById<EiaDataSourceRepoWrapper>(1).GetUnderlyingClient() : _factory.GetDataSourceServiceById<EiaClient>(1);
+
             //UIowa is obviously in central time... So for the sake of this report we can assume that our intention is to render data in central time,
             //but if we were looking at buildings in multiple time zones obviously this would need to be changed
             DateTimeOffset startDateTime = new DateTimeOffset(parameters.StartDateInLocalTime.Date, TimeZones.GetCentralTimeOffset(parameters.StartDateInLocalTime.Date)); //Report convention, start at 12AM (first hour) of the given startDate
@@ -199,7 +207,7 @@ namespace UIowaBuildingsServices
         }
 
         //CAMPUS
-        public async Task<PowerPlantDataMapper> PopulatePowerPlantMapper(DateTimeOffset startTime, DateTimeOffset endTime)
+        private async Task<PowerPlantDataMapper> PopulatePowerPlantMapper(DateTimeOffset startTime, DateTimeOffset endTime)
         {
             PowerPlantDataMapper powerPlantMapper = OnCampusPowerMapping.BuildPowerPlantMapper();
 

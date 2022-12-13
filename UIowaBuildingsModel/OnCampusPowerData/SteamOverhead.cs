@@ -1,6 +1,6 @@
 ﻿using UnitsNet;
 
-namespace UIowaBuildingsModel
+namespace EmissionsMonitorModel
 {
     public class SteamOverhead
     {

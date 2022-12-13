@@ -1,8 +1,9 @@
-﻿using DotNetCommon.EventAggregation;
+﻿using System;
+using DotNetCommon.EventAggregation;
 using DotNetCommon.MVVM;
 using Microsoft.Extensions.Logging;
 using UnifiedDataExplorer.Services.DataPersistence;
-using UnifiedDataExplorer.Services.Window;
+using UnifiedDataExplorer.Services.WindowDialog;
 
 namespace UnifiedDataExplorer.ViewModel.Base
 {
@@ -25,7 +26,9 @@ namespace UnifiedDataExplorer.ViewModel.Base
 
         protected T Resolve<T>()
         {
-            return (T)_facade.ServiceProvider.GetService(typeof(T));
+            T result = (T)_facade.ServiceProvider.GetService(typeof(T));
+            if (result == null) throw new InvalidOperationException($"Unable to find type {typeof(T).Name}. Ensure is it registered with the service provider");
+            else return result;
         }
     }
 }

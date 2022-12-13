@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 using DotNetCommon.EventAggregation;
-using UnifiedDataExplorer.Services.Window;
+using UnifiedDataExplorer.Services.WindowDialog;
 using UnifiedDataExplorer.Services.DataPersistence;
 
 namespace UnifiedDataExplorer.ViewModel.Base

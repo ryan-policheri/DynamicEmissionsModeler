@@ -1,6 +1,6 @@
 ﻿using UnitsNet;
 
-namespace UIowaBuildingsModel.ConversionMethods
+namespace EmissionsMonitorModel.ConversionMethods
 {
     public static class Other
     {//EIA says the Other contains: "Electricity originating from these sources biomass, fuel cells, geothermal heat, solar power, waste, wind, and wood."

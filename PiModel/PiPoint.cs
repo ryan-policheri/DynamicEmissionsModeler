@@ -29,28 +29,29 @@ namespace PiModel
         IHaveTimeSeriesDataLinks IHaveTimeSeriesData.TimeSeriesLinks => Links;
 
         public IEnumerable<InterpolatedDataPoint> InterpolatedDataPoints { get; set; }
+        public IEnumerable<SummaryResult> SummaryDataPoints { get; set; }
 
         public DataTable RenderDataPointsAsTable()
         {
             DataTable table = new DataTable();
 
             string timeStampString = "TimeStamp (";
-            if (InterpolatedDataPoints.FirstOrDefault() != null && InterpolatedDataPoints.First().Timestamp.Offset == TimeZones.GetUtcOffset()) timeStampString += "Utc" + ")";
-            else if (InterpolatedDataPoints.FirstOrDefault() != null) timeStampString += "(Local " + InterpolatedDataPoints.First().Timestamp.Offset.ToHourString() + ")";
+            if (SummaryDataPoints.FirstOrDefault() != null && SummaryDataPoints.First().DataPoint.Timestamp.Offset == TimeZones.GetUtcOffset()) timeStampString += "Utc" + ")";
+            else if (SummaryDataPoints.FirstOrDefault() != null) timeStampString += "(Local " + SummaryDataPoints.First().DataPoint.Timestamp.Offset.ToHourString() + ")";
 
-            string valueString = EngineeringUnits.Replace("/", "");
+            string valueString = String.IsNullOrWhiteSpace(EngineeringUnits) ? "UNKNOWN" : EngineeringUnits.Replace("/", "");
 
             table.Columns.Add(timeStampString, typeof(DateTime));
             table.Columns.Add(valueString, typeof(double));
 
-            foreach (var dataPoint in InterpolatedDataPoints)
+            foreach (var dataPoint in SummaryDataPoints)
             {
                 DataRow row = table.NewRow();
 
-                if(dataPoint.Timestamp.Offset == TimeZones.GetUtcOffset()) row[timeStampString] = dataPoint.Timestamp.UtcDateTime;
-                else row[timeStampString] = dataPoint.Timestamp.LocalDateTime;
+                if(dataPoint.DataPoint.Timestamp.Offset == TimeZones.GetUtcOffset()) row[timeStampString] = dataPoint.DataPoint.Timestamp.UtcDateTime;
+                else row[timeStampString] = dataPoint.DataPoint.Timestamp.LocalDateTime;
 
-                row[valueString] = dataPoint.Value;
+                row[valueString] = dataPoint.HasErrors ? DBNull.Value : double.Parse(dataPoint.DataPoint.Value.ToString());
                 table.Rows.Add(row);
             }
             return table;
