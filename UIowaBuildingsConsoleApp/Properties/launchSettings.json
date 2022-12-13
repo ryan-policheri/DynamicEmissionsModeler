@@ -46,7 +46,7 @@
     },
     "12/9 Quick Grab": {
       "commandName": "Project",
-      "commandLineArgs": "IndStudyExp --ModelID 2107 --FinalSteamNodeId 29 --FinalElectricNodeId 24 --FinalChilledWaterNodeId 35 --StartDate 12/9/2022 --EndDate 12/10/2022 --DataResolution \"Hourly\""
+      "commandLineArgs": "IndStudyExp --ModelID 2103 --FinalSteamNodeId 29 --FinalElectricNodeId 24 --FinalChilledWaterNodeId 35 --StartDate 12/9/2022 --EndDate 12/10/2022 --DataResolution \"Hourly\""
     }
   }
 }

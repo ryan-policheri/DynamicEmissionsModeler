@@ -108,6 +108,10 @@ namespace UnifiedDataExplorer.ViewModel
                 OnPropertyChanged(nameof(ElectricGallonsDisplay));
                 OnPropertyChanged(nameof(HeatingGallonsDisplay));
                 OnPropertyChanged(nameof(CoolingGallonsDisplay));
+                OnPropertyChanged(nameof(TotalKilogramsDisplay));
+                OnPropertyChanged(nameof(ElectricKilogramsDisplay));
+                OnPropertyChanged(nameof(HeatingKilogramsDisplay));
+                OnPropertyChanged(nameof(CoolingKilogramsDisplay));
             }
         }
 
