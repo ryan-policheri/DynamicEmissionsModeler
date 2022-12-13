@@ -38,9 +38,12 @@ namespace EmissionsMonitorServices.Experiments.IndStudyExp
                 OverflowHandleStrategy = experiment.OverflowStrategy
             });
 
-            foreach(var error in results.Errors)
+            if(results.Errors != null)
             {
-                Console.WriteLine($"Overflow error at {error.TimeStamp} in node {error.NodeName}");
+                foreach (var error in results.Errors)
+                {
+                    Console.WriteLine($"Overflow error at {error.TimeStamp} in node {error.NodeName}");
+                }
             }
 
             var steamNode = results.NodeSeries.First(x => x.NodeId == experiment.FinalSteamNodeId);

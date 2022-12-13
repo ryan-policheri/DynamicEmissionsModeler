@@ -39,6 +39,14 @@
     "What happened on 9/13": {
       "commandName": "Project",
       "commandLineArgs": "IndStudyExp --ModelID 2104 --FinalSteamNodeId 29 --FinalElectricNodeId 24 --FinalChilledWaterNodeId 35 --StartDate 9/12/2022 --EndDate 9/14/2022 --DataResolution \"Every Minute\" --OverflowStrategy 1"
+    },
+    "UIowa DailyCarbon Oats over Coal Org": {
+      "commandName": "Project",
+      "commandLineArgs": "DailyCarbonTrend --ModelID 2105 --StartDate 12/6/2021 --EndDate 12/5/2022 --NodeIds 1,2,3,4,5,7,8,14"
+    },
+    "12/9 Quick Grab": {
+      "commandName": "Project",
+      "commandLineArgs": "IndStudyExp --ModelID 2107 --FinalSteamNodeId 29 --FinalElectricNodeId 24 --FinalChilledWaterNodeId 35 --StartDate 12/9/2022 --EndDate 12/10/2022 --DataResolution \"Hourly\""
     }
   }
 }
