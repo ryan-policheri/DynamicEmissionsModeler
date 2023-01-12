@@ -1,5 +1,6 @@
 ﻿using EmissionsMonitorModel.Experiments.DailyCarbonTrend;
 using EmissionsMonitorModel.Experiments.IndStudyExp;
+using EmissionsMonitorModel.Experiments.NodeInspect;
 
 namespace EmissionsMonitorDataAccess.Abstractions
 {
@@ -7,6 +8,7 @@ namespace EmissionsMonitorDataAccess.Abstractions
     {
         Task SaveDailyCarbonExperimentResultsAsync(DailyCarbonExperiment experiment);
         Task SaveIndStudyExperimentResultsAsync(IndStudyExperiment experiment);
+        Task SaveNodeInspectExperimentResults(NodeInspectExperiment experiment);
     }
 
 }

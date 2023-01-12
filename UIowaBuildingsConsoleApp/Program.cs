@@ -7,6 +7,8 @@ using UIowaBuildingsConsoleApp;
 using EmissionsMonitorModel.Experiments.DailyCarbonTrend;
 using EmissionsMonitorServices.Experiments.IndStudyExp;
 using EmissionsMonitorModel.Experiments.IndStudyExp;
+using EmissionsMonitorServices.Experiments.NodeInspect;
+using EmissionsMonitorModel.Experiments.NodeInspect;
 
 public static class Program
 {
@@ -24,6 +26,9 @@ public static class Program
         else if (command == "IndStudyExp") await serviceProvider
                 .GetRequiredService<IndStudyExpDriver>()
                 .ExecuteExperiement(CommandLineInputHelpers.BindArgumentsToType<IndStudyExperiment>(args));
+        else if (command == "NodeInspect") await serviceProvider
+                .GetRequiredService<NodeInspectExperimentDriver>()
+                .ExecuteExperiement(CommandLineInputHelpers.BindArgumentsToType<NodeInspectExperiment>(args));
         else throw new NotImplementedException($"Command {command} not recognized.");
     }
 }

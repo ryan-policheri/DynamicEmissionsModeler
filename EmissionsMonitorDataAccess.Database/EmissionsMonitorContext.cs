@@ -1,6 +1,7 @@
 ﻿using EmissionsMonitorModel.DataSources;
 using EmissionsMonitorModel.Experiments.DailyCarbonTrend;
 using EmissionsMonitorModel.Experiments.IndStudyExp;
+using EmissionsMonitorModel.Experiments.NodeInspect;
 using EmissionsMonitorModel.VirtualFileSystem;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +25,8 @@ namespace EmissionsMonitorDataAccess.Database
         public DbSet<DailyCarbonExperimentRecord> DailyCarbonRecords { get; set; }
 
         public DbSet<IndStudyExperiment> IndStudyExperiments { get; set; }
+
+        public DbSet<NodeInspectExperiment> NodeInspectExperiments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -75,6 +78,16 @@ namespace EmissionsMonitorDataAccess.Database
             indStudyExpRecordSpec.HasKey(x => new { x.ExperimentId, x.Timestamp });
             indStudyExpRecordSpec.HasOne(x => x.Experiment).WithMany(x => x.ExperimentRecords).HasForeignKey(x => x.ExperimentId);
             indStudyExpRecordSpec.ToTable("IND_STUDY_EXPERIMENT_RECORD");
+
+            var nodeInspectExpSpec = modelBuilder.Entity<NodeInspectExperiment>();
+            nodeInspectExpSpec.HasKey(x => x.ExperimentId);
+            nodeInspectExpSpec.Property(typeof(DateTimeOffset), "ExperimentDate");
+            nodeInspectExpSpec.ToTable("NODE_INSPECT_EXPERIMENT");
+
+            var nodeInspectExpRecordSpec = modelBuilder.Entity<NodeInspectExperimentRecord>();
+            nodeInspectExpRecordSpec.HasKey(x => new { x.ExperimentId, x.Timestamp });
+            nodeInspectExpRecordSpec.HasOne(x => x.Experiment).WithMany(x => x.ExperimentRecords).HasForeignKey(x => x.ExperimentId);
+            nodeInspectExpRecordSpec.ToTable("NODE_INSPECT_EXPERIMENT_RECORD");
         }
     }
 }

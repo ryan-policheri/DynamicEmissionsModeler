@@ -34,7 +34,7 @@
     },
     "Ind Study Exp 1 Year": {
       "commandName": "Project",
-      "commandLineArgs": "IndStudyExp --ModelID 2104 --FinalSteamNodeId 29 --FinalElectricNodeId 24 --FinalChilledWaterNodeId 35 --StartDate 12/6/2021 --EndDate 12/5/2022 --DataResolution \"Daily\" --OverflowStrategy 1"
+      "commandLineArgs": "IndStudyExp --ModelID 2104 --FinalSteamNodeId 29 --FinalElectricNodeId 24 --FinalChilledWaterNodeId 35 --StartDate 1/1/2022 --EndDate 12/31/2022 --DataResolution \"Daily\" --OverflowStrategy 1"
     },
     "What happened on 9/13": {
       "commandName": "Project",
@@ -47,6 +47,26 @@
     "12/9 Quick Grab": {
       "commandName": "Project",
       "commandLineArgs": "IndStudyExp --ModelID 2103 --FinalSteamNodeId 29 --FinalElectricNodeId 24 --FinalChilledWaterNodeId 35 --StartDate 12/9/2022 --EndDate 12/10/2022 --DataResolution \"Hourly\""
+    },
+    "NCP Electric Chiller 2 Electric Demand (1 Year)": {
+      "commandName": "Project",
+      "commandLineArgs": "NodeInspect --ModelID 2111 --NodeId 35 --StartDate 1/1/2022 --EndDate 12/31/2022 --DataResolution \"Daily\" --OverflowStrategy 1"
+    },
+    "NCP Electric Chiller 2 Cooling Output (1 Year)": {
+      "commandName": "Project",
+      "commandLineArgs": "NodeInspect --ModelID 2111 --NodeId 36 --StartDate 1/1/2022 --EndDate 12/31/2022 --DataResolution \"Daily\" --OverflowStrategy 1"
+    },
+    "NWCP Steam Chiller Steam Demand (1 Year)": {
+      "commandName": "Project",
+      "commandLineArgs": "NodeInspect --ModelID 2111 --NodeId 31 --StartDate 1/1/2022 --EndDate 12/31/2022 --DataResolution \"Daily\" --OverflowStrategy 1"
+    },
+    "NWCP Steam Chiller Cooling Output (1 Year)": {
+      "commandName": "Project",
+      "commandLineArgs": "NodeInspect --ModelID 2111 --NodeId 37 --StartDate 1/1/2022 --EndDate 12/31/2022 --DataResolution \"Daily\" --OverflowStrategy 1"
+    },
+    "NWCP and NCP Steam and Electric Factors (1 Year)": {
+      "commandName": "Project",
+      "commandLineArgs": "IndStudyExp --ModelID 2111 --FinalSteamNodeId 13 --FinalElectricNodeId 22 --FinalChilledWaterNodeId 35 --StartDate 1/1/2022 --EndDate 12/31/2022 --DataResolution \"Daily\" --OverflowStrategy 1"
     }
   }
 }

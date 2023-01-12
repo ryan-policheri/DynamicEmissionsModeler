@@ -2,6 +2,7 @@
 using EmissionsMonitorDataAccess.Abstractions;
 using EmissionsMonitorModel.Experiments.DailyCarbonTrend;
 using EmissionsMonitorModel.Experiments.IndStudyExp;
+using EmissionsMonitorModel.Experiments.NodeInspect;
 
 namespace EmissionsMonitorDataAccess.Database.Repositories
 {
@@ -25,6 +26,13 @@ namespace EmissionsMonitorDataAccess.Database.Repositories
         public async Task SaveIndStudyExperimentResultsAsync(IndStudyExperiment experiment)
         {
             _context.Set<IndStudyExperiment>().Add(experiment);
+            _context.Entry(experiment).Property("ExperimentDate").CurrentValue = DateTimeOffset.Now;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task SaveNodeInspectExperimentResults(NodeInspectExperiment experiment)
+        {
+            _context.Set<NodeInspectExperiment>().Add(experiment);
             _context.Entry(experiment).Property("ExperimentDate").CurrentValue = DateTimeOffset.Now;
             await _context.SaveChangesAsync();
         }

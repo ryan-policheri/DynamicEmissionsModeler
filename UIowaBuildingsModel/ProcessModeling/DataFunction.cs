@@ -13,6 +13,7 @@ namespace EmissionsMonitorModel.ProcessModeling
     //TODO: dynamically add/use GetAllFunctionTypeMappings()
     [JsonDerivedType(typeof(SteamEnergyFunction), "steam_energy")]
     [JsonDerivedType(typeof(ElectricEnergyFunction), "electric_energy")]
+    [JsonDerivedType(typeof(CoolingEnergyFunction), "cooling_energy")]
     [JsonDerivedType(typeof(MoneyFunction), "money_currency")]
     [JsonDerivedType(typeof(Co2MassFunction), "co2_mass")]
     [JsonDerivedType(typeof(ChilledWaterVolumeFunction), "chilled_water_volume")]
@@ -91,6 +92,7 @@ namespace EmissionsMonitorModel.ProcessModeling
             //TODO: don't hard code this. read from assembly instead
             yield return new SteamEnergyFunction().ToTypeMapping();
             yield return new ElectricEnergyFunction().ToTypeMapping();
+            yield return new CoolingEnergyFunction().ToTypeMapping();
             yield return new Co2MassFunction().ToTypeMapping();
             yield return new ChilledWaterVolumeFunction().ToTypeMapping();
             yield return new MoneyFunction().ToTypeMapping();
@@ -149,6 +151,21 @@ namespace EmissionsMonitorModel.ProcessModeling
         {
             Energy energy = (Energy)abstractValue;
             return energy.Megajoules;
+        }
+    }
+
+    public class CoolingEnergyFunction : EnergyFunction
+    {
+        public CoolingEnergyFunction() : base()
+        {
+            FunctionUnitForm = "CoolingWater";
+            FunctionDefaultReturnUnit = "MMBTU";
+        }
+
+        public override double ToDefaultValueRendering(object abstractValue)
+        {
+            Energy energy = (Energy)abstractValue;
+            return energy.MegabritishThermalUnits;
         }
     }
 
