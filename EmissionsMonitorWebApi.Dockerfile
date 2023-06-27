@@ -3,13 +3,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /source
 
-# go up a directory and copy all solution files
-COPY ../ .
+# copy all solution files
+COPY ./ .
 # restore as distinct layers
 RUN dotnet restore --use-current-runtime  
 
 # build app
-COPY ./ .
 RUN dotnet publish --use-current-runtime --self-contained false --no-restore -o /app
 
 
