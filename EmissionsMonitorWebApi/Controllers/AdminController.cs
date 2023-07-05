@@ -23,5 +23,11 @@ namespace EmissionsMonitorWebApi.Controllers
         //    DbInitializer.Initialize(_context);
         //    return Ok();
         //}
+
+        [HttpGet("ping")]
+        public string Ping()
+        {
+            return "Connection to api successful!";
+        }
     }
 }
