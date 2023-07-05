@@ -46,7 +46,15 @@ namespace EmissionsMonitorWebApi
             builder.Services.AddTransient<DynamicCompilerService>();
             builder.Services.AddTransient<ModelExecutionService>();
 
-            var app = builder.Build();
+            var hostUrl = builder.Configuration["HostUrl"];
+            if (string.IsNullOrEmpty(hostUrl)) hostUrl = "http://0.0.0.0:5000";
+
+            builder.WebHost
+                .UseKestrel()
+                .UseUrls(hostUrl)
+                .Build();
+
+            WebApplication app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -56,13 +64,9 @@ namespace EmissionsMonitorWebApi
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
             app.MapControllers();
-
             app.Run();
-
         }
     }
 
