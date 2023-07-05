@@ -1,4 +1,5 @@
 using DotNetCommon;
+using DotNetCommon.Logging.File;
 using EIA.Domain.Model;
 using EIA.Services.Clients;
 using EmissionsMonitorDataAccess;
@@ -19,6 +20,19 @@ namespace EmissionsMonitorWebApi
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            string fileDirectory = builder.Configuration["LogDirectory"];
+            if (fileDirectory == null) fileDirectory = builder.Environment.ContentRootPath;
+            string fileName = $"EmissionsMonitorWebApi_{DateTime.Today.Year}-{DateTime.Today.Month}-{DateTime.Today.Day}.log";
+            FileLoggerConfig fileLoggerConfig = new FileLoggerConfig(fileDirectory, fileName);
+            FileLoggerProvider fileLoggerProvider = new FileLoggerProvider(fileLoggerConfig);
+
+            builder.Services.AddLogging(logging =>
+            {
+                logging.ClearProviders();
+                logging.AddConsole();
+                logging.AddProvider(fileLoggerProvider);
+            });
+
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
