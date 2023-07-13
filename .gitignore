@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/EmissionsMonitorWebApi/appsettings.Production.json
+/EmissionsMonitorWebApi/appsettings.Staging.json
+/EmissionsMonitorWebApi/appsettings.Development.json
