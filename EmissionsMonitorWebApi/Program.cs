@@ -40,6 +40,7 @@ namespace EmissionsMonitorWebApi
             builder.Services.AddSwaggerGen();
 
             string connString = builder.Configuration.GetConnectionString("DefaultConnection");
+            if (!builder.Environment.IsDevelopment()) connString += $";User Id={builder.Configuration["EmissionsMonitorDatabaseUser"]};Password={builder.Configuration["EmissionsMonitorDatabasePassword"]}";
             builder.Services.AddDbContext<EmissionsMonitorContext>(options => options.UseSqlServer(connString));
             builder.Services.AddTransient<IDataSourceRepository, DataSourceRepository>();
             builder.Services.AddTransient<IVirtualFileSystemRepository, VirtualFileSystemRepository>();
