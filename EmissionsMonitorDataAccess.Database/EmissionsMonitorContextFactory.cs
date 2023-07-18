@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using DotNetCommon.Helpers;
 
 namespace EmissionsMonitorDataAccess.Database
 {
@@ -7,8 +8,10 @@ namespace EmissionsMonitorDataAccess.Database
     {
         public EmissionsMonitorContext CreateDbContext(string[] args)
         {
-            DbContextOptionsBuilder<EmissionsMonitorContext> options = new DbContextOptionsBuilder<EmissionsMonitorContext>();
-            options.UseSqlServer("Server=.\\SQLEXPRESS;Database=EmissionsMonitor;Trusted_Connection=True;"); //Use local DB for designing
+            //if (!System.Diagnostics.Debugger.IsAttached) System.Diagnostics.Debugger.Launch();
+            DesignTimeConfig config = CommandLineHelpers.BindArgumentsToType<DesignTimeConfig>(args);
+            DbContextOptionsBuilder <EmissionsMonitorContext> options = new DbContextOptionsBuilder<EmissionsMonitorContext>();
+            options.UseSqlServer(config.BuildConnectionString());
             return new EmissionsMonitorContext(options.Options);
         }
     }

@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using DotNetCommon.Helpers;
 using UIowaBuildingsConsoleApp.Startup;
 using UIowaBuildingsModelConsoleApp;
 using UIowaBuildingsConsoleApp.Experiments.Phase1Reporting;
 using EmissionsMonitorServices.Experiments.DailyCarbonTrend;
-using UIowaBuildingsConsoleApp;
 using EmissionsMonitorModel.Experiments.DailyCarbonTrend;
 using EmissionsMonitorServices.Experiments.IndStudyExp;
 using EmissionsMonitorModel.Experiments.IndStudyExp;
@@ -22,13 +22,13 @@ public static class Program
         if (command == "Phase1Reporting") await Phase1Reporter.Phase1OldCode(serviceProvider);
         else if (command == "DailyCarbonTrend") await serviceProvider
                 .GetRequiredService<DailyCarbonExperimentDriver>()
-                .ExecuteExperiement(CommandLineInputHelpers.BindArgumentsToType<DailyCarbonExperiment>(args));
+                .ExecuteExperiement(CommandLineHelpers.BindArgumentsToType<DailyCarbonExperiment>(args));
         else if (command == "IndStudyExp") await serviceProvider
                 .GetRequiredService<IndStudyExpDriver>()
-                .ExecuteExperiement(CommandLineInputHelpers.BindArgumentsToType<IndStudyExperiment>(args));
+                .ExecuteExperiement(CommandLineHelpers.BindArgumentsToType<IndStudyExperiment>(args));
         else if (command == "NodeInspect") await serviceProvider
                 .GetRequiredService<NodeInspectExperimentDriver>()
-                .ExecuteExperiement(CommandLineInputHelpers.BindArgumentsToType<NodeInspectExperiment>(args));
+                .ExecuteExperiement(CommandLineHelpers.BindArgumentsToType<NodeInspectExperiment>(args));
         else throw new NotImplementedException($"Command {command} not recognized.");
     }
 }

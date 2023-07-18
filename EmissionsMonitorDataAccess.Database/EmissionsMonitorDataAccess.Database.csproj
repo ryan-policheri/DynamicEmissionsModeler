@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DotNetCommon\DotNetCommon.csproj" />
     <ProjectReference Include="..\EmissionsMonitorDataAccess.Abstractions\EmissionsMonitorDataAccess.Abstractions.csproj" />
     <ProjectReference Include="..\UIowaBuildingsModel\EmissionsMonitorModel.csproj" />
   </ItemGroup>

@@ -1,14 +1,9 @@
 ﻿using DotNetCommon.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace UIowaBuildingsConsoleApp
+namespace DotNetCommon.Helpers
 {
-    public class CommandLineInputHelpers
+    public class CommandLineHelpers
     {
         public static T BindArgumentsToType<T>(string[] args) where T : new()
         {
