@@ -11,6 +11,7 @@ namespace EmissionsMonitorDataAccess.Database
             //if (!System.Diagnostics.Debugger.IsAttached) System.Diagnostics.Debugger.Launch();
             DesignTimeConfig config = CommandLineHelpers.BindArgumentsToType<DesignTimeConfig>(args);
             DbContextOptionsBuilder <EmissionsMonitorContext> options = new DbContextOptionsBuilder<EmissionsMonitorContext>();
+            Console.WriteLine(config.BuildConnectionString());
             options.UseSqlServer(config.BuildConnectionString());
             return new EmissionsMonitorContext(options.Options);
         }
