@@ -7,7 +7,10 @@ namespace EmissiosMonitorDataAccess.Http
     {
         public EmissionsMonitorClient()
         {
-            this.Client = new HttpClient();
+            HttpClientHandler handler = new HttpClientHandler();
+            //TODO: Figure certificate out
+            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+            this.Client = new HttpClient(handler);
             this.SerializerOptions = JsonSerializerDefaults.CamelCaseOptions;
         }
 
