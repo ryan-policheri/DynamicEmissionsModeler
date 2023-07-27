@@ -57,6 +57,10 @@ namespace UnifiedDataExplorer.Services.WindowDialog
             modalVm.Options = options;
 
             System.Windows.Window currentWindow = App.Current.Windows.OfType<System.Windows.Window>().SingleOrDefault(x => x.IsActive);
+            if (currentWindow == null)
+            {
+                currentWindow = App.Current.Windows.OfType<MainWindow>().First();
+            }
             ModalWindow modalWindow = new ModalWindow();
             modalWindow.DataContext = modalVm;
             modalWindow.Owner = currentWindow;
