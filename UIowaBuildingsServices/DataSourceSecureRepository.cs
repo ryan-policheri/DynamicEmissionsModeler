@@ -29,7 +29,10 @@ namespace EmissionsMonitorServices
 
         public async Task<DataSourceBase> SaveDataSource(DataSourceBase dataSource)
         {
+
+            string sourceDetails = dataSource.ToSourceDetails();
             dataSource = await _dataSourceClient.SaveDataSource(dataSource);
+            dataSource.SourceDetailsJson = sourceDetails;
             dataSource = await _dataSourceLocal.SaveDataSource(dataSource);
 
             return dataSource;

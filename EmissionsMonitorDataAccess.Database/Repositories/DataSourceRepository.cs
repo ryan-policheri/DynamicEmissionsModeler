@@ -34,7 +34,7 @@ namespace EmissionsMonitorDataAccess.Database.Repositories
                 Add(EncryptDataSource(source));
             }
             await Context.SaveChangesAsync();
-            return DecryptDataSource(source);
+            return source;
         }
 
         public DataSourceBase EncryptDataSource(DataSourceBase dataSource)
