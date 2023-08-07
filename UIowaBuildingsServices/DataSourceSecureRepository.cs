@@ -24,7 +24,31 @@ namespace EmissionsMonitorServices
 
         public async Task<IEnumerable<DataSourceBase>> GetAllDataSourcesAsync()
         {
-            return await _dataSourceLocal.GetAllDataSourcesAsync();
+            // Returns all datasources. If datasource exists on the server and locally, then datasource with 
+            // credentials are returned. Otherwise (meaning they are stored on the server but not locally), they are returned without 
+            // credentials.
+
+            IEnumerable<DataSourceBase> dataSourcesServerResult = await _dataSourceClient.GetAllDataSourcesAsync();
+            IEnumerable<DataSourceBase> dataSourcesLocalResult = await _dataSourceLocal.GetAllDataSourcesAsync();
+
+            List<DataSourceBase> dataSourcesServer = dataSourcesServerResult.ToList();
+            List<DataSourceBase> dataSourcesLocal = dataSourcesLocalResult.ToList();
+
+            List<DataSourceBase> dataSources = new List<DataSourceBase>();
+
+            foreach (DataSourceBase dataSourceServer in dataSourcesServer)
+            {
+                if (dataSourcesLocal.Select(x => x.SourceId).Contains(dataSourceServer.SourceId)) {
+                    DataSourceBase localDataSource = dataSourcesLocal.Where(x => x.SourceId == dataSourceServer.SourceId).First();
+                    dataSources.Add(localDataSource);
+                }
+                else
+                {
+                    dataSources.Add(dataSourceServer);
+                }
+            } 
+
+            return dataSources;
         }
 
         public async Task<DataSourceBase> SaveDataSource(DataSourceBase dataSource)
