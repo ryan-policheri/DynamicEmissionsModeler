@@ -78,6 +78,16 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
         {
             if (model == null) model = new PiDataSource();
             _model = model;
+
+            // check for missing credentials
+            if (_model.Password == "")
+            {
+                NoCredentials = true;
+            }
+            else
+            {
+                NoCredentials = false;
+            }
         }
 
 

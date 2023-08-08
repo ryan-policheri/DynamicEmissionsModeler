@@ -25,6 +25,8 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
             Cancel = new DelegateCommand(OnCancel);
         }
 
+        public bool NoCredentials { get; set; }
+
         public int DataSourceId => this.GetBackingModel().SourceId;
 
         public DataSourceType DataSourceType => this.GetBackingModel().SourceType;
