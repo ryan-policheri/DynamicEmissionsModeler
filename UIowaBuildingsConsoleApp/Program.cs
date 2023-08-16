@@ -13,7 +13,7 @@ using EmissionsMonitorModel.Experiments.NodeInspect;
 public static class Program
 {
     public static async Task Main(string[] args)
-    {
+    {  
         Config config = Bootstrapper.LoadConfiguration();
         IServiceProvider serviceProvider = Bootstrapper.BuildServiceProvider(config);
 

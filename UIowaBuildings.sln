@@ -33,9 +33,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmissionsMonitorWebApi", "E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.EmissionsMonitorServices", "Tests.EmissionsMonitorServices\Tests.EmissionsMonitorServices.csproj", "{17BD5DA2-4D52-4EA0-9CBF-D46BADC60B7D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmissionsMonitorDataAccess.Http", "EmissionsMonitorDataAccess.Http\EmissionsMonitorDataAccess.Http.csproj", "{85067519-DAD6-46DF-B377-D2A26356D6E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmissionsMonitorDataAccess.Http", "EmissionsMonitorDataAccess.Http\EmissionsMonitorDataAccess.Http.csproj", "{85067519-DAD6-46DF-B377-D2A26356D6E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmissionsMonitorDataAccess.Abstractions", "EmissionsMonitorDataAccess.Abstractions\EmissionsMonitorDataAccess.Abstractions.csproj", "{2DC8CB20-2AC4-418B-9E85-428D93F8F790}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmissionsMonitorDataAccess.Abstractions", "EmissionsMonitorDataAccess.Abstractions\EmissionsMonitorDataAccess.Abstractions.csproj", "{2DC8CB20-2AC4-418B-9E85-428D93F8F790}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmissionsMonitorDataAccess.FileSystem", "EmissionsMonitorDataAccess.FileSystem\EmissionsMonitorDataAccess.FileSystem.csproj", "{B74DBC56-279E-4F4A-A6EF-985795D6BD6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -111,6 +113,10 @@ Global
 		{2DC8CB20-2AC4-418B-9E85-428D93F8F790}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2DC8CB20-2AC4-418B-9E85-428D93F8F790}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2DC8CB20-2AC4-418B-9E85-428D93F8F790}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B74DBC56-279E-4F4A-A6EF-985795D6BD6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B74DBC56-279E-4F4A-A6EF-985795D6BD6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B74DBC56-279E-4F4A-A6EF-985795D6BD6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B74DBC56-279E-4F4A-A6EF-985795D6BD6C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

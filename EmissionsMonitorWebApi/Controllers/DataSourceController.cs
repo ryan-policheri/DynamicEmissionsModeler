@@ -22,7 +22,32 @@ namespace EmissionsMonitorWebApi.Controllers
         {
             try
             {
-                return Ok(await _repo.GetAllDataSourcesAsync());
+                // Api should never return sensitive credentials
+                IEnumerable<DataSourceBase> result = await _repo.GetAllDataSourcesAsync();
+                List<DataSourceBase> dataSources = result.ToList();
+                List<DataSourceBase> dataSourceSafe = new List<DataSourceBase>();
+                foreach (DataSourceBase dataSource in dataSources)
+                {
+                    switch (dataSource.SourceType)
+                    {
+                        case DataSourceType.Pi:
+                            PiDataSource piDataSource = (PiDataSource)dataSource;
+                            piDataSource.Password = "";
+                            piDataSource.SourceDetailsJson = piDataSource.ToSourceDetails();
+                            dataSourceSafe.Add(piDataSource);
+                            break;
+                        case DataSourceType.Eia:
+                            EiaDataSource eiaDataSource = (EiaDataSource)dataSource;
+                            eiaDataSource.SubscriptionKey = "";
+                            eiaDataSource.SourceDetailsJson = eiaDataSource.ToSourceDetails();
+                            dataSourceSafe.Add(eiaDataSource);
+                            break;
+                        default:
+                            throw new NotImplementedException();
+
+                    }
+                }
+                return Ok(dataSourceSafe);
             }
             catch (Exception e)
             {

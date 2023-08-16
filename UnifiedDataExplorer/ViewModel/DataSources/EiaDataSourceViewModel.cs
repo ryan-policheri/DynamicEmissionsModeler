@@ -28,6 +28,16 @@ namespace UnifiedDataExplorer.ViewModel.DataSources
             if (model == null) model = new EiaDataSource();
             _model = model;
             EiaBaseUrl = _model.SuggestedBaseUrl;
+
+            // check for missing credentials
+            if (_model.SubscriptionKey == "")
+            {
+                NoCredentials = true;
+            }
+            else
+            {
+                NoCredentials = false;
+            }
         }
 
 

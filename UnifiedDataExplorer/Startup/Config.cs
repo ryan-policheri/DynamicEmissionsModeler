@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using DotNetCommon.Extensions;
 using EmissionsMonitorDataAccess.Http;
+using EmissionsMonitorDataAccess.FileSystem;
+using EmissionsMonitorServices;
 
 namespace UnifiedDataExplorer
 {
-    public class Config : IEmissionsMonitorClientConfig
+    public class Config : IEmissionsMonitorClientConfig, IEmissionsMonitorLocalConfig
     {
         private readonly IConfiguration _rawConfig;
 

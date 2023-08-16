@@ -22,12 +22,14 @@ using UnifiedDataExplorer.Services.Reporting;
 using UnifiedDataExplorer.ViewModel.DataSources;
 using EmissionsMonitorDataAccess.Abstractions;
 using EmissionsMonitorDataAccess.Http;
+using EmissionsMonitorDataAccess.FileSystem;
 using EmissionsMonitorServices.DataSourceWrappers;
 using UnifiedDataExplorer.ViewModel.DataExploring;
 using UnifiedDataExplorer.ViewModel.DataExploring.Explorers;
 using UnifiedDataExplorer.ViewModel.DataExploring.ExplorePoints;
 using UnifiedDataExplorer.ViewModel.ProcessModeling;
 using UnifiedDataExplorer.ViewModel.VirtualFileSystem;
+using EmissionsMonitorServices;
 
 namespace UnifiedDataExplorer.Startup
 {
@@ -91,6 +93,8 @@ namespace UnifiedDataExplorer.Startup
                     () => x.GetService<PiHttpClient>(),
                     x.GetService<IDataSourceRepository>()));
 
+
+
             //APP SERVICES
             services.AddSingleton<IMessageHub, MessageHub>();
             services.AddSingleton<IDialogService, DialogService>(x => 
@@ -150,12 +154,21 @@ namespace UnifiedDataExplorer.Startup
             services.AddTransient<ExecutionViewModel>();
 
             //EMISSIONS MONITOR SERVICES
-            services.AddTransient<IDataSourceRepository, DataSourceClient>((provider =>
+            services.AddTransient<DataSourceClient>(x =>
             {
                 var client = new DataSourceClient();
                 client.Initialize(config);
                 return client;
-            }));
+            });
+
+            services.AddTransient<DataSourceLocal>(x =>
+            {
+                var client = new DataSourceLocal(x.GetRequiredService<ICredentialProvider>());
+                client.Initialize(config);
+                return client;
+            });
+
+            services.AddTransient<IDataSourceRepository, DataSourceSecureRepository>();
 
             services.AddTransient<IVirtualFileSystemRepository, VirtualFileSystemClient>((provider =>
             {

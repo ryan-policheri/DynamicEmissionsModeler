@@ -6,17 +6,17 @@ namespace DotNetCommon.Security
 {
     public class CredentialProvider : ICredentialProvider
     {
-        private readonly string _ivEnvironmentVariable;
-        private readonly string _keyEnvironmentVariable;
+        private readonly string _iv;
+        private readonly string _key;
         private readonly string _encryptionFilePath;
 
         private byte[] Iv 
         { 
             get
             { 
-                if (!String.IsNullOrWhiteSpace(_ivEnvironmentVariable))
+                if (!String.IsNullOrWhiteSpace(_iv))
                 {
-                    return Convert.FromBase64String(Environment.GetEnvironmentVariable(_ivEnvironmentVariable));
+                    return Convert.FromBase64String(_iv);
                 }
                 else
                 {
@@ -30,9 +30,9 @@ namespace DotNetCommon.Security
         { 
             get
             {
-                if (!String.IsNullOrWhiteSpace(_keyEnvironmentVariable))
+                if (!String.IsNullOrWhiteSpace(_key))
                 {
-                    return Convert.FromBase64String(Environment.GetEnvironmentVariable(_keyEnvironmentVariable));
+                    return Convert.FromBase64String(_key);
                 }
                 else
                 {
@@ -44,8 +44,8 @@ namespace DotNetCommon.Security
 
         public CredentialProvider(string ivEnvironmentVariable, string keyEnvironmentVariable)
         {
-            _ivEnvironmentVariable = ivEnvironmentVariable;
-            _keyEnvironmentVariable = keyEnvironmentVariable;
+            _iv = ivEnvironmentVariable;
+            _key = keyEnvironmentVariable;
         }
 
         public CredentialProvider(string encryptionFilePath)
