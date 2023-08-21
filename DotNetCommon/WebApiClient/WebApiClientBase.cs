@@ -304,11 +304,13 @@ namespace DotNetCommon.WebApiClient
         {
             string baseAddress = Client.BaseAddress.ToString();
 
-            if (!String.IsNullOrWhiteSpace(uri) && uri.Contains(Client.BaseAddress.Host, StringComparison.InvariantCultureIgnoreCase)) return uri; //Base address is assumed to be included in the provided uri.
+            if (!String.IsNullOrWhiteSpace(uri) && (uri.Contains(Client.BaseAddress.Host, StringComparison.InvariantCultureIgnoreCase) || uri.StartsWith("http"))) return uri; //Base address is assumed to be included in the provided uri.
             else
             {
-                if (!String.IsNullOrWhiteSpace(baseAddress)) return baseAddress.TrimEnd('/') + "/" + uri?.TrimStart('/');
-                else return uri;
+                string result;
+                if (!String.IsNullOrWhiteSpace(baseAddress)) result = baseAddress.TrimEnd('/') + "/" + uri?.TrimStart('/');
+                else result = uri;
+                return result;
             }
         }
 
