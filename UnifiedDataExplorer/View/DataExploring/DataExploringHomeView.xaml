@@ -42,6 +42,8 @@
                                     Command="{Binding OpenEiaExplorer}">
                                 <Image Source="/Resources/Images/Eia_Search_Logo.png" Height="25" Width="50" />
                             </Button>
+                            <TextBlock Text="NO CREDENTIALS" Visibility="{Binding NoCredentials, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                       Margin="10 0 0 0" Foreground="Red"/>
                         </StackPanel>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type datasourceviewmodel:PiDataSourceViewModel}">
@@ -56,6 +58,8 @@
                                     Command="{Binding OpenPiSearchExplorer}">
                                 <Image Source="/Resources/Images/Pi_Search_Logo.png" Height="25" Width="50" />
                             </Button>
+                            <TextBlock Text="NO CREDENTIALS" Visibility="{Binding NoCredentials, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                       Margin="10 0 0 0" Foreground="Red"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.Resources>

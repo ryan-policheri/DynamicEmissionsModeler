@@ -4,6 +4,8 @@ using DotNetCommon.Logging;
 using DotNetCommon.Logging.Email;
 using DotNetCommon.Logging.File;
 using DotNetCommon.SystemHelpers;
+using DotNetCommon.Security;
+using EIA.Domain.Model;
 using EIA.Services.Clients;
 using EmissionsMonitorDataAccess;
 using EmissionsMonitorDataAccess.Abstractions;
@@ -84,6 +86,12 @@ namespace EmissionsMonitorWebApi
             builder.Services.AddTransient<ModelInitializationService>();
             builder.Services.AddTransient<DynamicCompilerService>();
             builder.Services.AddTransient<ModelExecutionService>();
+
+            // Encryption
+            string iv = builder.Configuration["Encryption:Iv"];
+            string key = builder.Configuration["Encryption:Key"];
+            CredentialProvider credProvider = new CredentialProvider(iv, key);
+            builder.Services.AddSingleton<ICredentialProvider>(credProvider);
 
             var app = builder.Build();
 

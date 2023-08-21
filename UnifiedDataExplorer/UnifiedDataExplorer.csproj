@@ -83,6 +83,7 @@
     <ProjectReference Include="..\EIA.Services\EIA.Services.csproj" />
     <ProjectReference Include="..\DotNetCommon\DotNetCommon.csproj" />
     <ProjectReference Include="..\EmissionsMonitorDataAccess.Abstractions\EmissionsMonitorDataAccess.Abstractions.csproj" />
+    <ProjectReference Include="..\EmissionsMonitorDataAccess.FileSystem\EmissionsMonitorDataAccess.FileSystem.csproj" />
     <ProjectReference Include="..\EmissionsMonitorDataAccess.Http\EmissionsMonitorDataAccess.Http.csproj" />
     <ProjectReference Include="..\PiModel\PiModel.csproj" />
     <ProjectReference Include="..\PiServices\PiServices.csproj" />
