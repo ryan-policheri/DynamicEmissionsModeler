@@ -1,6 +1,9 @@
 using DotNetCommon;
+using DotNetCommon.Bases;
+using DotNetCommon.Logging;
+using DotNetCommon.Logging.Email;
 using DotNetCommon.Logging.File;
-using EIA.Domain.Model;
+using DotNetCommon.SystemHelpers;
 using EIA.Services.Clients;
 using EmissionsMonitorDataAccess;
 using EmissionsMonitorDataAccess.Abstractions;
@@ -13,24 +16,45 @@ using PiServices;
 
 namespace EmissionsMonitorWebApi
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            string fileDirectory = builder.Configuration["LogDirectory"];
-            if (fileDirectory == null) fileDirectory = builder.Environment.ContentRootPath;
-            string fileName = $"EmissionsMonitorWebApi_{DateTime.Today.Year}-{DateTime.Today.Month}-{DateTime.Today.Day}.log";
-            FileLoggerConfig fileLoggerConfig = new FileLoggerConfig(fileDirectory, fileName);
-            FileLoggerProvider fileLoggerProvider = new FileLoggerProvider(fileLoggerConfig);
+            //LOGGING
+            ClientInfo clientInfo = new ClientInfo("EmissionsMonitorWebApi", "N/A", "N/A", Environment.MachineName, builder.Environment.EnvironmentName);
+
+            IConfigurationSection fileLogSection = builder.Configuration.GetSection("Logging:File");
+            FileLoggerConfig fileLogConfig = new FileLoggerConfig();
+            FileLoggerProvider fileLoggerProvider = null;
+            if (fileLogSection.Exists())
+            {
+                fileLogSection.Bind(fileLogConfig);
+                if (String.IsNullOrWhiteSpace(fileLogConfig.LogDirectory)) fileLogConfig.LogDirectory = SystemFunctions.CombineDirectoryComponents(Environment.CurrentDirectory, "Logs");
+                fileLogConfig.LogFileName = $"EmissionsMonitorWebApi_{DateTime.Today.Year}-{DateTime.Today.Month}-{DateTime.Today.Day}.log";
+                fileLogConfig.AssertValid();
+                fileLoggerProvider = new FileLoggerProvider(fileLogConfig);
+            }
+
+
+            IConfigurationSection emailLogSection = builder.Configuration.GetSection("Logging:Email");
+            EmailLoggerConfig emailLoggerConfig = new EmailLoggerConfig();
+            EmailLoggerProvider emailLoggerProvider = null;
+            if (emailLogSection.Exists())
+            {
+                emailLogSection.Bind(emailLoggerConfig);
+                emailLoggerConfig.Subject = "Emissions Monitor Web Api Error Log";
+                emailLoggerConfig.AssertValid();
+                emailLoggerProvider = new EmailLoggerProvider(clientInfo, emailLoggerConfig);
+            }
 
             builder.Services.AddLogging(logging =>
             {
                 logging.ClearProviders();
                 logging.AddConsole();
-                logging.AddProvider(fileLoggerProvider);
+                if (fileLoggerProvider != null) logging.AddProvider(fileLoggerProvider);
+                if (emailLoggerProvider != null) logging.AddProvider(emailLoggerProvider);
             });
 
 
@@ -78,6 +102,25 @@ namespace EmissionsMonitorWebApi
 
             app.Run();
 
+        }
+
+        private static IConfiguration GetConfiguration(this HostBuilderContext builderContext, string sectionName = null)
+        {
+            return String.IsNullOrWhiteSpace(sectionName) ? builderContext.Configuration : builderContext.Configuration.GetSection(sectionName);
+        }
+
+        private static T BindConfigToValidatingObject<T>(this IConfiguration configuration) where T : ValidatingObject, new()
+        {
+            T obj = BindConfigToObject<T>(configuration);
+            obj.AssertValid();
+            return obj;
+        }
+
+        private static T BindConfigToObject<T>(this IConfiguration configuration) where T : new()
+        {
+            T obj = (T)Activator.CreateInstance(typeof(T));
+            configuration.Bind(obj);
+            return obj;
         }
     }
 

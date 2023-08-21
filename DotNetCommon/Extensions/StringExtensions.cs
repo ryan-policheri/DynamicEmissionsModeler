@@ -55,5 +55,10 @@ namespace DotNetCommon.Extensions
         {
             return items.Contains(source);
         }
+
+        public static bool IsNullOrWhiteSpace(this string source)
+        {
+            return String.IsNullOrWhiteSpace(source);
+        }
     }
 }

@@ -46,7 +46,11 @@ namespace UIowaBuildingsConsoleApp.Startup
 
             string logFileName = $"UIowaEnergyConsoleApp_Log_{DateTime.Today.Year}-{DateTime.Today.Month}-{DateTime.Today.Day}.log";
             string logFileDirectory = SystemFunctions.CombineDirectoryComponents(AppDataFolderOptions.Local, "UIowa Energy Console App", "Logs");
-            FileLoggerConfig fileLoggerConfig = new FileLoggerConfig(logFileDirectory, logFileName);
+            FileLoggerConfig fileLoggerConfig = new FileLoggerConfig
+            {
+                LogDirectory = logFileDirectory,
+                LogFileName = logFileName
+            };
             FileLoggerProvider fileLoggerProvider = new FileLoggerProvider(fileLoggerConfig);
 
             services.AddLogging(logging =>

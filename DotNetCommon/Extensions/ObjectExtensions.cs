@@ -1,4 +1,5 @@
 ﻿using DotNetCommon.Constants;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
@@ -195,6 +196,30 @@ namespace DotNetCommon.Extensions
                 }
             }
             else throw new NotImplementedException("Parsing for type " + propertyType.Name + " is not implemented.");
+        }
+
+        public static bool RequiredAttributesSatisfied(this object obj)
+        {
+            Type type = obj.GetType();
+            var props = type.GetProperties();
+            foreach (var prop in props)
+            {
+                var requiredAttribute = Attribute.GetCustomAttribute(prop, typeof(RequiredAttribute)) as RequiredAttribute;
+                if (requiredAttribute != null)
+                {
+                    if (prop.PropertyType == typeof(string) || Nullable.GetUnderlyingType(prop.PropertyType) == typeof(string))
+                    {
+                        string val = (string)prop.GetValue(obj);
+                        if (val.IsNullOrWhiteSpace()) return false;
+                    }
+                    else if (Nullable.GetUnderlyingType(prop.PropertyType) != null)
+                    {
+                        object nullableThing = prop.GetValue(obj);
+                        if (nullableThing == null) return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 }

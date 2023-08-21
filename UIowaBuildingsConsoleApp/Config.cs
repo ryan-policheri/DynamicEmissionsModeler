@@ -6,7 +6,7 @@ namespace UIowaBuildingsModelConsoleApp
 {
     public class Config
     {
-        private readonly IConfiguration _rawConfig;
+        public readonly IConfiguration RawConfig;
 
         public Config()
         {
@@ -14,13 +14,13 @@ namespace UIowaBuildingsModelConsoleApp
 
         public Config(IConfiguration rawConfig)
         {
-            _rawConfig = rawConfig;
+            RawConfig = rawConfig;
 
             //Autobinding appsettings data to the strongly-typed properties of this object
             IEnumerable<PropertyInfo> props = typeof(Config).GetProperties();
             foreach (PropertyInfo prop in props)
             {
-                string rawValue = _rawConfig[prop.Name];
+                string rawValue = RawConfig[prop.Name];
                 prop.SetValueWithTypeRespect(this, rawValue);
             }
         }

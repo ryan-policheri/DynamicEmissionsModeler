@@ -21,7 +21,7 @@ namespace DotNetCommon.Logging.File
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            return true;
+            return _config.CanLog(logLevel);
         }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
@@ -84,7 +84,7 @@ namespace DotNetCommon.Logging.File
         {
             try
             {
-                Directory.CreateDirectory(_config.LogFileDirectory);
+                Directory.CreateDirectory(_config.LogDirectory);
                 return true;
             }
             catch (IOException ioe)

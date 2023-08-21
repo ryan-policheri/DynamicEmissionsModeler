@@ -1,25 +1,14 @@
-﻿using System;
-using System.IO;
-using Microsoft.Extensions.Logging;
+﻿using System.ComponentModel.DataAnnotations;
+using DotNetCommon.SystemHelpers;
 
 namespace DotNetCommon.Logging.File
 {
-    public class FileLoggerConfig
+    public class FileLoggerConfig : LoggerConfiguration
     {
-
-        public FileLoggerConfig(string logFileDirectory, string logFileName)
-        {
-            LogFileDirectory = logFileDirectory.TrimEnd(Path.DirectorySeparatorChar);
-            LogFileName = logFileName;
-        }
-
-        public string LogFileDirectory { get; }
-        public string LogFileName { get; }
-        public string LogFileFullPath => LogFileDirectory + Path.DirectorySeparatorChar + LogFileName;
-
-        public bool CanLog(LogLevel logLevel)
-        {
-            return true;
-        }
+        [Required]
+        public string? LogDirectory { get; set; }
+        [Required]
+        public string? LogFileName { get; set;  }
+        public string LogFileFullPath => SystemFunctions.CombineDirectoryComponents(LogDirectory, LogFileName);
     }
 }

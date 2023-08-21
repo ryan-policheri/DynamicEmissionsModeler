@@ -71,7 +71,11 @@ namespace UnifiedDataExplorer.Startup
 
             string logFileName = $"UnifiedDataExplorer_Log_{DateTime.Today.Year}-{DateTime.Today.Month}-{DateTime.Today.Day}.log";
             string logFileDirectory = SystemFunctions.CombineDirectoryComponents(AppDataFolderOptions.Local, "Unified Data Explorer", "Logs");
-            FileLoggerConfig fileLoggerConfig = new FileLoggerConfig(logFileDirectory, logFileName);
+            FileLoggerConfig fileLoggerConfig = new FileLoggerConfig
+            {
+                LogDirectory = logFileDirectory,
+                LogFileName = logFileName
+            };
             FileLoggerProvider fileLoggerProvider = new FileLoggerProvider(fileLoggerConfig);
 
             services.AddLogging(logging =>
