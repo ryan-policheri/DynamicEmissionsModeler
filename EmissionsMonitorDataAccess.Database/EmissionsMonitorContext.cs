@@ -30,6 +30,8 @@ namespace EmissionsMonitorDataAccess.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasDefaultSchema("EmissionsMonitor");
+
             var dataSourceSpec = modelBuilder.Entity<DataSourceBase>();
             dataSourceSpec.HasKey(x => x.SourceId);
             dataSourceSpec.ToTable("DATA_SOURCE");

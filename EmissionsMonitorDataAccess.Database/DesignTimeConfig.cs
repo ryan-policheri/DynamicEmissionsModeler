@@ -2,7 +2,7 @@
 {
     public class DesignTimeConfig
     {
-        public string DefaultConnection { get; set; } = "Server=.\\SQLEXPRESS;Database=EmissionsMonitor;Trusted_Connection=True;";
+        public string DefaultConnection { get; set; } = "Server=.\\SQLEXPRESS;Database=IowaDev;Trusted_Connection=True;";
 
         public string UserName { get; set; }
 
