@@ -37,7 +37,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmissionsMonitorDataAccess.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmissionsMonitorDataAccess.Abstractions", "EmissionsMonitorDataAccess.Abstractions\EmissionsMonitorDataAccess.Abstractions.csproj", "{2DC8CB20-2AC4-418B-9E85-428D93F8F790}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmissionsMonitorDataAccess.FileSystem", "EmissionsMonitorDataAccess.FileSystem\EmissionsMonitorDataAccess.FileSystem.csproj", "{B74DBC56-279E-4F4A-A6EF-985795D6BD6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmissionsMonitorDataAccess.FileSystem", "EmissionsMonitorDataAccess.FileSystem\EmissionsMonitorDataAccess.FileSystem.csproj", "{B74DBC56-279E-4F4A-A6EF-985795D6BD6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
