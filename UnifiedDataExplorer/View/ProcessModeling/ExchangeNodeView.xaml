@@ -24,57 +24,53 @@
         </StackPanel>
 
         <TabControl Grid.Row="1" Margin="0 10 0 0">
-            <TabItem Header="Product" Content="{Binding}" FontWeight="Bold" FontSize="14">
-                <TabItem.ContentTemplate>
-                    <DataTemplate DataType="{x:Type vm:ExchangeNodeViewModel}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <Border BorderThickness="1" BorderBrush="LightGray" Padding="10">
-                                <ContentControl Content="{Binding ProductFunctionViewModel}" Margin="10 0 0 0"/>
-                            </Border>
-                        </Grid>
-                    </DataTemplate>
-                </TabItem.ContentTemplate>
+            <TabItem Header="Product" DataContext="{Binding}" FontWeight="Bold" FontSize="14">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Border BorderThickness="1" BorderBrush="LightGray" Padding="10">
+                            <ContentControl Content="{Binding ProductFunctionViewModel}" Margin="10 0 0 0"/>
+                        </Border>
+                    </Grid>
+                </TabItem.Content>
             </TabItem>
-            <TabItem Header="Costs" Content="{Binding}" FontWeight="Bold" FontSize="14">
-                <TabItem.ContentTemplate>
-                    <DataTemplate DataType="{x:Type vm:ExchangeNodeViewModel}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+            <TabItem Header="Costs" DataContext="{Binding}" FontWeight="Bold" FontSize="14">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                            <Border Grid.Column="0" BorderThickness="1" BorderBrush="LightGray" Padding="10">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
+                        <Border Grid.Column="0" BorderThickness="1" BorderBrush="LightGray" Padding="10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                                    <Label Grid.Row="0" Content="Cost Functions"/>
-                                    <ListBox Grid.Row="1" ItemsSource="{Binding CostFunctions}" SelectedItem="{Binding SelectedCostFunction}">
-                                        <ListBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding FunctionName}"/>
-                                            </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                    </ListBox>
+                                <Label Grid.Row="0" Content="Cost Functions"/>
+                                <ListBox Grid.Row="1" ItemsSource="{Binding CostFunctions}" SelectedItem="{Binding SelectedCostFunction}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding FunctionName}"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
 
-                                    <Button Grid.Row="2" Content="Add New Function"  Background="Transparent"
+                                <Button Grid.Row="2" Content="Add New Function"  Background="Transparent"
                                             Command="{Binding AddCostFunction}"/>
-                                </Grid>
-                            </Border>
+                            </Grid>
+                        </Border>
 
-                            <Border Grid.Column="1" BorderThickness="1" BorderBrush="LightGray" Padding="10">
-                                <ContentControl Content="{Binding CurrentCostFunctionViewModel}" Margin="10 0 0 0"/>
-                            </Border>
-                        </Grid>
-                    </DataTemplate>
-                </TabItem.ContentTemplate>
+                        <Border Grid.Column="1" BorderThickness="1" BorderBrush="LightGray" Padding="10">
+                            <ContentControl Content="{Binding CurrentCostFunctionViewModel}" Margin="10 0 0 0"/>
+                        </Border>
+                    </Grid>
+                </TabItem.Content>
             </TabItem>
         </TabControl>
     </Grid>

@@ -24,36 +24,32 @@
         </StackPanel>
 
         <TabControl Grid.Row="1" Margin="0 10 0 0">
-            <TabItem Header="Available Products" Content="{Binding}" FontWeight="Bold" FontSize="14">
-                <TabItem.ContentTemplate>
-                    <DataTemplate DataType="{x:Type vm:MultiProductConversionNodeViewModel}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0" Text="Select nodes of the products to be converted" Margin="0 20 0 0 "/>
-                            <Label Grid.Row="1" Content="Available Nodes:" Margin="0 20 0 0"/>
-                            <ListBox Grid.Row="2" ItemsSource="{Binding AvailableNodeOutputSpecs}" ItemTemplate="{StaticResource CheckableItemTemplate}"/>
-                        </Grid>
-                    </DataTemplate>
-                </TabItem.ContentTemplate>
+            <TabItem Header="Available Products" DataContext="{Binding}" FontWeight="Bold" FontSize="14">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="Select nodes of the products to be converted" Margin="0 20 0 0 "/>
+                        <Label Grid.Row="1" Content="Available Nodes:" Margin="0 20 0 0"/>
+                        <ListBox Grid.Row="2" ItemsSource="{Binding AvailableNodeOutputSpecs}" ItemTemplate="{StaticResource CheckableItemTemplate}"/>
+                    </Grid>
+                </TabItem.Content>
             </TabItem>
-            <TabItem Header="New Product" Content="{Binding}" FontWeight="Bold" FontSize="14">
-                <TabItem.ContentTemplate>
-                    <DataTemplate DataType="{x:Type vm:MultiProductConversionNodeViewModel}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
+            <TabItem Header="New Product" DataContext="{Binding}" FontWeight="Bold" FontSize="14">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                            <Border Grid.Row="0" BorderThickness="1" BorderBrush="LightGray" Padding="10">
-                                <ContentControl Content="{Binding NewProductFunctionViewModel}" Margin="10 0 0 0"/>
-                            </Border>
-                        </Grid>
-                    </DataTemplate>
-                </TabItem.ContentTemplate>
+                        <Border Grid.Row="0" BorderThickness="1" BorderBrush="LightGray" Padding="10">
+                            <ContentControl Content="{Binding NewProductFunctionViewModel}" Margin="10 0 0 0"/>
+                        </Border>
+                    </Grid>
+                </TabItem.Content>
             </TabItem>
         </TabControl>
     </Grid>
